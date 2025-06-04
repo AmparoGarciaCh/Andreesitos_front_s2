@@ -1,6 +1,7 @@
-// src/pages/Login.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Navbar from '../components/Navbar';
+import '../styles/Bienvenida.css'; // Reutiliza los estilos base
 
 function Login() {
   const [correo, setCorreo] = useState('');
@@ -25,36 +26,43 @@ function Login() {
         throw new Error(data.error || 'Error al iniciar sesión');
       }
 
-      // ✅ Guardar token y redirigir
       localStorage.setItem('token', data.token);
       localStorage.setItem('usuario', JSON.stringify(data.usuario));
 
       setMensaje('✅ Sesión iniciada correctamente');
-      setTimeout(() => navigate('/partidas'), 1000); // redirige luego de 1 seg
+      setTimeout(() => navigate('/partidas'), 1000);
     } catch (error) {
       setMensaje('❌ ' + error.message);
     }
   };
 
   return (
-    <div>
-      <h2>Iniciar Sesión</h2>
-      <form onSubmit={handleLogin}>
-        <input
-          type="email"
-          placeholder="Correo"
-          value={correo}
-          onChange={(e) => setCorreo(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Contraseña"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button type="submit">Ingresar</button>
-      </form>
-      {mensaje && <p>{mensaje}</p>}
+    <div className="bienvenida-container">
+      <Navbar />
+
+      <main className="bienvenida-main">
+        <section className="descripcion">
+          <h2>Iniciar Sesión</h2>
+          <form onSubmit={handleLogin}>
+            <input
+              type="email"
+              placeholder="Correo"
+              value={correo}
+              onChange={(e) => setCorreo(e.target.value)}
+              required
+            /><br />
+            <input
+              type="password"
+              placeholder="Contraseña"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            /><br />
+            <button type="submit" className="jugar-btn">Ingresar</button>
+          </form>
+          {mensaje && <p>{mensaje}</p>}
+        </section>
+      </main>
     </div>
   );
 }

@@ -63,6 +63,8 @@
 }
 
 .imagen-tablero img {
-  max-width: 100%;
-  height: auto;
+  width: 1200px;         /* O un tamaño específico como 600px */
+  height: auto;        /* Mantiene proporción */
+  display: block;
+  margin: 0 auto;      /* Centrado si lo necesitas */
 }

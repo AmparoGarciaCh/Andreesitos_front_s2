@@ -6,33 +6,6 @@
   color: #fff;
 }
 
-.bienvenida-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #2266cc;
-  padding: 1rem 2rem;
-}
-
-.logo {
-  height: 50px;
-}
-
-.nav-links {
-  list-style: none;
-  display: flex;
-  gap: 2rem;
-}
-
-.nav-links li {
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.nav-links .active {
-  border-bottom: 3px solid white;
-}
-
 .bienvenida-main {
   display: flex;
   justify-content: space-between;

@@ -1,8 +1,9 @@
 // src/pages/Bienvenida.jsx
 import React from 'react';
-import './Bienvenida.css';
+import '../styles/Bienvenida.css';
 import logo from '../assets/logo.png';
 import tablero from '../assets/tablero.png';
+import { Link } from 'react-router-dom';
 
 function Bienvenida() {
   return (
@@ -11,7 +12,8 @@ function Bienvenida() {
         <img src={logo} alt="Logo Webtan" className="logo" />
         <nav>
           <ul className="nav-links">
-            <li className="active">Inicio</li>
+            <li><Link to="/">Inicio</Link></li>
+            <li><Link to="/registro">Registro</Link></li>
             <li>Jugar</li>
             <li>Sobre el juego</li>
             <li>Reglas</li>

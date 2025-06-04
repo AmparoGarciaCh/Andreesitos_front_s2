@@ -1,5 +1,6 @@
-// src/pages/Registro.jsx
 import { useState } from 'react';
+import Navbar from '../components/Navbar';
+import '../styles/Bienvenida.css'; // Reutilizamos los estilos ya definidos
 
 function Registro() {
   const [nombre, setNombre] = useState('');
@@ -28,33 +29,39 @@ function Registro() {
   };
 
   return (
-    <div>
-      <h2>Registro de Usuario</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Nombre"
-          value={nombre}
-          onChange={(e) => setNombre(e.target.value)}
-          required
-        /><br />
-        <input
-          type="email"
-          placeholder="Correo"
-          value={correo}
-          onChange={(e) => setCorreo(e.target.value)}
-          required
-        /><br />
-        <input
-          type="password"
-          placeholder="Contraseña"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        /><br />
-        <button type="submit">Registrarse</button>
-      </form>
-      {mensaje && <p>{mensaje}</p>}
+    <div className="bienvenida-container">
+      <Navbar />
+
+      <main className="bienvenida-main">
+        <section className="descripcion">
+          <h2>Registro de Usuario</h2>
+          <form onSubmit={handleSubmit}>
+            <input
+              type="text"
+              placeholder="Nombre"
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
+              required
+            /><br />
+            <input
+              type="email"
+              placeholder="Correo"
+              value={correo}
+              onChange={(e) => setCorreo(e.target.value)}
+              required
+            /><br />
+            <input
+              type="password"
+              placeholder="Contraseña"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            /><br />
+            <button type="submit" className="jugar-btn">Registrarse</button>
+          </form>
+          {mensaje && <p>{mensaje}</p>}
+        </section>
+      </main>
     </div>
   );
 }

@@ -1,0 +1,88 @@
+/* Fondo de madera y layout principal */
+.juego-container {
+  background-image: url('../assets/fondo mesa.png'); /* usa tu fondo de madera */
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.juego-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  color: #fff;
+  text-shadow: 1px 1px 2px #000;
+}
+
+/* Zona del tablero */
+.tablero-hex-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 100px); /* puedes ajustar el tamaño */
+  grid-auto-rows: 86px;
+  gap: 5px;
+  margin: 2rem 0;
+  justify-content: center;
+}
+
+.hex {
+  width: 100px;
+  height: 86px;
+  background-color: #eee;
+  clip-path: polygon(
+    50% 0%, 93% 25%, 93% 75%,
+    50% 100%, 7% 75%, 7% 25%
+  );
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  position: relative;
+}
+
+.hex.ingeniería { background-color: #ff9999; }
+.hex.derecho    { background-color: #99ccff; }
+.hex.comercial  { background-color: #ffff99; }
+.hex.medicina   { background-color: #ccffcc; }
+.hex.agronomía  { background-color: #ffcc99; }
+.hex.college    { background-color: #dddddd; }
+
+.hex-numero {
+  position: absolute;
+  bottom: 5px;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+/* Barra inferior con recursos o estado */
+.juego-info-bar {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: rgba(50, 30, 10, 0.8);
+  color: white;
+  display: flex;
+  justify-content: space-around;
+  padding: 1rem;
+  font-size: 1.1rem;
+}
+
+/* Botón de lanzar dados u otras acciones */
+.juego-boton {
+  background-color: #bb7744;
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  margin-top: 2rem;
+  font-size: 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.juego-boton:hover {
+  background-color: #a85d2e;
+}

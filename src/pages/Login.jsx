@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import '../styles/Bienvenida.css'; // Reutiliza los estilos base
@@ -8,6 +9,7 @@ function Login() {
   const [password, setPassword] = useState('');
   const [mensaje, setMensaje] = useState('');
   const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -28,9 +30,10 @@ function Login() {
 
       localStorage.setItem('token', data.token);
       localStorage.setItem('usuario', JSON.stringify(data.usuario));
+      login(data.usuario); // ✅ este es el cambio crucial
 
       setMensaje('✅ Sesión iniciada correctamente');
-      setTimeout(() => navigate('/partidas'), 1000);
+      setTimeout(() => navigate('/'), 1000);
     } catch (error) {
       setMensaje('❌ ' + error.message);
     }

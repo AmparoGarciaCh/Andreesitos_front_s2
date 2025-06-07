@@ -1,9 +1,8 @@
-.bienvenida-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #2266cc;
-  padding: 1rem 2rem;
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .logo {
@@ -23,4 +22,45 @@
 
 .nav-links .active {
   border-bottom: 3px solid white;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo-text {
+  font-family: 'Georgia', serif;
+  font-size: 1.5rem;
+  color: white;
+  font-weight: bold;
+}
+
+.navbar-superior {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 2rem; /* ⬅️ Reducido */
+  margin: 0;
+}
+
+.bienvenida-header {
+  background-color: #2266cc;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.franja-decorativa {
+  width: 100%;
+  height: 24px;               /* ✅ Ajuste manual */
+  display: block;
+  margin: 0;
+  padding: 0;
+  border: none;
+  object-fit: cover;
 }

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import '../styles/Juego.css'; // crea tu estilo con fondo madera, fichas, etc.
+import backendURL from '../config';
 
 function Juego() {
   const { id } = useParams(); // id de partida
@@ -13,7 +14,7 @@ function Juego() {
   useEffect(() => {
     const fetchTablero = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/tableros/${state?.tableroId}`);
+        const res = await fetch(`${backendURL}/tableros/${state?.tableroId}`);
         const data = await res.json();
         if (!res.ok) throw new Error(data.error);
 

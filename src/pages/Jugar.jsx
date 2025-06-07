@@ -4,6 +4,7 @@ import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import '../styles/Bienvenida.css';
+import backendURL from '../config';
 
 function Jugar() {
   const { usuario } = useContext(AuthContext);
@@ -14,7 +15,7 @@ function Jugar() {
 
   const handleCrearPartida = async () => {
     try {
-      const respuesta = await fetch('http://localhost:3000/partidas', {
+      const respuesta = await fetch(`${backendURL}/partidas`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -41,7 +42,7 @@ function Jugar() {
   const handleUnirse = async (e) => {
     e.preventDefault();
     try {
-      const respuesta = await fetch('http://localhost:3000/partidas/unirse', {
+      const respuesta = await fetch(`${backendURL}/partidas/unirse`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

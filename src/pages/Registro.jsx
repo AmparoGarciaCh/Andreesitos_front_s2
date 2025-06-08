@@ -51,7 +51,7 @@ function Registro() {
 
         <form className="formulario-registro" onSubmit={handleSubmit}>
           <h1 className="titulo-registro">REGISTRARSE</h1>
-          <label>¿CUÁL ES TU CORREO ELECTRÓNICO</label>
+          <label>¿CUÁL ES TU CORREO ELECTRÓNICO?</label>
           <input type="email" value={correo} onChange={(e) => setCorreo(e.target.value)} required />
           
           <label>CREA UNA CONTRASEÑA</label>

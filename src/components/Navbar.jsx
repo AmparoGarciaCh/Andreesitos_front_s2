@@ -36,11 +36,11 @@ function Navbar() {
               <>
                 <li><Link to="/registro">Registro</Link></li>
                 <li><Link to="/login">Iniciar Sesión</Link></li>
+                <li><Link to="/instrucciones">Instrucciones</Link></li>
+                <li><Link to="/nosotros">Nosotros</Link></li>
               </>
             )}
             <li onClick={handleJugarClick} style={{ cursor: 'pointer' }}>Jugar</li>
-            <li>Sobre el juego</li>
-            <li>Reglas</li>
             {usuario && (
               <>
                 <li><strong>👤 {usuario.nombre}</strong></li>

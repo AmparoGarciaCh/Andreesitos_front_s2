@@ -3,9 +3,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
-import '../styles/Bienvenida.css'; // o tu estilo personalizado
-import backendURL from '../config';
-
+import '../styles/Bienvenida.css';
 
 function SalaEspera() {
   const { usuario } = useContext(AuthContext);
@@ -21,13 +19,13 @@ function SalaEspera() {
   useEffect(() => {
     const fetchJugadores = async () => {
       try {
-        const res = await fetch(`${backendURL}/partidas/${id}`);
+        const res = await fetch(`http://localhost:3000/partidas/${id}`);
         const partida = await res.json();
 
         if (!res.ok) throw new Error(partida.error);
-        
+
         // Obtener jugadores asociados a la partida
-        const resJugadores = await fetch(`${backendURL}/jugadores`);
+        const resJugadores = await fetch('http://localhost:3000/jugadores');
         const todos = await resJugadores.json();
         const enPartida = todos.filter(j => j.idPartida === parseInt(id));
 
@@ -44,39 +42,22 @@ function SalaEspera() {
 
   const handleIniciarPartida = async () => {
     try {
-        const jugadorData = jugadores.find(j => j.usuarioId === usuario.id);
-        if (!jugadorData) return;
-
-        // 1. Iniciar partida
-        const resInicio = await fetch(`${backendURL}/partidas/${id}/iniciar`, {
+      const resInicio = await fetch(`http://localhost:3000/partidas/${id}/iniciar`, {
         method: 'POST',
         headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ idJugador: jugadorData.id })
-        });
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
 
-        const inicio = await resInicio.json();
-        if (!resInicio.ok) throw new Error(inicio.error);
+      const inicio = await resInicio.json();
+      if (!resInicio.ok) throw new Error(inicio.error);
 
-        // 2. Crear tablero
-        const resTablero = await fetch(`${backendURL}/tableros`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ idPartida: id })
-        });
-
-        const dataTablero = await resTablero.json();
-        if (!resTablero.ok) throw new Error(dataTablero.error);
-
-        // 3. Redirigir al juego
-        navigate(`/juego/${id}`, { state: { tableroId: dataTablero.tableroId } });
+      // 🚀 Redirigir al juego usando el tableroId que devuelve iniciarPartida
+      navigate(`/juego/${id}`, { state: { tableroId: inicio.tableroId } });
 
     } catch (err) {
-        setMensaje(`❌ ${err.message}`);
+      setMensaje(`❌ ${err.message}`);
     }
   };
 

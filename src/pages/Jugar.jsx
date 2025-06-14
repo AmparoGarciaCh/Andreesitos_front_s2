@@ -4,7 +4,6 @@ import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import '../styles/Bienvenida.css';
-import backendURL from '../config';
 
 function Jugar() {
   const { usuario } = useContext(AuthContext);
@@ -15,7 +14,7 @@ function Jugar() {
 
   const handleCrearPartida = async () => {
     try {
-      const respuesta = await fetch(`${backendURL}/partidas`, {
+      const respuesta = await fetch('http://localhost:3000/partidas', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -27,10 +26,10 @@ function Jugar() {
 
       if (!respuesta.ok) throw new Error(data.error || 'Error al crear partida');
 
-      // ✅ Redirigir a sala de espera con id y código
-      navigate(`/sala-espera/${data.id}`, {
+      // ✅ Redirigir a sala de espera con id y código (corregido)
+      navigate(`/sala-espera/${data.partida.id}`, {
         state: {
-          codigo: data.codigoAcceso,
+          codigo: data.partida.codigoAcceso,
           soyAdmin: true // es creador
         }
       });
@@ -42,7 +41,7 @@ function Jugar() {
   const handleUnirse = async (e) => {
     e.preventDefault();
     try {
-      const respuesta = await fetch(`${backendURL}/partidas/unirse`, {
+      const respuesta = await fetch('http://localhost:3000/partidas/unirse', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

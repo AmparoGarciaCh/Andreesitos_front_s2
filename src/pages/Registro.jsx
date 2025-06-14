@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import Navbar from '../components/Navbar';
 import '../styles/Bienvenida.css'; // Reutilizamos los estilos ya definidos
-import backendURL from '../config';
 
 function Registro() {
   const [nombre, setNombre] = useState('');
@@ -12,7 +11,7 @@ function Registro() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const respuesta = await fetch(`${backendURL}/usuarios/registrar`, {
+    const respuesta = await fetch('http://localhost:3000/usuarios/registrar', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

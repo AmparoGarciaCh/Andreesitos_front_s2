@@ -18,6 +18,7 @@ function App() {
         <Route path="/sala-espera/:id" element={<SalaEspera />} />
         <Route path="/juego/:id" element={<Game />} /> {/* usar Game para pruebas */}
         <Route path="/game" element={<Game />} /> {/* ruta manual para pruebas */}
+
       </Routes>
     </Router>
   );

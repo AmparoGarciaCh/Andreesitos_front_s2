@@ -12,19 +12,17 @@ function SalaEspera() {
   const navigate = useNavigate();
 
   const [jugadores, setJugadores] = useState([]);
+  const [partida, setPartida] = useState(null);
   const [mensaje, setMensaje] = useState('');
   const token = localStorage.getItem('token');
 
-  // 🔁 Cargar jugadores cada cierto tiempo (polling)
+  // Log para confirmar que SalaEspera se está montando
+  console.log('SalaEspera MONTADA, id de la partida:', id);
+
+  // 1️⃣ useEffect para cargar jugadores
   useEffect(() => {
     const fetchJugadores = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/partidas/${id}`);
-        const partida = await res.json();
-
-        if (!res.ok) throw new Error(partida.error);
-
-        // Obtener jugadores asociados a la partida
         const resJugadores = await fetch('http://localhost:3000/jugadores');
         const todos = await resJugadores.json();
         const enPartida = todos.filter(j => j.idPartida === parseInt(id));
@@ -36,10 +34,49 @@ function SalaEspera() {
     };
 
     fetchJugadores();
-    const interval = setInterval(fetchJugadores, 3000); // cada 3 segundos
+    const interval = setInterval(fetchJugadores, 3000);
     return () => clearInterval(interval);
   }, [id]);
 
+  // 2️⃣ useEffect para observar estado de partida y redirigir si corresponde
+  useEffect(() => {
+    const fetchPartida = async () => {
+      try {
+        console.log('--- FETCH PARTIDA ---');
+        console.log('Haciendo fetch /partidas/:id', id);
+
+        const resPartida = await fetch(`http://localhost:3000/partidas/${id}`);
+        console.log('Status respuesta partida:', resPartida.status);
+
+        const dataPartida = await resPartida.json();
+        console.log('Respuesta completa de /partidas/:id:', dataPartida);
+
+        // ✅ Aquí la corrección:
+        const partidaActual = dataPartida.partida;
+
+        console.log('Partida actual:', partidaActual);
+
+        if (!partidaActual) return;
+
+        setPartida(partidaActual);
+
+        console.log('Estado actual:', partidaActual.estado);
+
+        if (partidaActual.estado === 'fundando') {
+          console.log('ENTREEEE — Redirigiendo a /juego/:id');
+          navigate(`/juego/${id}`, { state: { tableroId: partidaActual.id } });
+        }
+      } catch (err) {
+        console.error('Error completo al obtener partida:', err);
+      }
+    };
+
+    fetchPartida();
+    const interval = setInterval(fetchPartida, 3000);
+    return () => clearInterval(interval);
+  }, [id, navigate]);
+
+  // Handler iniciar partida (admin)
   const handleIniciarPartida = async () => {
     try {
       const resInicio = await fetch(`http://localhost:3000/partidas/${id}/iniciar`, {
@@ -50,10 +87,18 @@ function SalaEspera() {
         }
       });
 
-      const inicio = await resInicio.json();
+      const contentType = resInicio.headers.get('content-type');
+      let inicio;
+      if (contentType && contentType.includes('application/json')) {
+        inicio = await resInicio.json();
+      } else {
+        const text = await resInicio.text();
+        inicio = { error: text };
+      }
+
       if (!resInicio.ok) throw new Error(inicio.error);
 
-      // 🚀 Redirigir al juego usando el tableroId que devuelve iniciarPartida
+      // Redirigir al juego (admin)
       navigate(`/juego/${id}`, { state: { tableroId: inicio.tableroId } });
 
     } catch (err) {
@@ -67,6 +112,7 @@ function SalaEspera() {
       <main className="bienvenida-main">
         <section className="descripcion">
           <h2>Código de la partida: <strong>{state?.codigo || '(desconocido)'}</strong></h2>
+          <p>Estado de la partida: <strong>{partida?.estado || 'Cargando...'}</strong></p>
           <p>Esperando a otros jugadores...</p>
 
           <ul style={{ listStyle: 'none', paddingLeft: 0 }}>

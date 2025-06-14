@@ -1,49 +1,93 @@
-// src/pages/Juego.jsx
-import React, { useEffect, useState } from 'react';
+// src/pages/Game.jsx
+import { useEffect, useState, useContext } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
-import Navbar from '../components/Navbar';
-import '../styles/Juego.css'; // crea tu estilo con fondo madera, fichas, etc.
+import { AuthContext } from '../context/AuthContext';
+import GameBoard from '../components/GameBoard';
 
-function Juego() {
-  const { id } = useParams(); // id de partida
-  const { state } = useLocation(); // contiene { tableroId }
-  const [tablero, setTablero] = useState(null);
-  const [mensaje, setMensaje] = useState('');
+const Juego = () => {
+  const { id } = useParams(); // id de la partida
+  const { state } = useLocation();
+  const tableroIdFromState = state?.tableroId ?? null; // ojo: solo lo sacamos si viene explícito
+
+  const { usuario } = useContext(AuthContext);
+
+  const [jugadorIdPropio, setJugadorIdPropio] = useState(null);
+  const [idJugadorTurnoActual, setIdJugadorTurnoActual] = useState(null);
+  const [tableroId, setTableroId] = useState(tableroIdFromState); // manejamos el tableroId correctamente
 
   useEffect(() => {
-    const fetchTablero = async () => {
+    const fetchJugadorPropio = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/tableros/${state?.tableroId}`);
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error);
+        const resJugadores = await fetch('http://localhost:3000/jugadores');
+        const jugadores = await resJugadores.json();
 
-        setTablero(data);
+        const miJugador = jugadores.find(j =>
+          j.usuarioId === usuario.id && j.idPartida === parseInt(id)
+        );
+
+        if (miJugador) {
+          setJugadorIdPropio(miJugador.id);
+          console.log('Mi jugadorId propio:', miJugador.id);
+        } else {
+          console.warn('No se encontró tu jugador en esta partida');
+        }
       } catch (err) {
-        setMensaje(`❌ ${err.message}`);
+        console.error('Error al obtener jugadores:', err);
       }
     };
 
-    fetchTablero();
-  }, [state]);
+    fetchJugadorPropio();
+  }, [id, usuario.id]);
+
+  useEffect(() => {
+    const fetchPartidaTurno = async () => {
+      try {
+        console.log('--- FETCH PARTIDA EN GAME ---');
+        const resPartida = await fetch(`http://localhost:3000/partidas/${id}`);
+        const dataPartida = await resPartida.json();
+
+        const partidaActual = dataPartida.partida;
+        console.log('Partida actual:', partidaActual);
+
+        if (partidaActual) {
+          setIdJugadorTurnoActual(partidaActual.idJugadorTurnoActual);
+          console.log('idJugadorTurnoActual:', partidaActual.idJugadorTurnoActual);
+
+          // Si no teníamos tableroId (por ejemplo en reload), lo obtenemos desde la partida
+          if (!tableroId && partidaActual.idTablero) {
+            setTableroId(partidaActual.idTablero);
+            console.log('TableroId actualizado desde partida:', partidaActual.idTablero);
+          }
+        }
+      } catch (err) {
+        console.error('Error al obtener partida:', err);
+      }
+    };
+
+    fetchPartidaTurno();
+    const interval = setInterval(fetchPartidaTurno, 3000);
+    return () => clearInterval(interval);
+  }, [id, tableroId]);
 
   return (
-    <div className="juego-container">
-      <Navbar />
-      <main className="juego-main">
-        <h2>Tablero de la partida {id}</h2>
-        {mensaje && <p>{mensaje}</p>}
-        {tablero ? (
-          <div>
-            <p><strong>ID Tablero:</strong> {tablero.id}</p>
-            <p><strong>Terrenos:</strong> {tablero.Terrenos.length}</p>
-            {/* Aquí después renderizarás el hexágono, vértices, etc. */}
-          </div>
-        ) : (
-          <p>Cargando tablero...</p>
-        )}
-      </main>
+    <div>
+      <h1>Vista del Juego - Andreesitos 🚀</h1>
+
+      {jugadorIdPropio !== null && idJugadorTurnoActual !== null && (
+        <p style={{ fontSize: '20px', fontWeight: 'bold' }}>
+          {jugadorIdPropio === idJugadorTurnoActual
+            ? '✅ Es tu turno'
+            : '⌛ No es tu turno'}
+        </p>
+      )}
+
+      {tableroId ? (
+        <GameBoard tableroId={parseInt(tableroId)} />
+      ) : (
+        <p>No se recibió tableroId todavía...</p>
+      )}
     </div>
   );
-}
+};
 
 export default Juego;

@@ -5,6 +5,9 @@ import Login from './pages/Login';
 import Jugar from './pages/Jugar';
 import SalaEspera from './pages/SalaEspera';
 import Juego from './pages/Juego';
+import Instrucciones from './pages/Instrucciones';
+import Nosotros from './pages/Nosotros';
+
 import Game from './pages/Game'; // <--- importas tu Game.jsx
 
 function App() {
@@ -19,6 +22,8 @@ function App() {
         <Route path="/juego/:id" element={<Game />} /> {/* usar Game para pruebas */}
         <Route path="/game" element={<Game />} /> {/* ruta manual para pruebas */}
 
+        <Route path="/instrucciones" element={<Instrucciones />} />
+        <Route path="/nosotros" element={<Nosotros />} />
       </Routes>
     </Router>
   );

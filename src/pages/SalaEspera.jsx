@@ -3,7 +3,8 @@ import React, { useEffect, useState, useContext } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
-import '../styles/Bienvenida.css';
+import '../styles/Login.css';
+import fondoLogin from '../assets/fondo5.png';
 
 function SalaEspera() {
   const { usuario } = useContext(AuthContext);
@@ -107,15 +108,16 @@ function SalaEspera() {
   };
 
   return (
-    <div className="bienvenida-container">
+    <div className="login-container" style={{ backgroundImage: `url(${fondoLogin})` }}>
       <Navbar />
-      <main className="bienvenida-main">
-        <section className="descripcion">
-          <h2>Código de la partida: <strong>{state?.codigo || '(desconocido)'}</strong></h2>
-          <p>Estado de la partida: <strong>{partida?.estado || 'Cargando...'}</strong></p>
-          <p>Esperando a otros jugadores...</p>
+      <main className="login-main">
+        <section className="login-card">
+          <h2 className="login-title">
+            Código de la partida: <strong>{state?.codigo || '(desconocido)'}</strong>
+          </h2>
+          <p style={{ textAlign: 'center' }}>Esperando a otros jugadores...</p>
 
-          <ul style={{ listStyle: 'none', paddingLeft: 0 }}>
+          <ul style={{ listStyle: 'none', paddingLeft: 0, textAlign: 'center' }}>
             {jugadores.map(j => (
               <li key={j.id} style={{ margin: '8px 0' }}>
                 {j.color ? `${j.color.toUpperCase()} — ` : ''}{usuario?.id === j.usuarioId ? 'Tú' : `Jugador ${j.id}`}
@@ -124,14 +126,18 @@ function SalaEspera() {
           </ul>
 
           {jugadores.length < 4 && (
-            <p style={{ fontStyle: 'italic' }}>Se necesitan 4 jugadores para comenzar.</p>
+            <p style={{ fontStyle: 'italic', textAlign: 'center' }}>
+              Se necesitan 4 jugadores para comenzar.
+            </p>
           )}
 
           {state?.soyAdmin && jugadores.length === 4 && (
-            <button className="jugar-btn" onClick={handleIniciarPartida}>Comenzar partida</button>
+            <button className="login-form-button" onClick={handleIniciarPartida}>
+              Comenzar partida
+            </button>
           )}
 
-          {mensaje && <p style={{ marginTop: '10px', color: 'red' }}>{mensaje}</p>}
+          {mensaje && <p className="login-message">{mensaje}</p>}
         </section>
       </main>
     </div>

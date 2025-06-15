@@ -80,12 +80,19 @@ function SalaEspera() {
   // Handler iniciar partida (admin)
   const handleIniciarPartida = async () => {
     try {
+      // 🔍 Busca el jugador correspondiente al usuario actual
+      const jugadorData = jugadores.find(j => j.usuarioId === usuario.id);
+      if (!jugadorData) {
+        throw new Error('No se encontró tu jugador en esta partida');
+      }
+
       const resInicio = await fetch(`http://localhost:3000/partidas/${id}/iniciar`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
-        }
+        },
+        body: JSON.stringify({ idJugador: jugadorData.id }) // 👈 aquí estaba el problema
       });
 
       const contentType = resInicio.headers.get('content-type');

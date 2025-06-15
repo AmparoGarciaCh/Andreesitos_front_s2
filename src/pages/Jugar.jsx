@@ -26,9 +26,9 @@ function Jugar() {
 
       if (!respuesta.ok) throw new Error(data.error || 'Error al crear partida');
 
-      navigate(`/sala-espera/${data.id}`, {
+      navigate(`/sala-espera/${data.partida.id}`, {
         state: {
-          codigo: data.codigoAcceso,
+          codigo: data.partida.codigoAcceso,
           soyAdmin: true
         }
       });

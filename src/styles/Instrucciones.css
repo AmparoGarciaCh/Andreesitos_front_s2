@@ -1,0 +1,82 @@
+.instrucciones-container {
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+  color: white;
+  font-family: 'Georgia', serif;
+  display: flex;
+  flex-direction: column;
+}
+
+.instrucciones-main {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 4rem 2rem;
+  min-height: 80vh;
+}
+
+.instrucciones-card {
+  background-color: rgba(0, 0, 0, 0.45);
+  padding: 3rem 4rem;
+  border-radius: 16px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
+  max-width: 1000px;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.instrucciones-header {
+  text-align: center;
+  padding-top: 3rem;
+}
+
+.instrucciones-title {
+  font-size: 3rem;
+  color: white;
+  text-shadow: 2px 2px 5px black;
+  margin-bottom: 2rem;
+}
+
+.instrucciones-intro {
+  grid-column: span 2;
+  text-align: center;
+  font-size: 1.1rem;
+  line-height: 1.8;
+  margin-bottom: 2rem;
+}
+
+.instrucciones-section h3 {
+  color: #ffd369;
+  margin-top: 1.5rem;
+  margin-bottom: 0.6rem;
+}
+
+.instrucciones-section ul, 
+.instrucciones-section ol {
+  margin-left: 1.5rem;
+  line-height: 1.6;
+}
+
+.instrucciones-section p {
+  font-size: 1.05rem;
+  line-height: 1.8;
+}
+
+@media (min-width: 960px) {
+  .instrucciones-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+  }
+
+  .instrucciones-title {
+    grid-column: span 2;
+  }
+
+  .instrucciones-section {
+    break-inside: avoid;
+  }
+}

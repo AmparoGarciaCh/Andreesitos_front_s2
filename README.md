@@ -1,26 +1,39 @@
-# React + Vite
+# 🧙‍♀️ Andreesitos - Frontend (Entrega 3)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este repositorio contiene la interfaz gráfica de **Webtan**, un juego desarrollado con React.
 
-Currently, two official plugins are available:
+## ⚙️ Tecnologías
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- React (Vite)
+- ESLint (guía de estilo Airbnb)
+- Yarn
 
-## Expanding the ESLint configuration
+## 🚀 Instrucciones de ejecución
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+1. Clona este repositorio:
+   git clone https://github.com/IIC2513/Andreesitos_front_s2.git
+   cd Andreesitos_front_s2
+2. Instala las dependencias:
+   yarn install
+3. Inicia el entorno de desarrollo:
+    yarn dev
+El frontend estará disponible en: http://localhost:5173
 
+## ✅ Linter
+Este proyecto usa ESLint con la guía de estilo de Airbnb.
 
-## Linter
+- Revisar el código:
+    npx eslint src/
+- Corregir automáticamente:
+    npx eslint src/ --fix
+Recomendación: instala la extensión ESLint de VS Code y asegúrate de tener "eslint.validate": ["javascript", "javascriptreact"] en .vscode/settings.json.
 
-Este proyecto usa ESLint con la guía de estilo Airbnb.
+## 📂 Estructura del proyecto
+src/
+├── assets/           # Imágenes y recursos estáticos
+├── components/       # Componentes reutilizables
+├── context/          # Contexto global (Auth, estado)
+├── layout/           # Layout del tablero
+├── pages/            # Páginas principales (home, partida, login, etc.)
+└── main.jsx          # Punto de entrada
 
-Para revisar el código:
-
-```bash
-npx eslint src/
-
-Para corregir errores automáticamente:
-
-npx eslint src/ --fix

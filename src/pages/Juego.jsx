@@ -3,6 +3,8 @@ import { useEffect, useState, useContext } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import GameBoard from '../components/GameBoard';
+import backendURL from '../config';
+
 
 const Juego = () => {
   const { id } = useParams(); // id de la partida
@@ -18,7 +20,7 @@ const Juego = () => {
   useEffect(() => {
     const fetchJugadorPropio = async () => {
       try {
-        const resJugadores = await fetch('http://localhost:3000/jugadores');
+        const resJugadores = await fetch(`${backendURL}/jugadores`); // ✅ Usando backendURL
         const jugadores = await resJugadores.json();
 
         const miJugador = jugadores.find(j =>
@@ -43,7 +45,7 @@ const Juego = () => {
     const fetchPartidaTurno = async () => {
       try {
         console.log('--- FETCH PARTIDA EN GAME ---');
-        const resPartida = await fetch(`http://localhost:3000/partidas/${id}`);
+        const resPartida = await fetch(`${backendURL}/partidas/${id}`); // ✅ Usando backendURL
         const dataPartida = await resPartida.json();
 
         const partidaActual = dataPartida.partida;

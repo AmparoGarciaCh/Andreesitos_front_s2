@@ -7,6 +7,7 @@ import carta2 from '../assets/ñoño_ingenieria.png';
 import carta3 from '../assets/abogado5.png';
 import carta4 from '../assets/medico2.png';
 import carta5 from '../assets/agronomo1.png';
+import backendURL from '../config'; // ✅ AÑADIDO
 
 function Registro() {
   const [nombre, setNombre] = useState('');
@@ -22,7 +23,7 @@ function Registro() {
       return;
     }
 
-    const respuesta = await fetch('http://localhost:3000/usuarios/registrar', {
+    const respuesta = await fetch(`${backendURL}/usuarios/registrar`, { // ✅ CORREGIDO
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ nombre, correo, password }),

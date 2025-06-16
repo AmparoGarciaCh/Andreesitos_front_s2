@@ -10,3 +10,17 @@ Currently, two official plugins are available:
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
+
+## Linter
+
+Este proyecto usa ESLint con la guía de estilo Airbnb.
+
+Para revisar el código:
+
+```bash
+npx eslint src/
+
+Para corregir errores automáticamente:
+
+npx eslint src/ --fix

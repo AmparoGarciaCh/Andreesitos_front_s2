@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import '../styles/Login.css';
 import fondoLogin from '../assets/fondo5.png';
+import backendURL from '../config';
 
 function Login() {
   const [correo, setCorreo] = useState('');
@@ -17,7 +18,7 @@ function Login() {
     setMensaje('');
 
     try {
-      const respuesta = await fetch('http://localhost:3000/usuarios/login', {
+      const respuesta = await fetch(`${backendURL}/usuarios/login`, { // ✅ corregido
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ correo, password })

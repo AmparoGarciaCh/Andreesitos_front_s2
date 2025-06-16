@@ -5,6 +5,7 @@ import { AuthContext } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
 import '../styles/Login.css';
 import fondoLogin from '../assets/fondo5.png';
+import backendURL from '../config'; // ✅ importamos el backendURL
 
 function SalaEspera() {
   const { usuario } = useContext(AuthContext);
@@ -24,7 +25,7 @@ function SalaEspera() {
   useEffect(() => {
     const fetchJugadores = async () => {
       try {
-        const resJugadores = await fetch('http://localhost:3000/jugadores');
+        const resJugadores = await fetch(`${backendURL}/jugadores`);
         const todos = await resJugadores.json();
         const enPartida = todos.filter(j => j.idPartida === parseInt(id));
 
@@ -46,7 +47,7 @@ function SalaEspera() {
         console.log('--- FETCH PARTIDA ---');
         console.log('Haciendo fetch /partidas/:id', id);
 
-        const resPartida = await fetch(`http://localhost:3000/partidas/${id}`);
+        const resPartida = await fetch(`${backendURL}/partidas/${id}`);
         console.log('Status respuesta partida:', resPartida.status);
 
         const dataPartida = await resPartida.json();
@@ -86,7 +87,7 @@ function SalaEspera() {
         throw new Error('No se encontró tu jugador en esta partida');
       }
 
-      const resInicio = await fetch(`http://localhost:3000/partidas/${id}/iniciar`, {
+      const resInicio = await fetch(`${backendURL}/partidas/${id}/iniciar`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

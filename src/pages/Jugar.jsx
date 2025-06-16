@@ -2,8 +2,9 @@ import React, { useContext, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
-import '../styles/Login.css'; // ✅ reutiliza estilos modernos
-import fondoLogin from '../assets/fondo5.png'; // fondo similar al de login
+import '../styles/Login.css';
+import fondoLogin from '../assets/fondo5.png';
+import backendURL from '../config';
 
 function Jugar() {
   const { usuario } = useContext(AuthContext);
@@ -14,7 +15,7 @@ function Jugar() {
 
   const handleCrearPartida = async () => {
     try {
-      const respuesta = await fetch('http://localhost:3000/partidas', {
+      const respuesta = await fetch(`${backendURL}/partidas`, { // ✅ Usamos backendURL
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -40,7 +41,7 @@ function Jugar() {
   const handleUnirse = async (e) => {
     e.preventDefault();
     try {
-      const respuesta = await fetch('http://localhost:3000/partidas/unirse', {
+      const respuesta = await fetch(`${backendURL}/partidas/unirse`, { // ✅ Usamos backendURL
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

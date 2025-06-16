@@ -3,6 +3,7 @@ import { useEffect, useState, useContext } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import GameBoard from '../components/GameBoard';
+import backendURL from '../config';
 
 const Game = () => {
   const { id } = useParams(); // id de la partida
@@ -17,7 +18,7 @@ const Game = () => {
   useEffect(() => {
     const fetchJugadorPropio = async () => {
       try {
-        const resJugadores = await fetch('http://localhost:3000/jugadores');
+        const resJugadores = await fetch(`${backendURL}/jugadores`); // ✅ corregido
         const jugadores = await resJugadores.json();
 
         // Buscamos el jugador que corresponde al usuario actual en esta partida
@@ -42,7 +43,7 @@ const Game = () => {
   useEffect(() => {
     const fetchPartidaTurno = async () => {
       try {
-        const resPartida = await fetch(`http://localhost:3000/partidas/${id}`);
+        const resPartida = await fetch(`${backendURL}/partidas/${id}`); // ✅ corregido
         const dataPartida = await resPartida.json();
 
         const partidaActual = dataPartida.partida;

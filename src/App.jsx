@@ -4,7 +4,6 @@ import Registro from './pages/Registro';
 import Login from './pages/Login';
 import Jugar from './pages/Jugar';
 import SalaEspera from './pages/SalaEspera';
-import Juego from './pages/Juego';
 import Instrucciones from './pages/Instrucciones';
 import Nosotros from './pages/Nosotros';
 
@@ -19,8 +18,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/jugar" element={<Jugar />} />
         <Route path="/sala-espera/:id" element={<SalaEspera />} />
-        <Route path="/juego/:id" element={<Game />} /> {/* usar Game para pruebas */}
-        <Route path="/game" element={<Game />} /> {/* ruta manual para pruebas */}
+        <Route path="/juego/:id" element={<Game />} />
+        <Route path="/game" element={<Game />} />
 
         <Route path="/instrucciones" element={<Instrucciones />} />
         <Route path="/nosotros" element={<Nosotros />} />

@@ -1,3 +1,4 @@
+// GameBoard.jsx
 import './GameBoard.css';
 import Edge from './Edge';
 import Vertex from './Vertex';
@@ -9,7 +10,7 @@ const HEX_SIZE = 60;
 
 function axialToPixel(q, r, size) {
   const x = size * Math.sqrt(3) * (q + r / 2);
-  const y = size * 3/2 * r;
+  const y = size * 3 / 2 * r;
   return { x, y };
 }
 
@@ -29,6 +30,8 @@ const GameBoard = ({ tableroId }) => {
   const [selectedEdgeId, setSelectedEdgeId] = useState(null);
   const [construcciones, setConstrucciones] = useState({ vertices: {}, aristas: {} });
   const [coloresJugadores, setColoresJugadores] = useState({});
+  const [inventario, setInventario] = useState([]);
+  const [resultadoDados, setResultadoDados] = useState(null);
 
   const vertexOk = selectedVertexId !== null && selectedVertexId !== undefined;
   const edgeOk = selectedEdgeId !== null && selectedEdgeId !== undefined;
@@ -74,8 +77,11 @@ const GameBoard = ({ tableroId }) => {
         const data = await res.json();
         const jugadoresDePartida = data.filter(j => j.idPartida === partidaId);
         const mapping = {};
+        const traduccionesCSS = {
+          rojo: 'red', azul: 'blue', amarillo: 'yellow', blanco: '#bfbfbf', verde: 'green', negro: 'black'
+        };
         jugadoresDePartida.forEach(j => {
-          mapping[j.id] = j.color;
+          mapping[j.id] = traduccionesCSS[j.color] || j.color;
         });
         setColoresJugadores(mapping);
       } catch (err) {
@@ -129,6 +135,14 @@ const GameBoard = ({ tableroId }) => {
     return () => clearInterval(interval);
   }, [partidaId]);
 
+  const esMiTurno = () => {
+    if (!partida || !jugadorIdPropio) return false;
+    if (partida.estado === 'fundando') return jugadorIdPropio === jugadorEsperadoId;
+    return partida.idJugadorTurnoActual === jugadorIdPropio;
+  };
+
+  const enFaseFundando = () => partida?.estado === 'fundando';
+
   const handleVertexClick = (vertexId) => {
     if (!esMiTurno() || !enFaseFundando()) return;
     setSelectedVertexId(prev => (prev === vertexId ? null : vertexId));
@@ -141,21 +155,13 @@ const GameBoard = ({ tableroId }) => {
 
   const handleFundarClick = async () => {
     try {
-      const res = await fetch(`${backendURL}/partidas/${partidaId}/fundar`, {
+      const res = await fetch(`http://localhost:3000/partidas/${partidaId}/fundar`, {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          idVertice: selectedVertexId,
-          idArista: selectedEdgeId,
-          jugadorId: jugadorIdPropio
-        })
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idVertice: selectedVertexId, idArista: selectedEdgeId, jugadorId: jugadorIdPropio })
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
-      console.log('✅ Fundación realizada:', data);
       setSelectedVertexId(null);
       setSelectedEdgeId(null);
     } catch (err) {
@@ -163,13 +169,47 @@ const GameBoard = ({ tableroId }) => {
     }
   };
 
-  const esMiTurno = () => {
-    if (!partida || !jugadorIdPropio) return false;
-    if (partida.estado === 'fundando') return jugadorIdPropio === jugadorEsperadoId;
-    return partida.idJugadorTurnoActual === jugadorIdPropio;
+  const handleLanzarDados = async () => {
+    console.log("Presionando lanzar dados... ID jugador:", jugadorIdPropio);
+    try {
+      const res = await fetch(`http://localhost:3000/jugada`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ tipo: 'lanzar_dado', jugadorId: jugadorIdPropio })
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+
+      setResultadoDados(data.resultado);
+      fetchInventario(); // 👈 actualiza inventario propio
+    } catch (error) {
+      console.error("Error al lanzar dados:", error);
+    }
   };
 
-  const enFaseFundando = () => partida?.estado === 'fundando';
+  const fetchInventario = async () => {
+    try {
+      const res = await fetch(`http://localhost:3000/partidas/${partidaId}/inventario-propio`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const data = await res.json();
+      console.log("📦 Inventario recibido del backend:", data);
+      setInventario([data]);
+    } catch (err) {
+      console.error("Error al obtener inventario:", err);
+    }
+  };
+
+  useEffect(() => {
+    if (partida?.estado === 'jugando') {
+      fetchInventario();
+    }
+  }, [partida?.estado]);
 
   const handlePasarTurno = async () => {
     try {
@@ -182,7 +222,6 @@ const GameBoard = ({ tableroId }) => {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
-      console.log('✅ Turno pasado:', data);
     } catch (err) {
       console.error('Error al pasar turno:', err);
     }
@@ -191,15 +230,15 @@ const GameBoard = ({ tableroId }) => {
   return (
     <div className="tablero-centrado">
       <div style={{
-        position: 'absolute',
+        position: 'fixed',
         top: '20px',
         left: '20px',
-        fontSize: '18px',
         backgroundColor: 'white',
         padding: '12px',
         borderRadius: '10px',
-        boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.15)',
-        zIndex: 10
+        zIndex: 1000,
+        fontSize: '16px',
+        boxShadow: '0 4px 8px rgba(0,0,0,0.2)'
       }}>
         {esMiTurno() ? '✅ Es tu turno' : '⌛ No es tu turno'}
         {coloresJugadores[jugadorIdPropio] && (
@@ -207,19 +246,26 @@ const GameBoard = ({ tableroId }) => {
             Eres el jugador: <strong style={{ color: coloresJugadores[jugadorIdPropio] }}>{coloresJugadores[jugadorIdPropio]}</strong>
           </div>
         )}
-        {esMiTurno() && (
+        {esMiTurno() && partida?.estado === 'jugando' && (
           <>
             <button
-              style={{ marginTop: '10px', padding: '8px 16px', fontSize: '16px', cursor: 'pointer', display: 'block' }}
-              onClick={handlePasarTurno}
+              style={{ marginTop: '10px', padding: '8px 16px', fontSize: '16px' }}
+              onClick={handleLanzarDados}
             >
-              Pasar turno
+              Lanzar dados
             </button>
-
+            {resultadoDados && (
+              <div style={{ marginTop: '10px' }}>
+                Dados: 🎲 {resultadoDados.dado1} + {resultadoDados.dado2} = <strong>{resultadoDados.suma}</strong>
+              </div>
+            )}
+          </>
+        )}
+        {esMiTurno() && partida?.estado === 'fundando' && (
+          <>
             <div style={{ marginTop: '10px' }}>
               <div>Vértice seleccionado: {selectedVertexId ?? 'Ninguno'}</div>
               <div>Arista seleccionada: {selectedEdgeId ?? 'Ninguna'}</div>
-
               <button
                 style={{
                   marginTop: '8px',
@@ -236,7 +282,42 @@ const GameBoard = ({ tableroId }) => {
             </div>
           </>
         )}
+        {esMiTurno() && (
+          <button
+            style={{ marginTop: '10px', padding: '8px 16px', fontSize: '16px', cursor: 'pointer' }}
+            onClick={handlePasarTurno}
+          >
+            Pasar turno
+          </button>
+        )}
       </div>
+
+      {/* ✅ Sección de inventario corregida */}
+      {inventario.length > 0 && (
+        <div style={{
+          position: 'fixed',
+          bottom: '20px',
+          left: '20px',
+          backgroundColor: 'white',
+          padding: '12px',
+          borderRadius: '10px',
+          zIndex: 1000,
+          fontSize: '16px',
+          boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
+          maxWidth: '240px'
+        }}>
+          <h4 style={{ marginBottom: '8px' }}>📦 Tu inventario:</h4>
+          <ul style={{ paddingLeft: '20px', margin: 0 }}>
+            {inventario[0].inventario
+              .filter(i => i.tipoEspecialista !== 'ninguno')
+              .map((item, idx) => (
+                <li key={idx}>
+                  {item.tipoEspecialista}: {item.cantidad}
+                </li>
+              ))}
+          </ul>
+        </div>
+      )}
 
       {tablero.Vertices.map((vertex) => (
         <Vertex
@@ -250,22 +331,11 @@ const GameBoard = ({ tableroId }) => {
         />
       ))}
 
-      <svg
-        style={{
-          position: 'absolute',
-          left: 0,
-          top: 0,
-          width: '100%',
-          height: '100%',
-          pointerEvents: 'auto',
-          zIndex: 1
-        }}
-      >
+      <svg style={{ position: 'absolute', left: 0, top: 0, width: '100%', height: '100%', zIndex: 3, pointerEvents: 'auto' }}>
         {tablero.Aristas.map((arista) => {
           const vInicio = tablero.Vertices.find(v => v.id === arista.idVerticeInicio);
           const vFin = tablero.Vertices.find(v => v.id === arista.idVerticeFin);
           if (!vInicio || !vFin) return null;
-
           return (
             <Edge
               key={arista.id}

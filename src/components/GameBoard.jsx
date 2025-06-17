@@ -115,7 +115,7 @@ const GameBoard = ({ tableroId }) => {
   useEffect(() => {
     const fetchSiguienteFundador = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/partidas/${partidaId}/siguiente-fundador`, {
+        const res = await fetch(`${backendURL}/partidas/${partidaId}/siguiente-fundador`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         const data = await res.json();

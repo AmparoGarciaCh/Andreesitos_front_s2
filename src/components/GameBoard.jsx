@@ -70,7 +70,7 @@ const GameBoard = ({ tableroId }) => {
   useEffect(() => {
     const fetchJugadores = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/jugadores`);
+        const res = await fetch(`${backendURL}/jugadores`);
         const data = await res.json();
         const jugadoresDePartida = data.filter(j => j.idPartida === partidaId);
         const mapping = {};

@@ -155,7 +155,7 @@ const GameBoard = ({ tableroId }) => {
 
   const handleFundarClick = async () => {
     try {
-      const res = await fetch(`http://localhost:3000/partidas/${partidaId}/fundar`, {
+      const res = await fetch(`${backendURL}/partidas/${partidaId}/fundar`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ idVertice: selectedVertexId, idArista: selectedEdgeId, jugadorId: jugadorIdPropio })
@@ -172,7 +172,7 @@ const GameBoard = ({ tableroId }) => {
   const handleLanzarDados = async () => {
     console.log("Presionando lanzar dados... ID jugador:", jugadorIdPropio);
     try {
-      const res = await fetch(`http://localhost:3000/jugada`, {
+      const res = await fetch(`${backendURL}/jugada`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -193,7 +193,7 @@ const GameBoard = ({ tableroId }) => {
 
   const fetchInventario = async () => {
     try {
-      const res = await fetch(`http://localhost:3000/partidas/${partidaId}/inventario-propio`, {
+      const res = await fetch(`${backendURL}/partidas/${partidaId}/inventario-propio`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

@@ -2,7 +2,6 @@ import React, { useContext, useState } from 'react'; // 👈 agrega useState
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import '../styles/Bienvenida.css';
-import logo from '../assets/logo.png';
 import tablero from '../assets/tablero.png';
 import Navbar from '../components/Navbar';
 

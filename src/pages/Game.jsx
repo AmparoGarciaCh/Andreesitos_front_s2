@@ -65,7 +65,7 @@ const Game = () => {
 
   return (
     <div>
-      <h1>Vista del Juego - Andreesitos 🚀</h1>
+      <h1>Vista del Juegoooo - Andreesitos 🚀</h1>
 
       {jugadorIdPropio !== null && idJugadorTurnoActual !== null && (
         <p style={{ fontSize: '20px', fontWeight: 'bold' }}>

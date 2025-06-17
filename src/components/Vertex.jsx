@@ -1,41 +1,28 @@
-const Vertex = ({ x, y, onClick, selected, construccion }) => {
-  const handleClick = (e) => {
-    e.stopPropagation();
-    if (onClick) onClick();
-  };
+const Vertex = ({ x, y, selected, onClick, construccion, coloresJugadores }) => {
+  let color = 'white';
+
+  if (construccion) {
+    console.log(`🟢 Vértice ${construccion.tipo} del jugador ${construccion.jugadorId}`);
+    color = coloresJugadores?.[construccion.jugadorId] || 'gray';
+  }
 
   return (
     <div
-      onClick={handleClick}
+      onClick={onClick}
       style={{
         position: 'absolute',
-        left: x,
-        top: y,
+        left: `${x - 10}px`,
+        top: `${y - 10}px`,
         width: '20px',
         height: '20px',
-        backgroundColor: construccion
-          ? 'transparent'
-          : selected ? 'green' : 'blue',
         borderRadius: '50%',
-        transform: 'translate(-50%, -50%)',
+        backgroundColor: color,
+        border: selected ? '3px solid black' : '2px solid black',
+        zIndex: 1000,
         cursor: 'pointer',
-        zIndex: 5
+        pointerEvents: 'auto'
       }}
-    >
-      {construccion === 'facultad' && (
-        <img
-          src="/src/assets/ficha_facultad.png"
-          alt="Facultad"
-          style={{
-            width: '30px',
-            height: '30px',
-            position: 'absolute',
-            top: '-5px',
-            left: '-5px'
-          }}
-        />
-      )}
-    </div>
+    />
   );
 };
 

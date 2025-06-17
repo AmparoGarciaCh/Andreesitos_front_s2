@@ -3,6 +3,7 @@ import Edge from './Edge';
 import Vertex from './Vertex';
 import Tile from './Tile';
 import { useEffect, useState } from 'react';
+import backendURL from '../config'; // ✅ Importar backendURL
 
 const HEX_SIZE = 60;
 
@@ -34,7 +35,7 @@ const GameBoard = ({ tableroId }) => {
 
   useEffect(() => {
     const fetchTablero = async () => {
-      const res = await fetch(`http://localhost:3000/tableros/${tableroId}`);
+      const res = await fetch(`${backendURL}/tableros/${tableroId}`);
       const data = await res.json();
       setTablero({
         Terrenos: data.Terrenos || [],
@@ -47,7 +48,7 @@ const GameBoard = ({ tableroId }) => {
 
   useEffect(() => {
     const fetchPartida = async () => {
-      const resPartida = await fetch(`http://localhost:3000/partidas/${partidaId}`);
+      const resPartida = await fetch(`${backendURL}/partidas/${partidaId}`);
       const dataPartida = await resPartida.json();
       setPartida(dataPartida.partida);
     };
@@ -58,7 +59,7 @@ const GameBoard = ({ tableroId }) => {
 
   useEffect(() => {
     const fetchJugadorPropio = async () => {
-      const resJugadores = await fetch('http://localhost:3000/jugadores');
+      const resJugadores = await fetch(`${backendURL}/jugadores`);
       const jugadores = await resJugadores.json();
       const miJugador = jugadores.find(j => j.usuarioId === usuario.id && j.idPartida === partidaId);
       if (miJugador) setJugadorIdPropio(miJugador.id);
@@ -87,7 +88,7 @@ const GameBoard = ({ tableroId }) => {
   useEffect(() => {
     const fetchConstrucciones = async () => {
       try {
-        const res = await fetch('http://localhost:3000/construcciones');
+        const res = await fetch(`${backendURL}/construcciones`);
         const data = await res.json();
         const vertices = {};
         const aristas = {};
@@ -140,8 +141,7 @@ const GameBoard = ({ tableroId }) => {
 
   const handleFundarClick = async () => {
     try {
-      console.log("Enviando fundación con jugadorId:", jugadorIdPropio);
-      const res = await fetch(`http://localhost:3000/partidas/${partidaId}/fundar`, {
+      const res = await fetch(`${backendURL}/partidas/${partidaId}/fundar`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -173,7 +173,7 @@ const GameBoard = ({ tableroId }) => {
 
   const handlePasarTurno = async () => {
     try {
-      const res = await fetch(`http://localhost:3000/partidas/${partidaId}/pasar-turno`, {
+      const res = await fetch(`${backendURL}/partidas/${partidaId}/pasar-turno`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

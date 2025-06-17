@@ -1,28 +1,74 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
 .bienvenida-container {
   font-family: 'Georgia', serif;
-  background: url('../assets/fondo1.png') no-repeat center center;
+  background: url('../assets/fondo4.png') no-repeat center center;
   background-size: cover;
   min-height: 100vh;
-  color: #fff;
+  color: white;
+  display: flex;
+  flex-direction: column;
 }
 
 .bienvenida-main {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  align-items: flex-start; /* 👈 Ya no lo centres verticalmente */
+  padding: 0.1rem 5rem;       /* 👈 Reduce el padding top */
+  gap: 4rem;
+  min-height: auto;         /* 👈 Libera la altura mínima */
+  width: 100%;
+}
+
+
+.columna-izquierda {
+  flex: 0 0 550px; /* ← ancho fijo, no se encoge */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.columna-derecha {
+  flex: 1;
+  display: flex;
+  justify-content: center;
   align-items: center;
-  padding: 3rem;
+  overflow: hidden; /* previene desbordes */
+}
+
+.titulo-webtan {
+  font-size: 4rem;
+  color: white;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+  margin-bottom: 1.5rem;
 }
 
 .descripcion {
-  width: 50%;
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0, 0, 0, 0.55);
   padding: 2rem;
-  border-radius: 12px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  font-size: 1.1rem;
+  line-height: 1.8;
+  margin-bottom: 1rem;
+  max-width: 100%;
 }
 
-.descripcion h1 {
-  font-size: 3rem;
+.barra-sumergete {
+  background-color: #2266cc;
+  color: white;
+  padding: 1.2rem 2rem;
+  font-size: 1.4rem;
+  font-weight: bold;
+  border-radius: 8px;
+  margin-top: 1rem;
   margin-bottom: 1rem;
+  text-align: center;
 }
 
 .jugar-btn {
@@ -30,16 +76,14 @@
   border: none;
   padding: 1rem 2rem;
   color: white;
-  font-size: 1rem;
-  border-radius: 10px;
+  font-size: 1.1rem;
+  border-radius: 12px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-.imagen-tablero img {
-  width: 1200px;         /* O un tamaño específico como 600px */
-  height: auto;        /* Mantiene proporción */
-  display: block;
-  margin: 0 auto;      /* Centrado si lo necesitas */
+.jugar-btn:hover {
+  background-color: #174a99;
 }
 
 .mensaje-alerta {
@@ -48,6 +92,13 @@
   border: 1px solid #ebccd1;
   padding: 10px;
   margin-top: 10px;
-  border-radius: 4px;
+  border-radius: 6px;
   font-weight: bold;
+  max-width: 500px;
+}
+
+.tablero-img {
+  width: 1200px;
+  height: auto;
+  object-fit: contain;
 }

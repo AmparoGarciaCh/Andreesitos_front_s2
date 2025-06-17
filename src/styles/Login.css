@@ -1,0 +1,126 @@
+.login-container {
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+  color: white;
+  font-family: 'Georgia', serif;
+  display: flex;
+  flex-direction: column;
+}
+
+.login-main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4rem 2rem;
+  min-height: 80vh;
+}
+
+.login-card {
+  background-color: rgba(0, 0, 0, 0.45);
+  padding: 2rem 3rem;
+  border-radius: 16px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
+  width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.login-title {
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 1rem;
+  color: white;
+}
+
+.login-form label {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #e7d1a7;
+  display: block;           /* ✅ fuerza el label a estar en su propia línea */
+  margin-bottom: 0.4rem;    /* ✅ separación visual */
+}
+
+.login-form input {
+  padding: 0.6rem;
+  border: none;
+  border-radius: 8px;
+  background-color: #c49c59;
+  color: white;
+  font-size: 1rem;
+  width: 100%;              /* ✅ importante para alinear con el label */
+  display: block;
+  margin-bottom: 1rem; 
+}
+
+.login-form button {
+  margin-top: 1rem;          /* ✅ separa del input anterior */
+  margin-bottom: 0.5rem;     /* (opcional) si quieres espacio con mensaje o link */
+  background-color: #5c2e00;
+  color: white;
+  font-weight: bold;
+  font-size: 1.1rem;
+  padding: 1rem;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  width: 60%;
+  display: block;
+  margin: 0 auto;         /* ✅ fuerza el centrado horizontal */
+}
+
+.login-message {
+  margin-top: 0.5rem;
+  color: #ffe1e1;
+  font-weight: bold;
+  text-align: center;
+}
+
+.login-link {
+  text-align: center;
+  color: #ffffff;
+  text-decoration: underline;
+  font-size: 0.9rem;
+}
+
+.login-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.login-buttons .secondary {
+  background-color: #e0b146;
+  color: white;
+  padding: 0.9rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.login-buttons .danger {
+  background-color: #b13200;
+  color: white;
+  padding: 0.9rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.login-form-button {
+  background-color: #5c2e00;
+  color: white;
+  font-weight: bold;
+  font-size: 1.1rem;
+  padding: 1rem;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  width: 60%;
+  display: block;
+  margin: 0 auto;
+}

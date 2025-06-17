@@ -2,9 +2,9 @@ import React, { useState, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
-import '../styles/Bienvenida.css'; // Reutiliza los estilos base
+import '../styles/Login.css';
+import fondoLogin from '../assets/fondo5.png';
 import backendURL from '../config';
-
 
 function Login() {
   const [correo, setCorreo] = useState('');
@@ -18,7 +18,7 @@ function Login() {
     setMensaje('');
 
     try {
-      const respuesta = await fetch(`${backendURL}/usuarios/login`, {
+      const respuesta = await fetch(`${backendURL}/usuarios/login`, { // ✅ corregido
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ correo, password })
@@ -26,13 +26,11 @@ function Login() {
 
       const data = await respuesta.json();
 
-      if (!respuesta.ok) {
-        throw new Error(data.error || 'Error al iniciar sesión');
-      }
+      if (!respuesta.ok) throw new Error(data.error || 'Error al iniciar sesión');
 
       localStorage.setItem('token', data.token);
       localStorage.setItem('usuario', JSON.stringify(data.usuario));
-      login(data.usuario); // ✅ este es el cambio crucial
+      login(data.usuario);
 
       setMensaje('✅ Sesión iniciada correctamente');
       setTimeout(() => navigate('/'), 1000);
@@ -42,30 +40,42 @@ function Login() {
   };
 
   return (
-    <div className="bienvenida-container">
+    <div className="login-container" style={{ backgroundImage: `url(${fondoLogin})` }}>
       <Navbar />
-
-      <main className="bienvenida-main">
-        <section className="descripcion">
-          <h2>Iniciar Sesión</h2>
-          <form onSubmit={handleLogin}>
+      <main className="login-main">
+        <section className="login-card">
+          <h1 className="login-title">Iniciar Sesión</h1>
+          <form onSubmit={handleLogin} className="login-form">
+            <label>CORREO ELECTRÓNICO</label>
             <input
               type="email"
-              placeholder="Correo"
               value={correo}
               onChange={(e) => setCorreo(e.target.value)}
               required
-            /><br />
+            />
+
+            <label>CONTRASEÑA</label>
             <input
               type="password"
-              placeholder="Contraseña"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-            /><br />
-            <button type="submit" className="jugar-btn">Ingresar</button>
+            />
+
+            <button type="submit">INICIAR SESIÓN</button>
+            {mensaje && <p className="login-message">{mensaje}</p>}
           </form>
-          {mensaje && <p>{mensaje}</p>}
+
+          <a className="login-link" href="#">HE OLVIDADO MI CONTRASEÑA</a>
+
+          <div className="login-buttons">
+            <button className="secondary" onClick={() => navigate('/registro')}>
+              REGISTRARSE
+            </button>
+            <button className="danger" onClick={() => navigate('/')}>
+              SALIR
+            </button>
+          </div>
         </section>
       </main>
     </div>

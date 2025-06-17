@@ -1,0 +1,25 @@
+.tablero-centrado {
+  position: relative; /* 👈 esto es clave */
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: url('/src/assets/playa.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.tablero {
+  position: relative; /* ya NO absolute → para que quede bien centrado */
+  width: 700px; /* ajusta a tu gusto */
+  height: 700px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tile img {
+  pointer-events: none;
+}

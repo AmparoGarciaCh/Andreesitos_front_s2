@@ -1,20 +1,19 @@
-// src/pages/Juego.jsx
+// src/pages/Game.jsx
 import { useEffect, useState, useContext } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import GameBoard from '../components/GameBoard';
 import backendURL from '../config';
 
-const Juego = () => {
+const Game = () => {
   const { id } = useParams(); // id de la partida
   const { state } = useLocation();
-  const tableroIdFromState = state?.tableroId ?? null;
+  const tableroId = state?.tableroId ?? id;
 
   const { usuario } = useContext(AuthContext);
 
   const [jugadorIdPropio, setJugadorIdPropio] = useState(null);
-  const [tableroId, setTableroId] = useState(tableroIdFromState);
-  const [jugadorEsperadoFundarId, setJugadorEsperadoFundarId] = useState(null);
+  const [idJugadorTurnoActual, setIdJugadorTurnoActual] = useState(null);
 
   useEffect(() => {
     const fetchJugadorPropio = async () => {
@@ -22,6 +21,7 @@ const Juego = () => {
         const resJugadores = await fetch(`${backendURL}/jugadores`);
         const jugadores = await resJugadores.json();
 
+        // Buscamos el jugador que corresponde al usuario actual en esta partida
         const miJugador = jugadores.find(j =>
           j.usuarioId === usuario.id && j.idPartida === parseInt(id)
         );
@@ -41,57 +41,47 @@ const Juego = () => {
   }, [id, usuario.id]);
 
   useEffect(() => {
-    const fetchPartida = async () => {
+    const fetchPartidaTurno = async () => {
       try {
-        const res = await fetch(`${backendURL}/partidas/${id}`);
-        const data = await res.json();
+        const resPartida = await fetch(`${backendURL}/partidas/${id}`);
+        const dataPartida = await resPartida.json();
 
-        if (data.partida?.idTablero && !tableroId) {
-          setTableroId(data.partida.idTablero);
+        const partidaActual = dataPartida.partida;
+        console.log('Partida actual:', partidaActual);
+
+        if (partidaActual) {
+          setIdJugadorTurnoActual(partidaActual.idJugadorTurnoActual);
+          console.log('idJugadorTurnoActual:', partidaActual.idJugadorTurnoActual);
         }
       } catch (err) {
         console.error('Error al obtener partida:', err);
       }
     };
 
-    fetchPartida();
-  }, [id, tableroId]);
-
-  useEffect(() => {
-    const fetchSiguienteFundador = async () => {
-      try {
-        const res = await fetch(`${backendURL}/partidas/${id}/siguiente-fundador`);
-        const data = await res.json();
-        setJugadorEsperadoFundarId(data.jugadorEsperadoId);
-      } catch (err) {
-        console.error('Error al obtener el siguiente jugador que debe fundar:', err);
-      }
-    };
-
-    fetchSiguienteFundador();
-    const interval = setInterval(fetchSiguienteFundador, 3000);
+    fetchPartidaTurno();
+    const interval = setInterval(fetchPartidaTurno, 3000); // actualizamos cada 3 seg
     return () => clearInterval(interval);
   }, [id]);
 
   return (
     <div>
-      <h1>Vista del Juego - Andreesitos 🚀</h1>
+      <h1>Vista del Juegoooo - Andreesitos 🚀</h1>
 
-      {jugadorIdPropio && jugadorEsperadoFundarId && (
+      {jugadorIdPropio !== null && idJugadorTurnoActual !== null && (
         <p style={{ fontSize: '20px', fontWeight: 'bold' }}>
-          {jugadorIdPropio === jugadorEsperadoFundarId
-            ? '✅ Te toca fundar'
-            : '⌛ Esperando a que funden los demás'}
+          {jugadorIdPropio === idJugadorTurnoActual
+            ? '✅ Es tu turno'
+            : '⌛ No es tu turno'}
         </p>
       )}
 
       {tableroId ? (
         <GameBoard tableroId={parseInt(tableroId)} />
       ) : (
-        <p>No se recibió tableroId todavía...</p>
+        <p>No se recibió tableroId.</p>
       )}
     </div>
   );
 };
 
-export default Juego;
+export default Game;

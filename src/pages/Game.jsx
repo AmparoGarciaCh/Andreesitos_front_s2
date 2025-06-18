@@ -16,6 +16,7 @@ const Game = () => {
 
   const [jugadorIdPropio, setJugadorIdPropio] = useState(null);
   const [idJugadorTurnoActual, setIdJugadorTurnoActual] = useState(null);
+  const [estadoPartida, setEstadoPartida] = useState(null); // ✅ NUEVO
 
   useEffect(() => {
     const fetchJugadorPropio = async () => {
@@ -69,7 +70,7 @@ const Game = () => {
 
         if (partidaActual) {
           setIdJugadorTurnoActual(partidaActual.idJugadorTurnoActual);
-          console.log('idJugadorTurnoActual:', partidaActual.idJugadorTurnoActual);
+          setEstadoPartida(partidaActual.estado); // <- nuevo
         }
       } catch (err) {
         console.error('Error al obtener partida:', err);
@@ -80,6 +81,22 @@ const Game = () => {
     const interval = setInterval(fetchPartidaTurno, 3000); // actualizamos cada 3 seg
     return () => clearInterval(interval);
   }, [id]);
+
+  useEffect(() => {
+    if (estadoPartida !== 'fundando') return;
+
+    const fetchFundador = async () => {
+      try {
+        await fetch(`${backendURL}/partidas/${id}/siguiente-fundador`);
+      } catch (error) {
+        console.error('Error actualizando el siguiente fundador:', error);
+      }
+    };
+
+    fetchFundador();
+    const interval = setInterval(fetchFundador, 3000);
+    return () => clearInterval(interval);
+  }, [estadoPartida, id]);
 
   return (
     <div className="juego-container">
@@ -96,8 +113,12 @@ const Game = () => {
       {jugadorIdPropio !== null && idJugadorTurnoActual !== null && (
         <p className="estado-turno">
           {jugadorIdPropio === idJugadorTurnoActual
-            ? '✅ Es tu turno'
-            : '⌛ No es tu turno'}
+            ? estadoPartida === 'fundando'
+              ? '🏗️ Te toca fundar'
+              : '✅ Es tu turno'
+            : estadoPartida === 'fundando'
+              ? '⌛ Esperando fundación'
+              : '⌛ No es tu turno'}
         </p>
       )}
 

@@ -4,11 +4,13 @@ import { useParams, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import GameBoard from '../components/GameBoard';
 import backendURL from '../config';
+import '../styles/Juego.css';
 
 const Game = () => {
   const { id } = useParams(); // id de la partida
   const { state } = useLocation();
   const tableroId = state?.tableroId ?? id;
+  const [jugadores, setJugadores] = useState([]);
 
   const { usuario } = useContext(AuthContext);
 
@@ -41,6 +43,22 @@ const Game = () => {
   }, [id, usuario.id]);
 
   useEffect(() => {
+    const fetchJugadoresDePartida = async () => {
+      try {
+        const res = await fetch(`${backendURL}/jugadores/partida/${id}`);
+        const data = await res.json();
+        setJugadores(data.jugadores || []);
+      } catch (error) {
+        console.error('Error al obtener jugadores de la partida:', error);
+      }
+    };
+
+    fetchJugadoresDePartida();
+    const interval = setInterval(fetchJugadoresDePartida, 3000);
+    return () => clearInterval(interval);
+  }, [id]);
+
+  useEffect(() => {
     const fetchPartidaTurno = async () => {
       try {
         const resPartida = await fetch(`${backendURL}/partidas/${id}`);
@@ -64,11 +82,19 @@ const Game = () => {
   }, [id]);
 
   return (
-    <div>
-      <h1>Vista del Juegoooo - Andreesitos 🚀</h1>
+    <div className="juego-container">
+      <div className="jugadores-lista">
+        {jugadores.map((j) => (
+          <div key={j.id} className="jugador-item">
+            <div className={`color-circulo color-${j.color || 'gris'}`} />
+            <span>{j.nombre}</span>
+            {j.id === idJugadorTurnoActual && <span className="turno-indicador">⏳</span>}
+          </div>
+        ))}
+      </div>
 
       {jugadorIdPropio !== null && idJugadorTurnoActual !== null && (
-        <p style={{ fontSize: '20px', fontWeight: 'bold' }}>
+        <p className="estado-turno">
           {jugadorIdPropio === idJugadorTurnoActual
             ? '✅ Es tu turno'
             : '⌛ No es tu turno'}

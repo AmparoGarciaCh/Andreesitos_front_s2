@@ -3,17 +3,20 @@ const Tile = ({ tipo, numero, tieneLadron, left, top }) => {
   const ficha = numero ? `/src/assets/${numero}_catan.png` : null;
   const ladronImagen = `/src/assets/ladron.png`;
 
+  const TILE_WIDTH = 149; // Aumenta el tamaño aquí
+  const TILE_HEIGHT = 131; // Y aquí (proporcional al hexágono)
+
   return (
     <div
       className="tile"
       style={{
         position: 'absolute',
-        left: '50%',
-        top: '50%',
-        transform: `translate(${left}px, ${top}px) translate(-50%, -50%)`,
-        width: '120px',
-        height: '104px',
-        pointerEvents: 'none' // para que no bloquee clicks en vértices
+        left: `${left}px`,
+        top: `${top}px`,
+        transform: 'translate(-50%, -50%)',
+        width: `${TILE_WIDTH}px`,
+        height: `${TILE_HEIGHT}px`,
+        pointerEvents: 'none'
       }}
     >
       <img
@@ -33,8 +36,8 @@ const Tile = ({ tipo, numero, tieneLadron, left, top }) => {
             position: 'absolute',
             top: '50%',
             left: '50%',
-            width: '30px',
-            height: '30px',
+            width: '48px',
+            height: '48px',
             transform: 'translate(-50%, -50%)'
           }}
         />
@@ -45,10 +48,10 @@ const Tile = ({ tipo, numero, tieneLadron, left, top }) => {
           alt="Ladrón"
           style={{
             position: 'absolute',
-            top: '10px',
-            left: '10px',
-            width: '30px',
-            height: '30px'
+            top: '12px',
+            left: '12px',
+            width: '32px',
+            height: '32px'
           }}
         />
       )}

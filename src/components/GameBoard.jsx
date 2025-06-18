@@ -14,8 +14,8 @@ function axialToPixel(q, r, size) {
   return { x, y };
 }
 
-const CENTER_X = window.innerWidth / 2;
-const CENTER_Y = window.innerHeight / 2;
+const CENTER_X = 350; // 700 / 2
+const CENTER_Y = 350; // 700 / 2
 
 const GameBoard = ({ tableroId }) => {
   const partidaId = parseInt(tableroId);
@@ -229,9 +229,10 @@ const GameBoard = ({ tableroId }) => {
 
   return (
     <div className="tablero-centrado">
+      {/* Estado del turno */}
       <div style={{
         position: 'fixed',
-        top: '20px',
+        top: '160px',
         left: '20px',
         backgroundColor: 'white',
         padding: '12px',
@@ -292,7 +293,7 @@ const GameBoard = ({ tableroId }) => {
         )}
       </div>
 
-      {/* ✅ Sección de inventario corregida */}
+      {/* Inventario */}
       {inventario.length > 0 && (
         <div style={{
           position: 'fixed',
@@ -319,52 +320,61 @@ const GameBoard = ({ tableroId }) => {
         </div>
       )}
 
-      {tablero.Vertices.map((vertex) => (
-        <Vertex
-          key={vertex.id}
-          x={vertex.posicionX + CENTER_X}
-          y={vertex.posicionY + CENTER_Y}
-          onClick={() => handleVertexClick(vertex.id)}
-          selected={selectedVertexId === vertex.id}
-          construccion={construcciones.vertices[vertex.id]}
-          coloresJugadores={coloresJugadores}
+      {/* 🔵 Tablero centrado con fondo marino */}
+      <div className="tablero">
+        <img
+          src="/src/assets/hexagono_mar.png"
+          alt="Fondo tablero hexagonal"
+          className="fondo-hexagonal"
         />
-      ))}
 
-      <svg style={{ position: 'absolute', left: 0, top: 0, width: '100%', height: '100%', zIndex: 3, pointerEvents: 'auto' }}>
-        {tablero.Aristas.map((arista) => {
-          const vInicio = tablero.Vertices.find(v => v.id === arista.idVerticeInicio);
-          const vFin = tablero.Vertices.find(v => v.id === arista.idVerticeFin);
-          if (!vInicio || !vFin) return null;
+        {tablero.Terrenos.map((terreno) => {
+          const { x, y } = axialToPixel(terreno.posicionX, terreno.posicionY, HEX_SIZE);
           return (
-            <Edge
-              key={arista.id}
-              x1={vInicio.posicionX + CENTER_X}
-              y1={vInicio.posicionY + CENTER_Y}
-              x2={vFin.posicionX + CENTER_X}
-              y2={vFin.posicionY + CENTER_Y}
-              selected={selectedEdgeId === arista.id}
-              onClick={() => handleEdgeClick(arista.id)}
-              construccion={construcciones.aristas[arista.id]}
-              coloresJugadores={coloresJugadores}
+            <Tile
+              key={terreno.id}
+              tipo={terreno.tipo}
+              numero={terreno.numeroFicha}
+              tieneLadron={terreno.tieneLadron}
+              left={x + CENTER_X}
+              top={y + CENTER_Y}
             />
           );
         })}
-      </svg>
 
-      {tablero.Terrenos.map((terreno) => {
-        const { x: cx, y: cy } = axialToPixel(terreno.posicionX, terreno.posicionY, HEX_SIZE);
-        return (
-          <Tile
-            key={terreno.id}
-            tipo={terreno.tipo}
-            numero={terreno.numeroFicha}
-            tieneLadron={terreno.tieneLadron}
-            left={cx}
-            top={cy}
+        {tablero.Vertices.map((vertex) => (
+          <Vertex
+            key={vertex.id}
+            x={vertex.posicionX + CENTER_X}
+            y={vertex.posicionY + CENTER_Y}
+            onClick={() => handleVertexClick(vertex.id)}
+            selected={selectedVertexId === vertex.id}
+            construccion={construcciones.vertices[vertex.id]}
+            coloresJugadores={coloresJugadores}
           />
-        );
-      })}
+        ))}
+
+        <svg style={{ position: 'absolute', left: 0, top: 0, width: '100%', height: '100%', zIndex: 3, pointerEvents: 'auto' }}>
+          {tablero.Aristas.map((arista) => {
+            const vInicio = tablero.Vertices.find(v => v.id === arista.idVerticeInicio);
+            const vFin = tablero.Vertices.find(v => v.id === arista.idVerticeFin);
+            if (!vInicio || !vFin) return null;
+            return (
+              <Edge
+                key={arista.id}
+                x1={vInicio.posicionX + CENTER_X}
+                y1={vInicio.posicionY + CENTER_Y}
+                x2={vFin.posicionX + CENTER_X}
+                y2={vFin.posicionY + CENTER_Y}
+                selected={selectedEdgeId === arista.id}
+                onClick={() => handleEdgeClick(arista.id)}
+                construccion={construcciones.aristas[arista.id]}
+                coloresJugadores={coloresJugadores}
+              />
+            );
+          })}
+        </svg>
+      </div>
     </div>
   );
 };

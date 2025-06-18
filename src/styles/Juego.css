@@ -6,6 +6,7 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .juego-main {
@@ -85,4 +86,50 @@
 
 .juego-boton:hover {
   background-color: #a85d2e;
+}
+
+.jugadores-lista {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  gap: 16px;
+  padding: 12px 24px;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-bottom: 2px solid #ccc;
+  z-index: 10;
+}
+
+.jugador-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.color-circulo {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid black;
+}
+
+.turno-indicador {
+  margin-left: 4px;
+  font-size: 18px;
+}
+
+/* Colores por clase */
+.color-rojo { background-color: red; }
+.color-azul { background-color: blue; }
+.color-amarillo { background-color: yellow; }
+.color-verde { background-color: green; }
+.color-negro { background-color: black; }
+.color-blanco { background-color: #bfbfbf; }
+.color-gris { background-color: gray; }
+
+.estado-turno {
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 10px;
 }

@@ -7,13 +7,13 @@ import backendURL from '../config';
 
 const Juego = () => {
   const { id } = useParams(); // id de la partida
-  const { state } = useLocation();
-  const tableroIdFromState = state?.tableroId ?? null;
+
+
 
   const { usuario } = useContext(AuthContext);
 
   const [jugadorIdPropio, setJugadorIdPropio] = useState(null);
-  const [tableroId, setTableroId] = useState(tableroIdFromState);
+  const [tableroId, setTableroId] = useState(null);
   const [jugadorEsperadoFundarId, setJugadorEsperadoFundarId] = useState(null);
 
   useEffect(() => {

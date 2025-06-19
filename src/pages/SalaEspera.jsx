@@ -65,17 +65,8 @@ function SalaEspera() {
         console.log('Estado actual:', partidaActual.estado);
 
         if (partidaActual.estado === 'fundando') {
-          const resTablero = await fetch(`${backendURL}/tableros/partida/${id}`);
-          const tablero = await resTablero.json();
-
-          if (!resTablero.ok) {
-            console.error('Error al obtener tablero:', tablero.error);
-            setMensaje('❌ No se pudo obtener el tablero');
-            return;
-          }
-
-          console.log('Redirigiendo con tableroId:', tablero.id);
-          navigate(`/juego/${id}`, { state: { tableroId: tablero.id } });
+          console.log('ENTREEEE — Redirigiendo a /juego/:id');
+          navigate(`/juego/${id}`, { state: { tableroId: partidaActual.id } });
         }
       } catch (err) {
         console.error('Error completo al obtener partida:', err);

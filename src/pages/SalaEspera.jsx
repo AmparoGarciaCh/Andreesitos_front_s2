@@ -65,8 +65,17 @@ function SalaEspera() {
         console.log('Estado actual:', partidaActual.estado);
 
         if (partidaActual.estado === 'fundando') {
-          console.log('ENTREEEE — Redirigiendo a /juego/:id');
-          navigate(`/juego/${id}`, { state: { tableroId: partidaActual.id } });
+          const resTablero = await fetch(`${backendURL}/tableros/partida/${id}`);
+          const tablero = await resTablero.json();
+
+          if (!resTablero.ok) {
+            console.error('Error al obtener tablero:', tablero.error);
+            setMensaje('❌ No se pudo obtener el tablero');
+            return;
+          }
+
+          console.log('Redirigiendo con tableroId:', tablero.id);
+          navigate(`/juego/${id}`, { state: { tableroId: tablero.id } });
         }
       } catch (err) {
         console.error('Error completo al obtener partida:', err);
@@ -81,7 +90,6 @@ function SalaEspera() {
   // Handler iniciar partida (admin)
   const handleIniciarPartida = async () => {
     try {
-      // 🔍 Busca el jugador correspondiente al usuario actual
       const jugadorData = jugadores.find(j => j.usuarioId === usuario.id);
       if (!jugadorData) {
         throw new Error('No se encontró tu jugador en esta partida');
@@ -93,7 +101,7 @@ function SalaEspera() {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ idJugador: jugadorData.id }) // 👈 aquí estaba el problema
+        body: JSON.stringify({ idJugador: jugadorData.id }) 
       });
 
       const contentType = resInicio.headers.get('content-type');

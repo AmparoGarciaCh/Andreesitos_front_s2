@@ -119,6 +119,8 @@ const GameBoard = ({ tableroId }) => {
   }, [partidaId]);
 
   useEffect(() => {
+    if (partida?.estado !== 'fundando') return;
+
     const fetchSiguienteFundador = async () => {
       try {
         const res = await fetch(`${backendURL}/partidas/${partidaId}/siguiente-fundador`, {
@@ -130,10 +132,11 @@ const GameBoard = ({ tableroId }) => {
         console.error("Error al obtener siguiente fundador:", error);
       }
     };
+
     fetchSiguienteFundador();
     const interval = setInterval(fetchSiguienteFundador, 3000);
     return () => clearInterval(interval);
-  }, [partidaId]);
+  }, [partida?.estado, partidaId]);
 
   const esMiTurno = () => {
     if (!partida || !jugadorIdPropio) return false;
@@ -182,6 +185,7 @@ const GameBoard = ({ tableroId }) => {
       });
 
       const data = await res.json();
+      console.log("🎲 Respuesta del backend:", data);
       if (!res.ok) throw new Error(data.error);
 
       setResultadoDados(data.resultado);
@@ -196,9 +200,7 @@ const GameBoard = ({ tableroId }) => {
       const res = await fetch(`${backendURL}/partidas/${partidaId}/inventario-propio`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-
       const data = await res.json();
-      console.log("📦 Inventario recibido del backend:", data);
       setInventario([data]);
     } catch (err) {
       console.error("Error al obtener inventario:", err);
@@ -206,9 +208,12 @@ const GameBoard = ({ tableroId }) => {
   };
 
   useEffect(() => {
-    if (partida?.estado === 'jugando') {
-      fetchInventario();
-    }
+    if (partida?.estado !== 'jugando') return;
+
+    fetchInventario(); // primera vez
+
+    const interval = setInterval(fetchInventario, 3000); // actualiza cada 3 seg
+    return () => clearInterval(interval); // limpieza
   }, [partida?.estado]);
 
   const handlePasarTurno = async () => {

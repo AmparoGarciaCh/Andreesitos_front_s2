@@ -1,4 +1,4 @@
-// src/pages/Game.jsx
+
 import { useEffect, useState, useContext } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
@@ -17,7 +17,7 @@ const Game = () => {
 
 
   const { usuario } = useContext(AuthContext);
-
+  const [partida, setPartida] = useState(null);
   const [jugadorIdPropio, setJugadorIdPropio] = useState(null);
   const [idJugadorTurnoActual, setIdJugadorTurnoActual] = useState(null);
 
@@ -57,6 +57,7 @@ const Game = () => {
 
         if (partidaActual) {
           setIdJugadorTurnoActual(partidaActual.idJugadorTurnoActual);
+          setPartida(partidaActual);
           console.log('idJugadorTurnoActual:', partidaActual.idJugadorTurnoActual);
         }
       } catch (err) {
@@ -81,7 +82,12 @@ const Game = () => {
       )}
 
       {tableroId ? (
-        <GameBoard partidaId={id} tableroId={parseInt(tableroId)} />
+        <GameBoard
+          partida={partida}
+          jugadorIdPropio={jugadorIdPropio}
+          partidaId={id}
+          tableroId={parseInt(tableroId)}
+        />
       ) : (
         <p>No se recibió tableroId.</p>
       )}

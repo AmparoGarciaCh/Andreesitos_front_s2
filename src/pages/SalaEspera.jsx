@@ -66,7 +66,7 @@ function SalaEspera() {
 
         if (partidaActual.estado === 'fundando') {
           console.log('ENTREEEE — Redirigiendo a /juego/:id');
-          navigate(`/juego/${id}`, { state: { tableroId: partidaActual.tableroId } });
+          navigate(`/juego/${id}`, { state: { tableroId: partidaActual.id } });
         }
       } catch (err) {
         console.error('Error completo al obtener partida:', err);

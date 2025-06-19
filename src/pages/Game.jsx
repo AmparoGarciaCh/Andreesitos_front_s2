@@ -8,7 +8,13 @@ import backendURL from '../config';
 const Game = () => {
   const { id } = useParams(); // id de la partida
   const { state } = useLocation();
-  const tableroId = state?.tableroId ?? id;
+  const tableroId = state?.tableroId;
+
+  if (!tableroId) {
+    console.error('No se recibió tableroId en el estado de la ubicación');
+    return <p>Error: No se recibió tableroId.</p>;
+  }
+
 
   const { usuario } = useContext(AuthContext);
 
@@ -38,7 +44,7 @@ const Game = () => {
     };
 
     fetchJugadorPropio();
-  }, [id, usuario.id]);
+  }, []);
 
   useEffect(() => {
     const fetchPartidaTurno = async () => {
@@ -57,11 +63,10 @@ const Game = () => {
         console.error('Error al obtener partida:', err);
       }
     };
-
-    fetchPartidaTurno();
-    const interval = setInterval(fetchPartidaTurno, 3000); // actualizamos cada 3 seg
-    return () => clearInterval(interval);
-  }, [id]);
+    if (jugadorIdPropio) {
+      fetchPartidaTurno();
+    }
+  }, [jugadorIdPropio]);
 
   return (
     <div>
@@ -76,7 +81,7 @@ const Game = () => {
       )}
 
       {tableroId ? (
-        <GameBoard tableroId={parseInt(tableroId)} />
+        <GameBoard partidaId={id} tableroId={parseInt(tableroId)} />
       ) : (
         <p>No se recibió tableroId.</p>
       )}
@@ -84,4 +89,4 @@ const Game = () => {
   );
 };
 
-export default Game;
+export default Game;

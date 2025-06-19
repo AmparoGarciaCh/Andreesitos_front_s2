@@ -18,7 +18,7 @@ const Edge = ({ x1, y1, x2, y2, selected, onClick, construccion, coloresJugadore
     strokeWidth = 6;
     console.log('🎯 Arista seleccionada');
   } else {
-    console.log('🔘 Arista neutra');
+    //console.log('🔘 Arista neutra');
   }
 
   return (

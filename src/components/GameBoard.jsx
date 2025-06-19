@@ -1,10 +1,9 @@
-// GameBoard.jsx
 import './GameBoard.css';
 import Edge from './Edge';
 import Vertex from './Vertex';
 import Tile from './Tile';
 import { useEffect, useState } from 'react';
-import backendURL from '../config'; // ✅ Importar backendURL
+import backendURL from '../config'; 
 
 const HEX_SIZE = 60;
 
@@ -17,14 +16,11 @@ function axialToPixel(q, r, size) {
 const CENTER_X = window.innerWidth / 2;
 const CENTER_Y = window.innerHeight / 2;
 
-const GameBoard = ({ tableroId }) => {
-  const partidaId = parseInt(tableroId);
+const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId }) => {
   const token = localStorage.getItem('token');
   const usuario = JSON.parse(localStorage.getItem('usuario'));
 
   const [tablero, setTablero] = useState({ Terrenos: [], Vertices: [], Aristas: [] });
-  const [partida, setPartida] = useState(null);
-  const [jugadorIdPropio, setJugadorIdPropio] = useState(null);
   const [jugadorEsperadoId, setJugadorEsperadoId] = useState(null);
   const [selectedVertexId, setSelectedVertexId] = useState(null);
   const [selectedEdgeId, setSelectedEdgeId] = useState(null);
@@ -48,27 +44,6 @@ const GameBoard = ({ tableroId }) => {
     };
     fetchTablero();
   }, [tableroId]);
-
-  useEffect(() => {
-    const fetchPartida = async () => {
-      const resPartida = await fetch(`${backendURL}/partidas/${partidaId}`);
-      const dataPartida = await resPartida.json();
-      setPartida(dataPartida.partida);
-    };
-    fetchPartida();
-    const interval = setInterval(fetchPartida, 3000);
-    return () => clearInterval(interval);
-  }, [partidaId]);
-
-  useEffect(() => {
-    const fetchJugadorPropio = async () => {
-      const resJugadores = await fetch(`${backendURL}/jugadores`);
-      const jugadores = await resJugadores.json();
-      const miJugador = jugadores.find(j => j.usuarioId === usuario.id && j.idPartida === partidaId);
-      if (miJugador) setJugadorIdPropio(miJugador.id);
-    };
-    fetchJugadorPropio();
-  }, [partidaId, usuario.id]);
 
   useEffect(() => {
     const fetchJugadores = async () => {
@@ -369,4 +344,4 @@ const GameBoard = ({ tableroId }) => {
   );
 };
 
-export default GameBoard;
+export default GameBoard;

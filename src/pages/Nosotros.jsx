@@ -1,10 +1,10 @@
 import React from 'react';
 import Navbar from '../components/Navbar';
 import '../styles/Nosotros.css';
-import fondoNosotros from '../assets/fondo5.png'; // Puedes usar el mismo fondo del login
-import catalinaImg from '../assets/cata.jpg';
-import juanImg from '../assets/juanpa.jpg';
-import amparoImg from '../assets/ampa.jpg';
+import fondoNosotros from '/fondo5.png'; // Puedes usar el mismo fondo del login
+import catalinaImg from '/cata.jpg';
+import juanImg from '/juanpa.jpg';
+import amparoImg from '/ampa.jpg';
 
 function Nosotros() {
   return (

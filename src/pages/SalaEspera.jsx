@@ -4,7 +4,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
 import '../styles/Login.css';
-import fondoLogin from '../assets/fondo5.png';
+import fondoLogin from '/fondo5.png';
 import backendURL from '../config'; // ✅ importamos el backendURL
 
 function SalaEspera() {

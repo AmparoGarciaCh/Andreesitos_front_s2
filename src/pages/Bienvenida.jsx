@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react'; // 👈 agrega useState
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import '../styles/Bienvenida.css';
-import tablero from '../assets/tablero.png';
+import tablero from '/tablero.png';
 import Navbar from '../components/Navbar';
 
 function Bienvenida() {

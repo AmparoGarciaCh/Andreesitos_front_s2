@@ -1,6 +1,6 @@
 /* Fondo de madera y layout principal */
 .juego-container {
-  background-image: url('../assets/fondo mesa.png'); /* usa tu fondo de madera */
+  background-image: url('/fondo mesa.png'); /* usa tu fondo de madera */
   background-size: cover;
   background-position: center;
   min-height: 100vh;

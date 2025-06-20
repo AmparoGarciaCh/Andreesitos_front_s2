@@ -1,7 +1,7 @@
 import React from 'react';
 import Navbar from '../components/Navbar';
 import '../styles/Instrucciones.css';
-import fondoLogin from '../assets/fondo6.png';
+import fondoLogin from '/fondo6.png';
 
 function Instrucciones() {
   return (

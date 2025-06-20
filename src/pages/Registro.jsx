@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import Navbar from '../components/Navbar';
 import '../styles/Registro.css';
-import fondoRegistro from '../assets/fondo2.png';
-import carta1 from '../assets/zorron_comercial.png';
-import carta2 from '../assets/ñoño_ingenieria.png';
-import carta3 from '../assets/abogado5.png';
-import carta4 from '../assets/medico2.png';
-import carta5 from '../assets/agronomo1.png';
+import fondoRegistro from '/fondo2.png';
+import carta1 from '/zorron_comercial.png';
+import carta2 from '/ñoño_ingenieria.png';
+import carta3 from '/abogado5.png';
+import carta4 from '/medico2.png';
+import carta5 from '/agronomo1.png';
 import backendURL from '../config'; // ✅ AÑADIDO
 
 function Registro() {

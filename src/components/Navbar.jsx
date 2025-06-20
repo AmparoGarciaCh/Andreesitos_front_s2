@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import logo from '../assets/logo.png';
+import logo from '/logo.png';
 import './Navbar.css';
 import { AuthContext } from '../context/AuthContext';
-import franja from '../assets/franja_decorativa.png';
+import franja from '/franja_decorativa.png';
 
 function Navbar() {
   const { usuario, logout } = useContext(AuthContext);

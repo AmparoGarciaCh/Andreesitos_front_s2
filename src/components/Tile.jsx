@@ -1,7 +1,7 @@
 const Tile = ({ tipo, numero, tieneLadron, left, top }) => {
-  const imagen = `/src/assets/bloque_${tipo}.png`;
-  const ficha = numero ? `/src/assets/${numero}_catan.png` : null;
-  const ladronImagen = `/src/assets/ladron.png`;
+  const imagen = `/bloque_${tipo}.png`;
+  const ficha = numero ? `/${numero}_catan.png` : null;
+  const ladronImagen = `/ladron.png`;
 
   return (
     <div

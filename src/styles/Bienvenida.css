@@ -6,7 +6,7 @@ html, body {
 
 .bienvenida-container {
   font-family: 'Georgia', serif;
-  background: url('../assets/fondo4.png') no-repeat center center;
+  background: url('/fondo4.png') no-repeat center center;
   background-size: cover;
   min-height: 100vh;
   color: white;

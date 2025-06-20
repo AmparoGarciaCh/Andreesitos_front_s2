@@ -127,6 +127,9 @@ const Game = () => {
       ) : (
         <p>No se recibió tableroId.</p>
       )}
+
+      <div className="tabla-costes"></div>
+      
     </div>
   );
 };

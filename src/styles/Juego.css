@@ -140,3 +140,20 @@
   max-width: 300px;
   color: #333;
 }
+
+.tabla-costes {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 520px;
+  height: 660px;
+  background-image: url('../assets/tabla_costes.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  /* Elimina estos si no los quieres */
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  z-index: 1000;
+}

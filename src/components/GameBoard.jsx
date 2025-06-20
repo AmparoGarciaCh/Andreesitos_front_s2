@@ -216,6 +216,34 @@ const GameBoard = ({ tableroId }) => {
     return () => clearInterval(interval); // limpieza
   }, [partida?.estado]);
 
+  useEffect(() => {
+    if (partida?.estado !== 'jugando') return;
+
+    const fetchUltimoLanzamiento = async () => {
+      try {
+        const res = await fetch(`${backendURL}/jugada/partida/${partidaId}/ultimo-lanzamiento`);
+        if (!res.ok) throw new Error('No se pudo obtener el último lanzamiento');
+        const data = await res.json();
+
+        // ✅ Validamos que tenga los valores esperados
+        if (data.dado1 !== undefined && data.dado2 !== undefined) {
+          setResultadoDados({
+            dado1: data.dado1,
+            dado2: data.dado2,
+            suma: data.suma,
+            jugadorId: data.jugadorId
+          });
+        }
+      } catch (err) {
+        console.error("Error al obtener último lanzamiento de dados:", err);
+      }
+    };
+
+    fetchUltimoLanzamiento();
+    const interval = setInterval(fetchUltimoLanzamiento, 3000);
+    return () => clearInterval(interval);
+  }, [partida?.estado]);
+
   const handlePasarTurno = async () => {
     try {
       const res = await fetch(`${backendURL}/partidas/${partidaId}/pasar-turno`, {
@@ -252,21 +280,23 @@ const GameBoard = ({ tableroId }) => {
             Eres el jugador: <strong style={{ color: coloresJugadores[jugadorIdPropio] }}>{coloresJugadores[jugadorIdPropio]}</strong>
           </div>
         )}
+        
         {esMiTurno() && partida?.estado === 'jugando' && (
-          <>
-            <button
-              style={{ marginTop: '10px', padding: '8px 16px', fontSize: '16px' }}
-              onClick={handleLanzarDados}
-            >
-              Lanzar dados
-            </button>
-            {resultadoDados && (
-              <div style={{ marginTop: '10px' }}>
-                Dados: 🎲 {resultadoDados.dado1} + {resultadoDados.dado2} = <strong>{resultadoDados.suma}</strong>
-              </div>
-            )}
-          </>
+          <button
+            style={{ marginTop: '10px', padding: '8px 16px', fontSize: '16px' }}
+            onClick={handleLanzarDados}
+          >
+            Lanzar dados
+          </button>
         )}
+
+        {/* ✅ Mostrar resultado de dados a todos los jugadores */}
+        {resultadoDados && (
+          <div style={{ marginTop: '10px' }}>
+            Dados: 🎲 {resultadoDados.dado1} + {resultadoDados.dado2} = <strong>{resultadoDados.suma}</strong>
+          </div>
+        )}
+
         {esMiTurno() && partida?.estado === 'fundando' && (
           <>
             <div style={{ marginTop: '10px' }}>

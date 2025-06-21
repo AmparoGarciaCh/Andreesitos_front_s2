@@ -2,7 +2,7 @@ import { useEffect, useState, useContext } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import GameBoard from '../components/GameBoard';
-import backendURL from '../config';
+import axios from 'axios';
 import '../styles/Juego.css';
 
 const Game = () => {

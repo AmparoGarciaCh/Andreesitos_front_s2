@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import '../styles/Login.css';
 import fondoLogin from '/fondo5.png';
-import backendURL from '../config';
+import axios from 'axios';
 
 function Login() {
   const [correo, setCorreo] = useState('');

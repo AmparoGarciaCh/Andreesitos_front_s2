@@ -147,7 +147,7 @@
   right: 20px;
   width: 520px;
   height: 660px;
-  background-image: url('../assets/tabla_costes.png');
+  background-image: url('/tabla_costes.png');
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;

@@ -2,8 +2,7 @@ import './GameBoard.css';
 import Edge from './Edge';
 import Vertex from './Vertex';
 import Tile from './Tile';
-import { useActionState, useEffect, useState } from 'react';
-import backendURL from '../config'; 
+import { useEffect, useState } from 'react';
 import axios from 'axios'; 
 
 const HEX_SIZE = 60;
@@ -356,7 +355,7 @@ useEffect(() => {
       {/* 🔵 Tablero centrado con fondo marino */}
       <div className="tablero">
         <img
-          src="/src/assets/hexagono_mar.png"
+          src="/hexagono_mar.png"
           alt="Fondo tablero hexagonal"
           className="fondo-hexagonal"
         />

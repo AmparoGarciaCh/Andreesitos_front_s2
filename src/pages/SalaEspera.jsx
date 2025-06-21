@@ -5,7 +5,6 @@ import { AuthContext } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
 import '../styles/Login.css';
 import fondoLogin from '/fondo5.png';
-import backendURL from '../config'; 
 import axios from 'axios';
 
 function SalaEspera() {

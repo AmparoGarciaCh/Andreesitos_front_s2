@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import axios from 'axios';
 import Navbar from '../components/Navbar';
 import '../styles/Registro.css';
 import fondoRegistro from '/fondo2.png';
@@ -7,7 +8,6 @@ import carta2 from '/ñoño_ingenieria.png';
 import carta3 from '/abogado5.png';
 import carta4 from '/medico2.png';
 import carta5 from '/agronomo1.png';
-import backendURL from '../config'; // ✅ AÑADIDO
 
 function Registro() {
   const [nombre, setNombre] = useState('');

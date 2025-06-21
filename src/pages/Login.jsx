@@ -18,15 +18,14 @@ function Login() {
     setMensaje('');
 
     try {
-      const respuesta = await fetch(`${backendURL}/usuarios/login`, { // ✅ corregido
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ correo, password })
+      const response = await axios.post(`${import.meta.env.VITE_backendURL}/usuarios/login`, {
+        correo,
+        password
+      }, {
+        headers: { 'Content-Type': 'application/json' }
       });
 
-      const data = await respuesta.json();
-
-      if (!respuesta.ok) throw new Error(data.error || 'Error al iniciar sesión');
+      const data = response.data;
 
       localStorage.setItem('token', data.token);
       localStorage.setItem('usuario', JSON.stringify(data.usuario));
@@ -35,9 +34,11 @@ function Login() {
       setMensaje('✅ Sesión iniciada correctamente');
       setTimeout(() => navigate('/'), 1000);
     } catch (error) {
-      setMensaje('❌ ' + error.message);
+      const mensajeError = error.response?.data?.error || error.message;
+      setMensaje('❌ ' + mensajeError);
     }
   };
+
 
   return (
     <div className="login-container" style={{ backgroundImage: `url(${fondoLogin})` }}>

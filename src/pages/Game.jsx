@@ -21,8 +21,9 @@ const Game = () => {
     const fetchTableroId = async () => {
       if (!tableroIdFromState && id) {
         try {
-          const res = await fetch(`${backendURL}/tableros/partida/${id}`);
-          const data = await res.json();
+          const response = await axios.get(`${import.meta.env.VITE_backendURL}/tableros/partida/${id}`);
+          const data = response.data;
+
           if (data.id) {
             setTableroIdFinal(data.id);
           } else {
@@ -40,8 +41,8 @@ const Game = () => {
   useEffect(() => {
     const fetchJugadorPropio = async () => {
       try {
-        const resJugadores = await fetch(`${backendURL}/jugadores`);
-        const jugadores = await resJugadores.json();
+        const response = await axios.get(`${import.meta.env.VITE_backendURL}/jugadores`);
+        const jugadores = response.data;
 
         const miJugador = jugadores.find(j =>
           j.usuarioId === usuario.id && j.idPartida === parseInt(id)
@@ -64,8 +65,8 @@ const Game = () => {
   useEffect(() => {
     const fetchJugadoresDePartida = async () => {
       try {
-        const res = await fetch(`${backendURL}/jugadores/partida/${id}`);
-        const data = await res.json();
+        const response = await axios.get(`${import.meta.env.VITE_backendURL}/jugadores/partida/${id}`);
+        const data = response.data;
         setJugadores(data.jugadores || []);
       } catch (error) {
         console.error('Error al obtener jugadores de la partida:', error);
@@ -77,47 +78,46 @@ const Game = () => {
     return () => clearInterval(interval);
   }, [id]);
 
-  useEffect(() => {
-    const fetchPartidaTurno = async () => {
-      try {
-        const resPartida = await fetch(`${backendURL}/partidas/${id}`);
-        const dataPartida = await resPartida.json();
 
-        const partidaActual = dataPartida.partida;
-        if (partidaActual) {
-          setIdJugadorTurnoActual(partidaActual.idJugadorTurnoActual);
-          setPartida(partidaActual);
-          setEstadoPartida(partidaActual.estado);
-        }
-      } catch (err) {
-        console.error('Error al obtener partida:', err);
+useEffect(() => {
+  const fetchPartidaTurno = async () => {
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_backendURL}/partidas/${id}`);
+      const dataPartida = response.data;
+
+      const partidaActual = dataPartida.partida;
+      if (partidaActual) {
+        setIdJugadorTurnoActual(partidaActual.idJugadorTurnoActual);
+        setPartida(partidaActual);
+        setEstadoPartida(partidaActual.estado);
       }
-    };
-
-    if (jugadorIdPropio) {
-      fetchPartidaTurno();
+    } catch (err) {
+      console.error('Error al obtener partida:', err);
     }
-  }, [jugadorIdPropio, id]);
+  };
 
-  if (!tableroIdFinal) {
-    return <p>Cargando tablero...</p>;
+  if (jugadorIdPropio) {
+    fetchPartidaTurno();
   }
+}, [jugadorIdPropio, id]);
 
-  useEffect(() => {
-    if (estadoPartida !== 'fundando') return;
 
-    const fetchFundador = async () => {
-      try {
-        await fetch(`${backendURL}/partidas/${id}/siguiente-fundador`);
-      } catch (error) {
-        console.error('Error actualizando el siguiente fundador:', error);
-      }
-    };
+useEffect(() => {
+  if (estadoPartida !== 'fundando') return;
 
-    fetchFundador();
-    const interval = setInterval(fetchFundador, 3000);
-    return () => clearInterval(interval);
-  }, [estadoPartida, id]);
+  const fetchFundador = async () => {
+    try {
+      await axios.get(`${import.meta.env.VITE_backendURL}/partidas/${id}/siguiente-fundador`);
+    } catch (error) {
+      console.error('Error actualizando el siguiente fundador:', error);
+    }
+  };
+
+  fetchFundador();
+  const interval = setInterval(fetchFundador, 3000);
+  return () => clearInterval(interval);
+}, [estadoPartida, id]);
+
 
   return (
     <div className="juego-container">

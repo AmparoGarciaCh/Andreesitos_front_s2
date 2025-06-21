@@ -18,25 +18,28 @@ function Registro() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (password !== confirmacion) {
       setMensaje('❌ Las contraseñas no coinciden');
       return;
     }
 
-    const respuesta = await fetch(`${backendURL}/usuarios/registrar`, { // ✅ CORREGIDO
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ nombre, correo, password }),
-    });
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_backendURL}/usuarios/registrar`, {
+        nombre,
+        correo,
+        password
+      }, {
+        headers: { 'Content-Type': 'application/json' }
+      });
 
-    const data = await respuesta.json();
-
-    if (respuesta.ok) {
       setMensaje('✅ Usuario registrado con éxito');
-    } else {
-      setMensaje(`❌ Error: ${data.error}`);
+    } catch (err) {
+      const mensajeError = err.response?.data?.error || err.message;
+      setMensaje(`❌ Error: ${mensajeError}`);
     }
   };
+
 
   return (
     <div className="registro-container" style={{ backgroundImage: `url(${fondoRegistro})` }}>

@@ -2,8 +2,9 @@ import './GameBoard.css';
 import Edge from './Edge';
 import Vertex from './Vertex';
 import Tile from './Tile';
-import { useEffect, useState } from 'react';
+import { useActionState, useEffect, useState } from 'react';
 import backendURL from '../config'; 
+import axios from 'axios'; 
 
 const HEX_SIZE = 60;
 
@@ -13,8 +14,8 @@ function axialToPixel(q, r, size) {
   return { x, y };
 }
 
-const CENTER_X = 350; // 700 / 2
-const CENTER_Y = 350; // 700 / 2
+const CENTER_X = 350; 
+const CENTER_Y = 350; 
 
 const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId }) => {
   const token = localStorage.getItem('token');
@@ -31,48 +32,60 @@ const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId }) => {
 
   const vertexOk = selectedVertexId !== null && selectedVertexId !== undefined;
   const edgeOk = selectedEdgeId !== null && selectedEdgeId !== undefined;
-
-  useEffect(() => {
-    const fetchTablero = async () => {
-      const res = await fetch(`${backendURL}/tableros/${tableroId}`);
-      const data = await res.json();
+console.log("📡 BACKEND URL:", import.meta.env.VITE_backendURL);
+useEffect(() => {
+  if (!tableroId) {
+    console.warn("tableroId no está definido");
+    return;
+  }
+  console.log("Cargando tablero:", tableroId);
+  axios.get(`${import.meta.env.VITE_backendURL}/tableros/${tableroId}`)
+    .then(response => {
+      const data = response.data;
+      console.log("Tablero recibido:", data);
       setTablero({
         Terrenos: data.Terrenos || [],
         Vertices: data.Vertices || [],
         Aristas: data.Aristas || []
       });
-    };
-    fetchTablero();
-  }, [tableroId]);
+    })
+    .catch(error => {
+      console.error("Error al encontrar tablero", error);
+    });
+}, [tableroId]);
+
 
   useEffect(() => {
     const fetchJugadores = async () => {
       try {
-        const res = await fetch(`${backendURL}/jugadores`);
-        const data = await res.json();
-        const jugadoresDePartida = data.filter(j => j.idPartida === partidaId);
-        const mapping = {};
+        const response = await axios.get(`${import.meta.env.VITE_backendURL}/jugadores`);
+        const jugadores = response.data;
+        const jugadoresDePartida = jugadores.filter(j => j.idPartida === partidaId);
         const traduccionesCSS = {
           rojo: 'red', azul: 'blue', amarillo: 'yellow', blanco: '#bfbfbf', verde: 'green', negro: 'black'
         };
+        const mapping = {};
         jugadoresDePartida.forEach(j => {
           mapping[j.id] = traduccionesCSS[j.color] || j.color;
         });
         setColoresJugadores(mapping);
-      } catch (err) {
-        console.error('Error al obtener colores de jugadores:', err);
+      } catch (error) {
+        console.error('Error al obtener colores de jugadores:', error);
       }
     };
+
     fetchJugadores();
   }, [partidaId]);
+
 
   useEffect(() => {
     const fetchConstrucciones = async () => {
       try {
-        const res = await fetch(`${backendURL}/construcciones`);
-        const data = await res.json();
+        const response = await axios.get(`${import.meta.env.VITE_backendURL}/construcciones`);
+        const data = response.data;
         const vertices = {};
         const aristas = {};
+
         (data.construcciones || []).forEach(c => {
           if (c.idPartida === partidaId) {
             if (c.tipo === 'departamento') {
@@ -83,11 +96,13 @@ const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId }) => {
             }
           }
         });
+
         setConstrucciones({ vertices, aristas });
       } catch (error) {
         console.error("Error al cargar construcciones:", error);
       }
     };
+
     fetchConstrucciones();
     const interval = setInterval(fetchConstrucciones, 3000);
     return () => clearInterval(interval);
@@ -98,10 +113,10 @@ const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId }) => {
 
     const fetchSiguienteFundador = async () => {
       try {
-        const res = await fetch(`${backendURL}/partidas/${partidaId}/siguiente-fundador`, {
+        const response = await axios.get(`${import.meta.env.VITE_backendURL}/partidas/${partidaId}/siguiente-fundador`, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        const data = await res.json();
+        const data = response.data;
         setJugadorEsperadoId(data.jugadorEsperadoId);
       } catch (error) {
         console.error("Error al obtener siguiente fundador:", error);
@@ -130,16 +145,23 @@ const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId }) => {
     if (!esMiTurno() || !enFaseFundando()) return;
     setSelectedEdgeId(prev => (prev === edgeId ? null : edgeId));
   };
-
+  //revisar pertinencia de este método
   const handleFundarClick = async () => {
     try {
-      const res = await fetch(`${backendURL}/partidas/${partidaId}/fundar`, {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ idVertice: selectedVertexId, idArista: selectedEdgeId, jugadorId: jugadorIdPropio })
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
+      const response = await axios.post(`${import.meta.env.VITE_backendURL}/partidas/${partidaId}/fundar`,
+        {
+          idVertice: selectedVertexId,
+          idArista: selectedEdgeId,
+          jugadorId: jugadorIdPropio
+        },
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      const data = response.data;
       setSelectedVertexId(null);
       setSelectedEdgeId(null);
     } catch (err) {
@@ -150,32 +172,33 @@ const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId }) => {
   const handleLanzarDados = async () => {
     console.log("Presionando lanzar dados... ID jugador:", jugadorIdPropio);
     try {
-      const res = await fetch(`${backendURL}/jugada`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ tipo: 'lanzar_dado', jugadorId: jugadorIdPropio })
-      });
+      const response = await axios.post(
+        `${import.meta.env.VITE_backendURL}/jugada`,
+        { tipo: 'lanzar_dado', jugadorId: jugadorIdPropio },
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
 
-      const data = await res.json();
+      const data = response.data;
       console.log("🎲 Respuesta del backend:", data);
-      if (!res.ok) throw new Error(data.error);
-
       setResultadoDados(data.resultado);
-      fetchInventario(); // 👈 actualiza inventario propio
+      fetchInventario(); 
     } catch (error) {
       console.error("Error al lanzar dados:", error);
     }
   };
 
+
   const fetchInventario = async () => {
     try {
-      const res = await fetch(`${backendURL}/partidas/${partidaId}/inventario-propio`, {
+      const response = await axios.get(`${import.meta.env.VITE_backendURL}/partidas/${partidaId}/inventario-propio`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      const data = await res.json();
+      const data = response.data ;
       setInventario([data]);
     } catch (err) {
       console.error("Error al obtener inventario:", err);
@@ -185,10 +208,9 @@ const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId }) => {
   useEffect(() => {
     if (partida?.estado !== 'jugando') return;
 
-    fetchInventario(); // primera vez
-
-    const interval = setInterval(fetchInventario, 3000); // actualiza cada 3 seg
-    return () => clearInterval(interval); // limpieza
+    fetchInventario(); 
+    const interval = setInterval(fetchInventario, 3000);
+    return () => clearInterval(interval); 
   }, [partida?.estado]);
 
   useEffect(() => {
@@ -196,11 +218,9 @@ const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId }) => {
 
     const fetchUltimoLanzamiento = async () => {
       try {
-        const res = await fetch(`${backendURL}/jugada/partida/${partidaId}/ultimo-lanzamiento`);
-        if (!res.ok) throw new Error('No se pudo obtener el último lanzamiento');
-        const data = await res.json();
+        const response = await axios.get(`${import.meta.env.VITE_backendURL}/jugada/partida/${partidaId}/ultimo-lanzamiento`);
+        const data = response.data;
 
-        // ✅ Validamos que tenga los valores esperados
         if (data.dado1 !== undefined && data.dado2 !== undefined) {
           setResultadoDados({
             dado1: data.dado1,
@@ -221,19 +241,22 @@ const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId }) => {
 
   const handlePasarTurno = async () => {
     try {
-      const res = await fetch(`${backendURL}/partidas/${partidaId}/pasar-turno`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+      const response = await axios.post(
+        `${import.meta.env.VITE_backendURL}/partidas/${partidaId}/pasar-turno`,
+        {}, 
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
         }
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
+      );
+      const data = response.data;
     } catch (err) {
       console.error('Error al pasar turno:', err);
     }
   };
+
 
   return (
     <div className="tablero-centrado">

@@ -3,17 +3,27 @@ import { useParams, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import GameBoard from '../components/GameBoard';
 import backendURL from '../config';
+import '../styles/Juego.css';
 
 const Game = () => {
   const { id } = useParams(); // id de la partida
   const { state } = useLocation();
+<<<<<<< HEAD
   const tableroIdFromState = state?.tableroId;
+=======
+  const tableroId = state?.tableroId ?? id;
+  const [jugadores, setJugadores] = useState([]);
+>>>>>>> ramacata
 
   const { usuario } = useContext(AuthContext);
   const [partida, setPartida] = useState(null);
   const [jugadorIdPropio, setJugadorIdPropio] = useState(null);
   const [idJugadorTurnoActual, setIdJugadorTurnoActual] = useState(null);
+<<<<<<< HEAD
   const [tableroIdFinal, setTableroIdFinal] = useState(tableroIdFromState || null);
+=======
+  const [estadoPartida, setEstadoPartida] = useState(null); // ✅ NUEVO
+>>>>>>> ramacata
 
   // 🔍 Si no se recibió tableroId en el state, lo obtenemos desde el backend
   useEffect(() => {
@@ -63,6 +73,22 @@ const Game = () => {
 
   // ⏳ Obtener turno actual
   useEffect(() => {
+    const fetchJugadoresDePartida = async () => {
+      try {
+        const res = await fetch(`${backendURL}/jugadores/partida/${id}`);
+        const data = await res.json();
+        setJugadores(data.jugadores || []);
+      } catch (error) {
+        console.error('Error al obtener jugadores de la partida:', error);
+      }
+    };
+
+    fetchJugadoresDePartida();
+    const interval = setInterval(fetchJugadoresDePartida, 3000);
+    return () => clearInterval(interval);
+  }, [id]);
+
+  useEffect(() => {
     const fetchPartidaTurno = async () => {
       try {
         const resPartida = await fetch(`${backendURL}/partidas/${id}`);
@@ -71,7 +97,11 @@ const Game = () => {
         const partidaActual = dataPartida.partida;
         if (partidaActual) {
           setIdJugadorTurnoActual(partidaActual.idJugadorTurnoActual);
+<<<<<<< HEAD
           setPartida(partidaActual);
+=======
+          setEstadoPartida(partidaActual.estado); // <- nuevo
+>>>>>>> ramacata
         }
       } catch (err) {
         console.error('Error al obtener partida:', err);
@@ -88,24 +118,63 @@ const Game = () => {
     return <p>Cargando tablero...</p>;
   }
 
+  useEffect(() => {
+    if (estadoPartida !== 'fundando') return;
+
+    const fetchFundador = async () => {
+      try {
+        await fetch(`${backendURL}/partidas/${id}/siguiente-fundador`);
+      } catch (error) {
+        console.error('Error actualizando el siguiente fundador:', error);
+      }
+    };
+
+    fetchFundador();
+    const interval = setInterval(fetchFundador, 3000);
+    return () => clearInterval(interval);
+  }, [estadoPartida, id]);
+
   return (
-    <div>
-      <h1>Vista del Juegoooo - Andreesitos 🚀</h1>
+    <div className="juego-container">
+      <div className="jugadores-lista">
+        {jugadores.map((j) => (
+          <div key={j.id} className="jugador-item">
+            <div className={`color-circulo color-${j.color || 'gris'}`} />
+            <span>{j.nombre}</span>
+            {j.id === idJugadorTurnoActual && <span className="turno-indicador">⏳</span>}
+          </div>
+        ))}
+      </div>
 
       {jugadorIdPropio !== null && idJugadorTurnoActual !== null && (
-        <p style={{ fontSize: '20px', fontWeight: 'bold' }}>
+        <p className="estado-turno">
           {jugadorIdPropio === idJugadorTurnoActual
-            ? '✅ Es tu turno'
-            : '⌛ No es tu turno'}
+            ? estadoPartida === 'fundando'
+              ? '🏗️ Te toca fundar'
+              : '✅ Es tu turno'
+            : estadoPartida === 'fundando'
+              ? '⌛ Esperando fundación'
+              : '⌛ No es tu turno'}
         </p>
       )}
 
+<<<<<<< HEAD
       <GameBoard
         partida={partida}
         jugadorIdPropio={jugadorIdPropio}
         partidaId={id}
         tableroId={parseInt(tableroIdFinal)}
       />
+=======
+      {tableroId ? (
+        <GameBoard tableroId={parseInt(tableroId)} />
+      ) : (
+        <p>No se recibió tableroId.</p>
+      )}
+
+      <div className="tabla-costes"></div>
+      
+>>>>>>> ramacata
     </div>
   );
 };

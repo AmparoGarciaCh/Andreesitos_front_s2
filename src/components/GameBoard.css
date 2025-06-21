@@ -6,20 +6,34 @@
   display: flex;
   align-items: center;
   justify-content: center;
+<<<<<<< HEAD
   background-image: url('/playa.png');
+=======
+  background-image: url('/src/assets/fondo_mesa.png');
+>>>>>>> ramacata
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 }
+
 .tablero {
-  position: relative; /* ya NO absolute → para que quede bien centrado */
-  width: 700px; /* ajusta a tu gusto */
+  position: relative;
+  width: 700px;
   height: 700px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  z-index: 1;
 }
 
 .tile img {
+  pointer-events: none;
+}
+
+.fondo-hexagonal {
+  position: absolute;
+  width: 770px;
+  height: 770px;
+  z-index: 0;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   pointer-events: none;
 }

@@ -6,6 +6,7 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .juego-main {
@@ -85,4 +86,74 @@
 
 .juego-boton:hover {
   background-color: #a85d2e;
+}
+
+.jugadores-lista {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  gap: 16px;
+  padding: 12px 24px;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-bottom: 2px solid #ccc;
+  z-index: 10;
+}
+
+.jugador-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.color-circulo {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid black;
+}
+
+.turno-indicador {
+  margin-left: 4px;
+  font-size: 18px;
+}
+
+/* Colores por clase */
+.color-rojo { background-color: red; }
+.color-azul { background-color: blue; }
+.color-amarillo { background-color: yellow; }
+.color-verde { background-color: green; }
+.color-negro { background-color: black; }
+.color-blanco { background-color: #bfbfbf; }
+.color-gris { background-color: gray; }
+
+.estado-turno {
+  margin: 16px auto;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 18px;
+  background-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  text-align: center;
+  max-width: 300px;
+  color: #333;
+}
+
+.tabla-costes {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 520px;
+  height: 660px;
+  background-image: url('../assets/tabla_costes.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  /* Elimina estos si no los quieres */
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  z-index: 1000;
 }

@@ -1,4 +1,3 @@
-
 import { useEffect, useState, useContext } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
@@ -8,26 +7,42 @@ import backendURL from '../config';
 const Game = () => {
   const { id } = useParams(); // id de la partida
   const { state } = useLocation();
-  const tableroId = state?.tableroId;
-
-  if (!tableroId) {
-    console.error('No se recibió tableroId en el estado de la ubicación');
-    return <p>Error: No se recibió tableroId.</p>;
-  }
-
+  const tableroIdFromState = state?.tableroId;
 
   const { usuario } = useContext(AuthContext);
   const [partida, setPartida] = useState(null);
   const [jugadorIdPropio, setJugadorIdPropio] = useState(null);
   const [idJugadorTurnoActual, setIdJugadorTurnoActual] = useState(null);
+  const [tableroIdFinal, setTableroIdFinal] = useState(tableroIdFromState || null);
 
+  // 🔍 Si no se recibió tableroId en el state, lo obtenemos desde el backend
+  useEffect(() => {
+    const fetchTableroId = async () => {
+      if (!tableroIdFromState && id) {
+        try {
+          const res = await fetch(`${backendURL}/tableros/partida/${id}`);
+          const data = await res.json();
+          if (data.id) {
+            setTableroIdFinal(data.id);
+          } else {
+            console.error('No se encontró tablero para esta partida.');
+          }
+        } catch (err) {
+          console.error('Error al obtener tableroId desde backend:', err);
+        }
+      }
+    };
+
+    fetchTableroId();
+  }, [tableroIdFromState, id]);
+
+  // 🎮 Obtener jugador propio
   useEffect(() => {
     const fetchJugadorPropio = async () => {
       try {
         const resJugadores = await fetch(`${backendURL}/jugadores`);
         const jugadores = await resJugadores.json();
 
-        // Buscamos el jugador que corresponde al usuario actual en esta partida
         const miJugador = jugadores.find(j =>
           j.usuarioId === usuario.id && j.idPartida === parseInt(id)
         );
@@ -44,8 +59,9 @@ const Game = () => {
     };
 
     fetchJugadorPropio();
-  }, []);
+  }, [usuario.id, id]);
 
+  // ⏳ Obtener turno actual
   useEffect(() => {
     const fetchPartidaTurno = async () => {
       try {
@@ -53,21 +69,24 @@ const Game = () => {
         const dataPartida = await resPartida.json();
 
         const partidaActual = dataPartida.partida;
-        console.log('Partida actual:', partidaActual);
-
         if (partidaActual) {
           setIdJugadorTurnoActual(partidaActual.idJugadorTurnoActual);
           setPartida(partidaActual);
-          console.log('idJugadorTurnoActual:', partidaActual.idJugadorTurnoActual);
         }
       } catch (err) {
         console.error('Error al obtener partida:', err);
       }
     };
+
     if (jugadorIdPropio) {
       fetchPartidaTurno();
     }
-  }, [jugadorIdPropio]);
+  }, [jugadorIdPropio, id]);
+
+  // 🧱 Renderizado final
+  if (!tableroIdFinal) {
+    return <p>Cargando tablero...</p>;
+  }
 
   return (
     <div>
@@ -81,18 +100,14 @@ const Game = () => {
         </p>
       )}
 
-      {tableroId ? (
-        <GameBoard
-          partida={partida}
-          jugadorIdPropio={jugadorIdPropio}
-          partidaId={id}
-          tableroId={parseInt(tableroId)}
-        />
-      ) : (
-        <p>No se recibió tableroId.</p>
-      )}
+      <GameBoard
+        partida={partida}
+        jugadorIdPropio={jugadorIdPropio}
+        partidaId={id}
+        tableroId={parseInt(tableroIdFinal)}
+      />
     </div>
   );
 };
 
-export default Game;
+export default Game;

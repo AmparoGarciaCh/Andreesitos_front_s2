@@ -7,7 +7,7 @@ import SalaEspera from './pages/SalaEspera';
 import Instrucciones from './pages/Instrucciones';
 import Nosotros from './pages/Nosotros';
 
-import Game from './pages/Game'; // <--- importas tu Game.jsx
+import Game from './pages/Game'; 
 
 function App() {
   return (

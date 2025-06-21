@@ -5,12 +5,13 @@ import { AuthContext } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
 import '../styles/Login.css';
 import fondoLogin from '/fondo5.png';
-import backendURL from '../config'; // ✅ importamos el backendURL
+import backendURL from '../config'; 
+import axios from 'axios';
 
 function SalaEspera() {
   const { usuario } = useContext(AuthContext);
-  const { id } = useParams(); // ID de la partida
-  const { state } = useLocation(); // contiene { codigo, soyAdmin }
+  const { id } = useParams(); 
+  const { state } = useLocation(); 
   const navigate = useNavigate();
 
   const [jugadores, setJugadores] = useState([]);
@@ -18,19 +19,20 @@ function SalaEspera() {
   const [mensaje, setMensaje] = useState('');
   const token = localStorage.getItem('token');
 
-  // Log para confirmar que SalaEspera se está montando
+
   console.log('SalaEspera MONTADA, id de la partida:', id);
 
-  // 1️⃣ useEffect para cargar jugadores
+
   useEffect(() => {
     const fetchJugadores = async () => {
       try {
-        const resJugadores = await fetch(`${backendURL}/jugadores`);
-        const todos = await resJugadores.json();
+        const resJugadores = await axios.get(`${import.meta.env.VITE_backendURL}/jugadores`);
+        const todos = resJugadores.data; 
         const enPartida = todos.filter(j => j.idPartida === parseInt(id));
 
         setJugadores(enPartida);
       } catch (err) {
+        console.error("Error al cargar jugadores:", err);
         setMensaje('❌ Error al cargar jugadores');
       }
     };
@@ -40,20 +42,20 @@ function SalaEspera() {
     return () => clearInterval(interval);
   }, [id]);
 
-  // 2️⃣ useEffect para observar estado de partida y redirigir si corresponde
+
+  
   useEffect(() => {
     const fetchPartida = async () => {
       try {
         console.log('--- FETCH PARTIDA ---');
-        console.log('Haciendo fetch /partidas/:id', id);
+        console.log('Haciendo GET /partidas/:id', id);
 
-        const resPartida = await fetch(`${backendURL}/partidas/${id}`);
+        const resPartida = await axios.get(`${import.meta.env.VITE_backendURL}/partidas/${id}`);
         console.log('Status respuesta partida:', resPartida.status);
 
-        const dataPartida = await resPartida.json();
+        const dataPartida = resPartida.data;
         console.log('Respuesta completa de /partidas/:id:', dataPartida);
 
-        // ✅ Aquí la corrección:
         const partidaActual = dataPartida.partida;
 
         console.log('Partida actual:', partidaActual);
@@ -79,6 +81,7 @@ function SalaEspera() {
     return () => clearInterval(interval);
   }, [id, navigate]);
 
+
   // Handler iniciar partida (admin)
   const handleIniciarPartida = async () => {
     try {
@@ -87,33 +90,26 @@ function SalaEspera() {
         throw new Error('No se encontró tu jugador en esta partida');
       }
 
-      const resInicio = await fetch(`${backendURL}/partidas/${id}/iniciar`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ idJugador: jugadorData.id }) 
-      });
+      const response = await axios.post(`${import.meta.env.VITE_backendURL}/partidas/${id}/iniciar`,
+        { idJugador: jugadorData.id },
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
 
-      const contentType = resInicio.headers.get('content-type');
-      let inicio;
-      if (contentType && contentType.includes('application/json')) {
-        inicio = await resInicio.json();
-      } else {
-        const text = await resInicio.text();
-        inicio = { error: text };
-      }
+      const inicio = response.data;
 
-      if (!resInicio.ok) throw new Error(inicio.error);
-
-      // Redirigir al juego (admin)
       navigate(`/juego/${id}`, { state: { tableroId: inicio.tableroId } });
 
     } catch (err) {
-      setMensaje(`❌ ${err.message}`);
+      const mensajeError = err.response?.data?.error || err.message;
+      setMensaje(`❌ ${mensajeError}`);
     }
   };
+
 
   return (
     <div className="login-container" style={{ backgroundImage: `url(${fondoLogin})` }}>

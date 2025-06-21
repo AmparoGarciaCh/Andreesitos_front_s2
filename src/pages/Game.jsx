@@ -6,26 +6,17 @@ import backendURL from '../config';
 import '../styles/Juego.css';
 
 const Game = () => {
-  const { id } = useParams(); // id de la partida
+  const { id } = useParams(); 
   const { state } = useLocation();
-<<<<<<< HEAD
   const tableroIdFromState = state?.tableroId;
-=======
-  const tableroId = state?.tableroId ?? id;
   const [jugadores, setJugadores] = useState([]);
->>>>>>> ramacata
-
   const { usuario } = useContext(AuthContext);
   const [partida, setPartida] = useState(null);
   const [jugadorIdPropio, setJugadorIdPropio] = useState(null);
   const [idJugadorTurnoActual, setIdJugadorTurnoActual] = useState(null);
-<<<<<<< HEAD
   const [tableroIdFinal, setTableroIdFinal] = useState(tableroIdFromState || null);
-=======
-  const [estadoPartida, setEstadoPartida] = useState(null); // ✅ NUEVO
->>>>>>> ramacata
+  const [estadoPartida, setEstadoPartida] = useState(null); 
 
-  // 🔍 Si no se recibió tableroId en el state, lo obtenemos desde el backend
   useEffect(() => {
     const fetchTableroId = async () => {
       if (!tableroIdFromState && id) {
@@ -46,7 +37,6 @@ const Game = () => {
     fetchTableroId();
   }, [tableroIdFromState, id]);
 
-  // 🎮 Obtener jugador propio
   useEffect(() => {
     const fetchJugadorPropio = async () => {
       try {
@@ -71,7 +61,6 @@ const Game = () => {
     fetchJugadorPropio();
   }, [usuario.id, id]);
 
-  // ⏳ Obtener turno actual
   useEffect(() => {
     const fetchJugadoresDePartida = async () => {
       try {
@@ -97,11 +86,8 @@ const Game = () => {
         const partidaActual = dataPartida.partida;
         if (partidaActual) {
           setIdJugadorTurnoActual(partidaActual.idJugadorTurnoActual);
-<<<<<<< HEAD
           setPartida(partidaActual);
-=======
-          setEstadoPartida(partidaActual.estado); // <- nuevo
->>>>>>> ramacata
+          setEstadoPartida(partidaActual.estado);
         }
       } catch (err) {
         console.error('Error al obtener partida:', err);
@@ -113,7 +99,6 @@ const Game = () => {
     }
   }, [jugadorIdPropio, id]);
 
-  // 🧱 Renderizado final
   if (!tableroIdFinal) {
     return <p>Cargando tablero...</p>;
   }
@@ -158,23 +143,17 @@ const Game = () => {
         </p>
       )}
 
-<<<<<<< HEAD
-      <GameBoard
+      {tableroId ? (
+        <GameBoard
         partida={partida}
         jugadorIdPropio={jugadorIdPropio}
         partidaId={id}
         tableroId={parseInt(tableroIdFinal)}
       />
-=======
-      {tableroId ? (
-        <GameBoard tableroId={parseInt(tableroId)} />
       ) : (
         <p>No se recibió tableroId.</p>
       )}
-
       <div className="tabla-costes"></div>
-      
->>>>>>> ramacata
     </div>
   );
 };

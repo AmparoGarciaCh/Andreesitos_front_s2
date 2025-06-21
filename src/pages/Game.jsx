@@ -143,7 +143,7 @@ const Game = () => {
         </p>
       )}
 
-      {tableroId ? (
+      {tableroIdFinal ? (
         <GameBoard
         partida={partida}
         jugadorIdPropio={jugadorIdPropio}

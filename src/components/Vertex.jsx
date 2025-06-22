@@ -2,8 +2,10 @@ const Vertex = ({ x, y, selected, onClick, construccion, coloresJugadores }) => 
   let color = 'white';
 
   if (construccion) {
-    console.log(`🟢 Vértice ${construccion.tipo} del jugador ${construccion.jugadorId}`);
-    color = coloresJugadores?.[construccion.jugadorId] || 'gray';
+    const idJ = construccion.jugadorId ?? construccion.idJugador;
+    color = coloresJugadores?.[idJ] || 'gray';
+    console.log(`🟢 Vértice ${construccion.tipo} del jugador ${idJ}`);
+    console.log(`🎨 Color asignado: ${color}`);
   }
 
   return (

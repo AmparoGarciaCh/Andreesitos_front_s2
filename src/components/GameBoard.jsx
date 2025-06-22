@@ -88,7 +88,7 @@ useEffect(() => {
         (data.construcciones || []).forEach(c => {
           if (c.idPartida === partidaId) {
             if (c.tipo === 'departamento') {
-              vertices[c.idVertice] = { tipo: 'facultad', jugadorId: c.idJugador };
+              vertices[c.idVertice] = { tipo: 'departamento', jugadorId: c.idJugador };
             }
             if (c.tipo === 'muro') {
               aristas[c.idArista] = { tipo: 'muro', jugadorId: c.idJugador };
@@ -109,6 +109,7 @@ useEffect(() => {
 
   useEffect(() => {
     if (partida?.estado !== 'fundando') return;
+    console.log("🔄 Actualizando siguiente fundador...");
 
     const fetchSiguienteFundador = async () => {
       try {

@@ -5,16 +5,9 @@ const Edge = ({ x1, y1, x2, y2, selected, onClick, construccion, coloresJugadore
   let strokeColor = 'lightgray';
   let strokeWidth = 3;
 
-  // DEBUG: log de entrada
-  console.log('🎯 EDGE PROPS →', {
-    construccion,
-    coloresJugadores
-  });
-
   if (construccion?.tipo === 'muro') {
-    const jugadorId = Number(construccion.jugadorId); // aseguramos tipo número
-    const color = renderColorConstruccion(jugadorId, coloresJugadores);
-    strokeColor = color;
+    const jugadorId = Number(construccion.jugadorId);
+    strokeColor = renderColorConstruccion(jugadorId, coloresJugadores);
     strokeWidth = 8;
     console.log(`✅ Pintando arista construida del jugador ${jugadorId} con color ${strokeColor}`);
   } else if (selected) {
@@ -24,14 +17,13 @@ const Edge = ({ x1, y1, x2, y2, selected, onClick, construccion, coloresJugadore
 
   return (
     <line
-      className="edge"
+      className={`edge ${selected ? 'selected' : ''}`}
       x1={x1}
       y1={y1}
       x2={x2}
       y2={y2}
       stroke={strokeColor}
       strokeWidth={strokeWidth}
-      strokeLinecap="round"
       onClick={(e) => {
         e.stopPropagation();
         onClick();

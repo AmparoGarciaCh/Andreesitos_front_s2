@@ -4,10 +4,13 @@
   height: 20px;
   border-radius: 50%;
   border: 2px solid black;
-  z-index: 1000;
+  transform: translate(-50%, -50%);
+  z-index: 3;
   cursor: pointer;
   pointer-events: auto;
+  transition: border 0.2s ease, background-color 0.2s ease;
 }
+
 .vertex.selected {
-  border: 3px solid black;
+  border: 3px solid orange;
 }

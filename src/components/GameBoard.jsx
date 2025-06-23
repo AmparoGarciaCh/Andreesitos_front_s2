@@ -37,21 +37,32 @@ const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId }) => {
       const data = response.data;
       const vertices = {};
       const aristas = {};
+
       (data.construcciones || []).forEach(c => {
         if (c.idPartida === partidaId) {
-          if (c.tipo === 'departamento') {
-            vertices[c.idVertice] = { tipo: 'departamento', jugadorId: c.idJugador };
+          if (c.tipo === 'departamento' && c.Vertice?.id) {
+            vertices[c.Vertice.id] = {
+              tipo: c.tipo,
+              jugadorId: c.idJugador
+            };
           }
-          if (c.tipo === 'muro') {
-            aristas[c.idArista] = { tipo: 'muro', jugadorId: c.idJugador };
+          if (c.tipo === 'muro' && c.Aristum?.id) {
+            aristas[c.Aristum.id] = {
+              tipo: c.tipo,
+              jugadorId: c.idJugador
+            };
           }
         }
       });
+
+      console.log('✅ Construcciones parseadas:', { vertices, aristas });
       setConstrucciones({ vertices, aristas });
+
     } catch (error) {
-      console.error("Error al cargar construcciones:", error);
+      console.error("❌ Error al cargar construcciones:", error);
     }
   };
+
 
   useEffect(() => {
     if (!tableroId) return;
@@ -312,7 +323,7 @@ const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId }) => {
             y={vertex.posicionY + CENTER_Y}
             onClick={() => handleVertexClick(vertex.id)}
             selected={selectedVertexId === vertex.id}
-            construccion={construcciones.vertices[vertex.id]}
+            construccion={construcciones.vertices[Number(vertex.id)]}
             coloresJugadores={coloresJugadores}
           />
 
@@ -332,7 +343,7 @@ const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId }) => {
                 y2={vFin.posicionY + CENTER_Y}
                 selected={selectedEdgeId === arista.id}
                 onClick={() => handleEdgeClick(arista.id)}
-                construccion={construcciones.aristas[arista.id]}
+                construccion={construcciones.aristas[Number(arista.id)]}
                 coloresJugadores={coloresJugadores}
               />
             );

@@ -3,4 +3,9 @@
   pointer-events: stroke;
   cursor: pointer;
   visibility: visible;
+  transition: stroke 0.2s ease, stroke-width 0.2s ease;
+}
+
+.edge.selected {
+  stroke: orange;
 }

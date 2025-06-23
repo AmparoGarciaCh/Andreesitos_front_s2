@@ -1,5 +1,6 @@
 // components/Inventario.jsx
 import React, { useEffect, useState } from 'react';
+import './Inventario.css';
 
 const Inventario = ({ idPartida }) => {
   const [inventario, setInventario] = useState([]);
@@ -19,10 +20,10 @@ const Inventario = ({ idPartida }) => {
   }, [idPartida]);
 
   return (
-    <div style={{ padding: '1rem', backgroundColor: '#f0f0f0', margin: '1rem', borderRadius: '8px' }}>
+    <div className="inventario-container">
       <h3>📦 Inventario de jugadores</h3>
       {inventario.map((jugador) => (
-        <div key={jugador.idJugador} style={{ marginBottom: '1rem' }}>
+        <div key={jugador.idJugador} className="inventario-jugador">
           <strong>Jugador {jugador.nombre ?? jugador.idJugador}:</strong>
           <ul>
             {Object.entries(jugador.especialistas).map(([tipo, cantidad]) => (

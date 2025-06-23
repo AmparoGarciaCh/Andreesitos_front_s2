@@ -1,0 +1,6 @@
+.edge {
+  stroke-linecap: round;
+  pointer-events: stroke;
+  cursor: pointer;
+  visibility: visible;
+}

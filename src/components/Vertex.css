@@ -1,0 +1,13 @@
+.vertex {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid black;
+  z-index: 1000;
+  cursor: pointer;
+  pointer-events: auto;
+}
+.vertex.selected {
+  border: 3px solid black;
+}

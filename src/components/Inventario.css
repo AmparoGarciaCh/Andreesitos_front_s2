@@ -1,0 +1,10 @@
+.inventario-container {
+  padding: 1rem;
+  background-color: #f0f0f0;
+  margin: 1rem;
+  border-radius: 8px;
+}
+
+.inventario-jugador {
+  margin-bottom: 1rem;
+}

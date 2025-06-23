@@ -1,0 +1,21 @@
+.private-route-container {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.private-route-message {
+  color: #d9534f;
+  font-weight: bold;
+  background-color: #fbeaea;
+  border: 1px solid #d9534f;
+  padding: 12px 20px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  display: inline-block;
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

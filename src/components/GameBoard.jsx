@@ -314,20 +314,22 @@ const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId }) => {
           );
         })}
 
-        {tablero.Vertices.map((vertex) => (
-          console.log(`🎯 Vertex ID: ${vertex.id}`, construcciones.vertices[vertex.id]),
+        {tablero.Vertices.map((vertex) => {
+          const construccionVertice = construcciones.vertices[Number(vertex.id)];
+          console.log(`🎯 Vertex ID: ${vertex.id}`, construccionVertice);
 
-          <Vertex
-            key={vertex.id}
-            x={vertex.posicionX + CENTER_X}
-            y={vertex.posicionY + CENTER_Y}
-            onClick={() => handleVertexClick(vertex.id)}
-            selected={selectedVertexId === vertex.id}
-            construccion={construcciones.vertices[Number(vertex.id)]}
-            coloresJugadores={coloresJugadores}
-          />
-
-        ))}
+          return (
+            <Vertex
+              key={vertex.id}
+              x={vertex.posicionX + CENTER_X}
+              y={vertex.posicionY + CENTER_Y}
+              onClick={() => handleVertexClick(vertex.id)}
+              selected={selectedVertexId === vertex.id}
+              construccion={construccionVertice}
+              coloresJugadores={coloresJugadores}
+            />
+          );
+        })}
 
         <svg style={{ position: 'absolute', left: 0, top: 0, width: '100%', height: '100%', zIndex: 2, pointerEvents: 'auto' }}>
           {tablero.Aristas.map((arista) => {

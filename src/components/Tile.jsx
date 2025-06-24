@@ -1,4 +1,3 @@
-// components/Tile.jsx
 import './Tile.css';
 
 const Tile = ({ tipo, numero, tieneLadron, left, top }) => {

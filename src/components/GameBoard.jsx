@@ -33,13 +33,13 @@ const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId }) => {
 
   const fetchConstrucciones = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_backendURL}/construcciones`);
+      const response = await axios.get(`${import.meta.env.VITE_backendURL}/construcciones/juego/${partidaId}`);
       const data = response.data;
       const vertices = {};
       const aristas = {};
 
       (data.construcciones || []).forEach(c => {
-        if (c.idPartida === partidaId) {
+        if (c.idPartida === Number(partidaId)) {
           if (c.tipo === 'departamento' && c.Vertice?.id) {
             vertices[c.Vertice.id] = {
               tipo: c.tipo,

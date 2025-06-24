@@ -4,6 +4,7 @@ import Vertex from './Vertex';
 import Tile from './Tile';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import {useToast} from '../context/toast-context.jsx';
 
 const HEX_SIZE = 60;
 const CENTER_X = 520;
@@ -27,6 +28,7 @@ const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId }) => {
   const [coloresJugadores, setColoresJugadores] = useState({});
   const [inventario, setInventario] = useState([]);
   const [resultadoDados, setResultadoDados] = useState(null);
+  const { showToast } = useToast();
 
   const vertexOk = selectedVertexId !== null && selectedVertexId !== undefined;
   const edgeOk = selectedEdgeId !== null && selectedEdgeId !== undefined;
@@ -162,8 +164,14 @@ const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId }) => {
       setSelectedVertexId(null);
       setSelectedEdgeId(null);
       await fetchConstrucciones();
+
+      showToast('¡Construcción fundada con éxito!', 'success');
+
     } catch (err) {
       console.error('Error al fundar:', err);
+      
+      const mensaje = err.response?.data?.error || 'Error al intentar fundar';
+      showToast(mensaje, 'error');
     }
   };
 

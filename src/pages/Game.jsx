@@ -79,27 +79,28 @@ const Game = () => {
   }, [id]);
 
 
-useEffect(() => {
-  const fetchPartidaTurno = async () => {
-    try {
-      const response = await axios.get(`${import.meta.env.VITE_backendURL}/partidas/${id}`);
-      const dataPartida = response.data;
+const fetchPartidaTurno = async () => {
+  try {
+    const response = await axios.get(`${import.meta.env.VITE_backendURL}/partidas/${id}`);
+    const dataPartida = response.data;
 
-      const partidaActual = dataPartida.partida;
-      if (partidaActual) {
-        setIdJugadorTurnoActual(partidaActual.idJugadorTurnoActual);
-        setPartida(partidaActual);
-        setEstadoPartida(partidaActual.estado);
-      }
-    } catch (err) {
-      console.error('Error al obtener partida:', err);
+    const partidaActual = dataPartida.partida;
+    if (partidaActual) {
+      setIdJugadorTurnoActual(partidaActual.idJugadorTurnoActual);
+      setPartida(partidaActual);
+      setEstadoPartida(partidaActual.estado);
     }
-  };
+  } catch (err) {
+    console.error('Error al obtener partida:', err);
+  }
+};
 
+useEffect(() => {
   if (jugadorIdPropio) {
     fetchPartidaTurno();
   }
 }, [jugadorIdPropio, id]);
+
 
 
 useEffect(() => {
@@ -119,24 +120,52 @@ useEffect(() => {
 }, [estadoPartida, id]);
 
 useEffect(() => {
-  if (estadoPartida !== 'fundando') return;
-
   const interval = setInterval(async () => {
     try {
       const response = await axios.get(`${import.meta.env.VITE_backendURL}/partidas/${id}`);
       const nuevaPartida = response.data.partida;
 
-      if (nuevaPartida?.estado !== estadoPartida) {
+      if (!nuevaPartida) return;
+
+      const turnoCambio = nuevaPartida.idJugadorTurnoActual !== idJugadorTurnoActual;
+      const estadoCambio = nuevaPartida.estado !== estadoPartida;
+
+      if (turnoCambio || estadoCambio) {
         setPartida(nuevaPartida);
         setEstadoPartida(nuevaPartida.estado);
+        setIdJugadorTurnoActual(nuevaPartida.idJugadorTurnoActual);
       }
     } catch (err) {
-      console.error('Error actualizando estado de la partida:', err);
+      console.error('Error actualizando partida:', err);
     }
   }, 3000);
 
   return () => clearInterval(interval);
-}, [estadoPartida, id]);
+}, [idJugadorTurnoActual, estadoPartida, id]);
+
+
+const handlePasarTurno = async () => {
+  try {
+    const token = localStorage.getItem('token');
+
+    await axios.post(
+      `${import.meta.env.VITE_backendURL}/partidas/${id}/pasar-turno`,
+      {},
+      {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        }
+      }
+    );
+    await fetchPartidaTurno();
+
+  } catch (err) {
+    console.error('❌ Error al pasar turno:', err);
+  }
+};
+
+
 
   return (
     <div className="juego-container">
@@ -164,10 +193,12 @@ useEffect(() => {
 
       {tableroIdFinal ? (
         <GameBoard
+        key={idJugadorTurnoActual}
         partida={partida}
         jugadorIdPropio={jugadorIdPropio}
         partidaId={id}
         tableroId={parseInt(tableroIdFinal)}
+        onPasarTurno={handlePasarTurno}
       />
       ) : (
         <p>No se recibió tableroId.</p>

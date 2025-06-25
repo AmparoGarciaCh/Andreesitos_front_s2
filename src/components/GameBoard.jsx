@@ -16,7 +16,7 @@ function axialToPixel(q, r, size) {
   return { x, y };
 }
 
-const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId }) => {
+const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId, onPasarTurno}) => {
   const token = localStorage.getItem('token');
   const usuario = JSON.parse(localStorage.getItem('usuario'));
 
@@ -57,7 +57,6 @@ const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId }) => {
         }
       });
 
-      console.log('✅ Construcciones parseadas:', { vertices, aristas });
       setConstrucciones({ vertices, aristas });
 
     } catch (error) {
@@ -216,7 +215,9 @@ const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId }) => {
     if (partida?.estado !== 'jugando') return;
     const fetchUltimoLanzamiento = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_backendURL}/jugada/partida/${partidaId}/ultimo-lanzamiento`);
+        const response = await axios.get(`${import.meta.env.VITE_backendURL}/jugada/partida/${partidaId}/ultimo-lanzamiento`,{
+          headers: { Authorization: `Bearer ${token}` },
+        });
         const data = response.data;
         if (data.dado1 !== undefined && data.dado2 !== undefined) {
           setResultadoDados({
@@ -235,19 +236,6 @@ const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId }) => {
     const interval = setInterval(fetchUltimoLanzamiento, 3000);
     return () => clearInterval(interval);
   }, [partida?.estado]);
-
-  const handlePasarTurno = async () => {
-    try {
-      await axios.post(`${import.meta.env.VITE_backendURL}/partidas/${partidaId}/pasar-turno`, {}, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-    } catch (err) {
-      console.error('Error al pasar turno:', err);
-    }
-  };
 
   return (
     <div className="tablero-centrado">
@@ -282,7 +270,7 @@ const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId }) => {
           </>
         )}
         {esMiTurno() && (
-          <button onClick={handlePasarTurno}>Pasar turno</button>
+          <button onClick={onPasarTurno}>Pasar turno</button>
         )}
       </div>
 
@@ -324,7 +312,6 @@ const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId }) => {
 
         {tablero.Vertices.map((vertex) => {
           const construccionVertice = construcciones.vertices[Number(vertex.id)];
-          console.log(`🎯 Vertex ID: ${vertex.id}`, construccionVertice);
 
           return (
             <Vertex

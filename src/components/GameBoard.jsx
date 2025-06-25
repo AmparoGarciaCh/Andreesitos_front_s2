@@ -68,7 +68,9 @@ const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId }) => {
 
   useEffect(() => {
     if (!tableroId) return;
-    axios.get(`${import.meta.env.VITE_backendURL}/tableros/${tableroId}`)
+    axios.get(`${import.meta.env.VITE_backendURL}/tableros/${tableroId}`,{
+      headers: { Authorization: `Bearer ${token}`}
+    })
       .then(response => {
         const data = response.data;
         setTablero({
@@ -95,8 +97,6 @@ const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId }) => {
         jugadoresDePartida.forEach(j => {
           mapping[j.id] = traduccionesCSS[j.color] || j.color;
         });
-        console.log('🎯 Jugadores de la partida:', jugadoresDePartida);
-        console.log('🎨 Mapping de colores (coloresJugadores):', mapping);
         setColoresJugadores(mapping);
       } catch (error) {
         console.error('Error al obtener colores de jugadores:', error);

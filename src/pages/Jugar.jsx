@@ -5,6 +5,8 @@ import Navbar from '../components/Navbar';
 import '../styles/Login.css';
 import fondoLogin from '/fondo5.png';
 import backendURL from '../config';
+import axios from 'axios';
+
 
 function Jugar() {
   const { usuario } = useContext(AuthContext);
@@ -15,7 +17,7 @@ function Jugar() {
 
   const handleCrearPartida = async () => {
     try {
-      const respuesta = await fetch(`${backendURL}/partidas`, { // ✅ Usamos backendURL
+      const respuesta = await fetch(`${backendURL}/partidas`, { 
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -41,7 +43,7 @@ function Jugar() {
   const handleUnirse = async (e) => {
     e.preventDefault();
     try {
-      const respuesta = await fetch(`${backendURL}/partidas/unirse`, { // ✅ Usamos backendURL
+      const respuesta = await fetch(`${backendURL}/partidas/unirse`, { 
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

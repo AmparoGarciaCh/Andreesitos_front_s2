@@ -29,9 +29,42 @@ const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId, onPasarTurn
   const [inventario, setInventario] = useState([]);
   const [resultadoDados, setResultadoDados] = useState(null);
   const { showToast } = useToast();
+  //nuevo de prueba (juanpa)
+  const [mostrarIntercambio, setMostrarIntercambio] = useState(false);
+  const [tipoADar, setTipoADar] = useState('');
+  const [tipoARecibir, setTipoARecibir] = useState('');
+
 
   const vertexOk = selectedVertexId !== null && selectedVertexId !== undefined;
   const edgeOk = selectedEdgeId !== null && selectedEdgeId !== undefined;
+  
+  const handleIntercambiarConBanco = async () => {
+  try {
+    console.log("jugadorId:", jugadorIdPropio);
+    console.log("tipoADar:", tipoADar);
+    console.log("tipoARecibir:", tipoARecibir);
+    const response = await axios.post(`${import.meta.env.VITE_backendURL}/comercio/banco`, {
+      jugadorId: jugadorIdPropio,
+      tipoADar,
+      tipoARecibir
+    }, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      }
+    });
+
+    showToast('✅ Intercambio realizado con éxito', 'success');
+    fetchInventario();
+    setMostrarIntercambio(false);
+    setTipoADar('');
+    setTipoARecibir('');
+  } catch (err) {
+    const mensaje = err.response?.data?.error || '❌ Error al intercambiar';
+    showToast(mensaje, 'error');
+  }
+};
+
 
   const fetchConstrucciones = async () => {
     try {
@@ -237,118 +270,166 @@ const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId, onPasarTurn
     return () => clearInterval(interval);
   }, [partida?.estado]);
 
-  return (
-    <div className="tablero-centrado">
-      <div className="estado-turno">
-        {esMiTurno() ? '✅ Es tu turno' : '⌛ No es tu turno'}
-        {coloresJugadores[jugadorIdPropio] && (
-          <div style={{ marginTop: '6px' }}>
-            Eres el jugador: <strong style={{ color: coloresJugadores[jugadorIdPropio] }}>{coloresJugadores[jugadorIdPropio]}</strong>
-          </div>
-        )}
-        {esMiTurno() && partida?.estado === 'jugando' && (
-          <button onClick={handleLanzarDados}>Lanzar dados</button>
-        )}
-        {resultadoDados && (
-          <div style={{ marginTop: '10px' }}>
-            Dados: 🎲 {resultadoDados.dado1} + {resultadoDados.dado2} = <strong>{resultadoDados.suma}</strong>
-          </div>
-        )}
-        {esMiTurno() && partida?.estado === 'fundando' && (
-          <>
-            <div style={{ marginTop: '10px' }}>
-              <div>Vértice seleccionado: {selectedVertexId ?? 'Ninguno'}</div>
-              <div>Arista seleccionada: {selectedEdgeId ?? 'Ninguna'}</div>
-              <button
-                className={`boton-fundar ${!(vertexOk && edgeOk) ? 'disabled' : ''}`}
-                disabled={!(vertexOk && edgeOk)}
-                onClick={handleFundarClick}
-              >
-                Fundar
-              </button>
-            </div>
-          </>
-        )}
-        {esMiTurno() && (
-          <button onClick={onPasarTurno}>Pasar turno</button>
-        )}
-      </div>
+  const handleIntercambioBanco = () => {
+  setMostrarIntercambio(true);
+  };
 
-      {inventario.length > 0 && (
-        <div className="inventario">
-          <h4>📦 Tu inventario:</h4>
-          <ul>
-            {inventario[0].inventario
-              .filter(i => i.tipoEspecialista !== 'ninguno')
-              .map((item, idx) => (
-                <li key={idx}>
-                  {item.tipoEspecialista}: {item.cantidad}
-                </li>
-              ))}
-          </ul>
+
+return (
+  <div className="tablero-centrado">
+    <div className="estado-turno">
+      {esMiTurno() ? '✅ Es tu turno' : '⌛ No es tu turno'}
+      {coloresJugadores[jugadorIdPropio] && (
+        <div style={{ marginTop: '6px' }}>
+          Eres el jugador: <strong style={{ color: coloresJugadores[jugadorIdPropio] }}>{coloresJugadores[jugadorIdPropio]}</strong>
         </div>
       )}
 
-      <div className="tablero">
-        <img
-          src="/hexagono_mar.png"
-          alt="Fondo tablero hexagonal"
-          className="fondo-hexagonal"
-        />
+      {esMiTurno() && partida?.estado === 'jugando' && (
+        <>
+          <button onClick={handleLanzarDados}>Lanzar dados</button>
+          <button onClick={handleIntercambioBanco}>Intercambiar con el banco</button>
+          {mostrarIntercambio && (
+  <div className="intercambio-banco">
+    <p style={{ margin: '8px 0' }}>Intercambia 4 de un tipo por 1 de otro</p>
 
-        {tablero.Terrenos.map((terreno) => {
-          const { x, y } = axialToPixel(terreno.posicionX, terreno.posicionY, HEX_SIZE);
+    <label>Dar:</label>
+    <select value={tipoADar} onChange={(e) => setTipoADar(e.target.value)}>
+      <option value="">Selecciona tipo a entregar</option>
+      <option value="ñoño">Ñoño</option>
+      <option value="zorrón">Zorrón</option>
+      <option value="abogado">Abogado</option>
+      <option value="suero">Suero</option>
+      <option value="agricultor">Agricultor</option>
+    </select>
+
+    <label>Recibir:</label>
+    <select value={tipoARecibir} onChange={(e) => setTipoARecibir(e.target.value)}>
+      <option value="">Selecciona tipo a recibir</option>
+      <option value="ñoño">Ñoño</option>
+      <option value="zorrón">Zorrón</option>
+      <option value="abogado">Abogado</option>
+      <option value="suero">Suero</option>
+      <option value="agricultor">Agricultor</option>
+    </select>
+
+    <button
+      onClick={handleIntercambiarConBanco}
+      disabled={!tipoADar || !tipoARecibir || tipoADar === tipoARecibir}
+      style={{ marginTop: '6px' }}
+    >
+      Confirmar intercambio
+    </button>
+    <button onClick={() => setMostrarIntercambio(false)} style={{ marginLeft: '6px' }}>
+      Cancelar
+    </button>
+  </div>
+)}
+
+        </>
+      )}
+
+      {resultadoDados && (
+        <div style={{ marginTop: '10px' }}>
+          Dados: 🎲 {resultadoDados.dado1} + {resultadoDados.dado2} = <strong>{resultadoDados.suma}</strong>
+        </div>
+      )}
+
+      {esMiTurno() && partida?.estado === 'fundando' && (
+        <div style={{ marginTop: '10px' }}>
+          <div>Vértice seleccionado: {selectedVertexId ?? 'Ninguno'}</div>
+          <div>Arista seleccionada: {selectedEdgeId ?? 'Ninguna'}</div>
+          <button
+            className={`boton-fundar ${!(vertexOk && edgeOk) ? 'disabled' : ''}`}
+            disabled={!(vertexOk && edgeOk)}
+            onClick={handleFundarClick}
+          >
+            Fundar
+          </button>
+        </div>
+      )}
+
+      {esMiTurno() && (
+        <button onClick={onPasarTurno}>Pasar turno</button>
+      )}
+    </div>
+
+    {inventario.length > 0 && (
+      <div className="inventario">
+        <h4>📦 Tu inventario:</h4>
+        <ul>
+          {inventario[0].inventario
+            .filter(i => i.tipoEspecialista !== 'ninguno')
+            .map((item, idx) => (
+              <li key={idx}>
+                {item.tipoEspecialista}: {item.cantidad}
+              </li>
+            ))}
+        </ul>
+      </div>
+    )}
+
+    <div className="tablero">
+      <img
+        src="/hexagono_mar.png"
+        alt="Fondo tablero hexagonal"
+        className="fondo-hexagonal"
+      />
+
+      {tablero.Terrenos.map((terreno) => {
+        const { x, y } = axialToPixel(terreno.posicionX, terreno.posicionY, HEX_SIZE);
+        return (
+          <Tile
+            key={terreno.id}
+            tipo={terreno.tipo}
+            numero={terreno.numeroFicha}
+            tieneLadron={terreno.tieneLadron}
+            left={x + CENTER_X}
+            top={y + CENTER_Y}
+          />
+        );
+      })}
+
+      {tablero.Vertices.map((vertex) => {
+        const construccionVertice = construcciones.vertices[Number(vertex.id)];
+
+        return (
+          <Vertex
+            key={vertex.id}
+            x={vertex.posicionX + CENTER_X}
+            y={vertex.posicionY + CENTER_Y}
+            onClick={() => handleVertexClick(vertex.id)}
+            selected={selectedVertexId === vertex.id}
+            construccion={construccionVertice}
+            coloresJugadores={coloresJugadores}
+          />
+        );
+      })}
+
+      <svg style={{ position: 'absolute', left: 0, top: 0, width: '100%', height: '100%', zIndex: 2, pointerEvents: 'auto' }}>
+        {tablero.Aristas.map((arista) => {
+          const vInicio = tablero.Vertices.find(v => v.id === arista.idVerticeInicio);
+          const vFin = tablero.Vertices.find(v => v.id === arista.idVerticeFin);
+          if (!vInicio || !vFin) return null;
           return (
-            <Tile
-              key={terreno.id}
-              tipo={terreno.tipo}
-              numero={terreno.numeroFicha}
-              tieneLadron={terreno.tieneLadron}
-              left={x + CENTER_X}
-              top={y + CENTER_Y}
-            />
-          );
-        })}
-
-        {tablero.Vertices.map((vertex) => {
-          const construccionVertice = construcciones.vertices[Number(vertex.id)];
-
-          return (
-            <Vertex
-              key={vertex.id}
-              x={vertex.posicionX + CENTER_X}
-              y={vertex.posicionY + CENTER_Y}
-              onClick={() => handleVertexClick(vertex.id)}
-              selected={selectedVertexId === vertex.id}
-              construccion={construccionVertice}
+            <Edge
+              key={arista.id}
+              x1={vInicio.posicionX + CENTER_X}
+              y1={vInicio.posicionY + CENTER_Y}
+              x2={vFin.posicionX + CENTER_X}
+              y2={vFin.posicionY + CENTER_Y}
+              selected={selectedEdgeId === arista.id}
+              onClick={() => handleEdgeClick(arista.id)}
+              construccion={construcciones.aristas[Number(arista.id)]}
               coloresJugadores={coloresJugadores}
             />
           );
         })}
-
-        <svg style={{ position: 'absolute', left: 0, top: 0, width: '100%', height: '100%', zIndex: 2, pointerEvents: 'auto' }}>
-          {tablero.Aristas.map((arista) => {
-            const vInicio = tablero.Vertices.find(v => v.id === arista.idVerticeInicio);
-            const vFin = tablero.Vertices.find(v => v.id === arista.idVerticeFin);
-            if (!vInicio || !vFin) return null;
-            return (
-              <Edge
-                key={arista.id}
-                x1={vInicio.posicionX + CENTER_X}
-                y1={vInicio.posicionY + CENTER_Y}
-                x2={vFin.posicionX + CENTER_X}
-                y2={vFin.posicionY + CENTER_Y}
-                selected={selectedEdgeId === arista.id}
-                onClick={() => handleEdgeClick(arista.id)}
-                construccion={construcciones.aristas[Number(arista.id)]}
-                coloresJugadores={coloresJugadores}
-              />
-            );
-          })}
-        </svg>
-      </div>
+      </svg>
     </div>
-  );
+  </div>
+);
+
 };
 
 export default GameBoard;

@@ -118,6 +118,25 @@ useEffect(() => {
   return () => clearInterval(interval);
 }, [estadoPartida, id]);
 
+useEffect(() => {
+  if (estadoPartida !== 'fundando') return;
+
+  const interval = setInterval(async () => {
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_backendURL}/partidas/${id}`);
+      const nuevaPartida = response.data.partida;
+
+      if (nuevaPartida?.estado !== estadoPartida) {
+        setPartida(nuevaPartida);
+        setEstadoPartida(nuevaPartida.estado);
+      }
+    } catch (err) {
+      console.error('Error actualizando estado de la partida:', err);
+    }
+  }, 3000);
+
+  return () => clearInterval(interval);
+}, [estadoPartida, id]);
 
   return (
     <div className="juego-container">

@@ -308,79 +308,9 @@ const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId, onPasarTurn
     return () => clearInterval(interval);
   }, [partida?.estado]);
 
-<<<<<<< HEAD
-  return (
-    <div className="tablero-centrado">
-      <div className="estado-turno">
-        {esMiTurno() ? '✅ Es tu turno' : '⌛ No es tu turno'}
-        {coloresJugadores[jugadorIdPropio] && (
-          <div style={{ marginTop: '6px' }}>
-            Eres el jugador: <strong style={{ color: coloresJugadores[jugadorIdPropio] }}>{coloresJugadores[jugadorIdPropio]}</strong>
-          </div>
-        )}
-        {esMiTurno() && partida?.estado === 'jugando' && (
-          <button onClick={handleLanzarDados}>Lanzar dados</button>
-        )}
-        {resultadoDados && (
-          <div style={{ marginTop: '10px' }}>
-            Dados: 🎲 {resultadoDados.dado1} + {resultadoDados.dado2} = <strong>{resultadoDados.suma}</strong>
-          </div>
-        )}
-        {esMiTurno() && partida?.estado === 'jugando' && (
-          <>
-            <div style={{ marginTop: '10px' }}>
-              <label htmlFor="tipoConstruccion">Elige tipo de construcción:</label>
-              <select
-                id="tipoConstruccion"
-                value={tipoConstruccion}
-                onChange={(e) => setTipoConstruccion(e.target.value)}
-                style={{ marginLeft: '10px' }}
-              >
-                <option value="">-- Seleccionar --</option>
-                <option value="departamento">Departamento</option>
-                <option value="muro">Muro</option>
-                <option value="facultad">Facultad</option>
-              </select>
-            </div>
-
-            <div style={{ marginTop: '10px' }}>
-              <div>Vértice seleccionado: {selectedVertexId ?? 'Ninguno'}</div>
-              <div>Arista seleccionada: {selectedEdgeId ?? 'Ninguna'}</div>
-              <button
-                className={`boton-fundar ${!tipoConstruccion ? 'disabled' : ''}`}
-                disabled={!tipoConstruccion}
-                onClick={handleConstruirClick}
-              >
-                Construir
-              </button>
-            </div>
-          </>
-        )}
-        {esMiTurno() && partida?.estado === 'fundando' && (
-          <>
-            <div style={{ marginTop: '10px' }}>
-              <div>Vértice seleccionado: {selectedVertexId ?? 'Ninguno'}</div>
-              <div>Arista seleccionada: {selectedEdgeId ?? 'Ninguna'}</div>
-              <button
-                className={`boton-fundar ${!(vertexOk && edgeOk) ? 'disabled' : ''}`}
-                disabled={!(vertexOk && edgeOk)}
-                onClick={handleFundarClick}
-              >
-                Fundar
-              </button>
-            </div>
-          </>
-        )}
-        {esMiTurno() && (
-          <button onClick={onPasarTurno}>Pasar turno</button>
-        )}
-      </div>
-=======
   const handleIntercambioBanco = () => {
   setMostrarIntercambio(true);
-  };
->>>>>>> ramajuanpa
-
+};
 
 return (
   <div className="tablero-centrado">
@@ -396,43 +326,70 @@ return (
         <>
           <button onClick={handleLanzarDados}>Lanzar dados</button>
           <button onClick={handleIntercambioBanco}>Intercambiar con el banco</button>
+
           {mostrarIntercambio && (
-  <div className="intercambio-banco">
-    <p style={{ margin: '8px 0' }}>Intercambia 4 de un tipo por 1 de otro</p>
+            <div className="intercambio-banco">
+              <p style={{ margin: '8px 0' }}>Intercambia 4 de un tipo por 1 de otro</p>
 
-    <label>Dar:</label>
-    <select value={tipoADar} onChange={(e) => setTipoADar(e.target.value)}>
-      <option value="">Selecciona tipo a entregar</option>
-      <option value="ñoño">Ñoño</option>
-      <option value="zorrón">Zorrón</option>
-      <option value="abogado">Abogado</option>
-      <option value="suero">Suero</option>
-      <option value="agricultor">Agricultor</option>
-    </select>
+              <label>Dar:</label>
+              <select value={tipoADar} onChange={(e) => setTipoADar(e.target.value)}>
+                <option value="">Selecciona tipo a entregar</option>
+                <option value="ñoño">Ñoño</option>
+                <option value="zorrón">Zorrón</option>
+                <option value="abogado">Abogado</option>
+                <option value="suero">Suero</option>
+                <option value="agricultor">Agricultor</option>
+              </select>
 
-    <label>Recibir:</label>
-    <select value={tipoARecibir} onChange={(e) => setTipoARecibir(e.target.value)}>
-      <option value="">Selecciona tipo a recibir</option>
-      <option value="ñoño">Ñoño</option>
-      <option value="zorrón">Zorrón</option>
-      <option value="abogado">Abogado</option>
-      <option value="suero">Suero</option>
-      <option value="agricultor">Agricultor</option>
-    </select>
+              <label>Recibir:</label>
+              <select value={tipoARecibir} onChange={(e) => setTipoARecibir(e.target.value)}>
+                <option value="">Selecciona tipo a recibir</option>
+                <option value="ñoño">Ñoño</option>
+                <option value="zorrón">Zorrón</option>
+                <option value="abogado">Abogado</option>
+                <option value="suero">Suero</option>
+                <option value="agricultor">Agricultor</option>
+              </select>
 
-    <button
-      onClick={handleIntercambiarConBanco}
-      disabled={!tipoADar || !tipoARecibir || tipoADar === tipoARecibir}
-      style={{ marginTop: '6px' }}
-    >
-      Confirmar intercambio
-    </button>
-    <button onClick={() => setMostrarIntercambio(false)} style={{ marginLeft: '6px' }}>
-      Cancelar
-    </button>
-  </div>
-)}
+              <button
+                onClick={handleIntercambiarConBanco}
+                disabled={!tipoADar || !tipoARecibir || tipoADar === tipoARecibir}
+                style={{ marginTop: '6px' }}
+              >
+                Confirmar intercambio
+              </button>
+              <button onClick={() => setMostrarIntercambio(false)} style={{ marginLeft: '6px' }}>
+                Cancelar
+              </button>
+            </div>
+          )}
 
+          <div style={{ marginTop: '10px' }}>
+            <label htmlFor="tipoConstruccion">Elige tipo de construcción:</label>
+            <select
+              id="tipoConstruccion"
+              value={tipoConstruccion}
+              onChange={(e) => setTipoConstruccion(e.target.value)}
+              style={{ marginLeft: '10px' }}
+            >
+              <option value="">-- Seleccionar --</option>
+              <option value="departamento">Departamento</option>
+              <option value="muro">Muro</option>
+              <option value="facultad">Facultad</option>
+            </select>
+          </div>
+
+          <div style={{ marginTop: '10px' }}>
+            <div>Vértice seleccionado: {selectedVertexId ?? 'Ninguno'}</div>
+            <div>Arista seleccionada: {selectedEdgeId ?? 'Ninguna'}</div>
+            <button
+              className={`boton-fundar ${!tipoConstruccion ? 'disabled' : ''}`}
+              disabled={!tipoConstruccion}
+              onClick={handleConstruirClick}
+            >
+              Construir
+            </button>
+          </div>
         </>
       )}
 
@@ -443,17 +400,19 @@ return (
       )}
 
       {esMiTurno() && partida?.estado === 'fundando' && (
-        <div style={{ marginTop: '10px' }}>
-          <div>Vértice seleccionado: {selectedVertexId ?? 'Ninguno'}</div>
-          <div>Arista seleccionada: {selectedEdgeId ?? 'Ninguna'}</div>
-          <button
-            className={`boton-fundar ${!(vertexOk && edgeOk) ? 'disabled' : ''}`}
-            disabled={!(vertexOk && edgeOk)}
-            onClick={handleFundarClick}
-          >
-            Fundar
-          </button>
-        </div>
+        <>
+          <div style={{ marginTop: '10px' }}>
+            <div>Vértice seleccionado: {selectedVertexId ?? 'Ninguno'}</div>
+            <div>Arista seleccionada: {selectedEdgeId ?? 'Ninguna'}</div>
+            <button
+              className={`boton-fundar ${!(vertexOk && edgeOk) ? 'disabled' : ''}`}
+              disabled={!(vertexOk && edgeOk)}
+              onClick={handleFundarClick}
+            >
+              Fundar
+            </button>
+          </div>
+        </>
       )}
 
       {esMiTurno() && (
@@ -536,7 +495,6 @@ return (
     </div>
   </div>
 );
-
-};
+}
 
 export default GameBoard;

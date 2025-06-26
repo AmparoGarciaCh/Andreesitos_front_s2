@@ -28,6 +28,7 @@ const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId, onPasarTurn
   const [coloresJugadores, setColoresJugadores] = useState({});
   const [inventario, setInventario] = useState([]);
   const [resultadoDados, setResultadoDados] = useState(null);
+  const [tipoConstruccion, setTipoConstruccion] = useState('');
   const { showToast } = useToast();
 
   const vertexOk = selectedVertexId !== null && selectedVertexId !== undefined;
@@ -139,13 +140,19 @@ const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId, onPasarTurn
   const enFaseFundando = () => partida?.estado === 'fundando';
 
   const handleVertexClick = (vertexId) => {
-    if (!esMiTurno() || !enFaseFundando()) return;
-    setSelectedVertexId(prev => (prev === vertexId ? null : vertexId));
+    if (!esMiTurno()) return;
+
+    if (partida.estado === 'jugando' && tipoConstruccion !== 'departamento' && tipoConstruccion !== 'facultad') return;
+    if (partida.estado === 'fundando') setSelectedVertexId(prev => (prev === vertexId ? null : vertexId));
+    else setSelectedVertexId(prev => (prev === vertexId ? null : vertexId));
   };
 
   const handleEdgeClick = (edgeId) => {
-    if (!esMiTurno() || !enFaseFundando()) return;
-    setSelectedEdgeId(prev => (prev === edgeId ? null : edgeId));
+    if (!esMiTurno()) return;
+
+    if (partida.estado === 'jugando' && tipoConstruccion !== 'muro') return;
+    if (partida.estado === 'fundando') setSelectedEdgeId(prev => (prev === edgeId ? null : edgeId));
+    else setSelectedEdgeId(prev => (prev === edgeId ? null : edgeId));
   };
 
   const handleFundarClick = async () => {
@@ -170,6 +177,37 @@ const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId, onPasarTurn
       console.error('Error al fundar:', err);
       
       const mensaje = err.response?.data?.error || 'Error al intentar fundar';
+      showToast(mensaje, 'error');
+    }
+  };
+
+  const handleConstruirClick = async () => {
+    try {
+      await axios.post(`${import.meta.env.VITE_backendURL}/jugada/construir`, {
+        tipo: tipoConstruccion,
+        idVertice: selectedVertexId,
+        idArista: selectedEdgeId,
+        jugadorId: jugadorIdPropio
+      }, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      setTipoConstruccion('');
+      setSelectedVertexId(null);
+      setSelectedEdgeId(null);
+      await fetchConstrucciones();
+      fetchInventario();
+
+      showToast('✅ ¡Construcción realizada con éxito!', 'success');
+
+    } catch (err) {
+      console.error('Error completo:', err);
+      console.error('Respuesta del backend:', err.response?.data);
+
+      const mensaje = err.response?.data?.error || 'Error al intentar construir';
       showToast(mensaje, 'error');
     }
   };
@@ -253,6 +291,36 @@ const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId, onPasarTurn
           <div style={{ marginTop: '10px' }}>
             Dados: 🎲 {resultadoDados.dado1} + {resultadoDados.dado2} = <strong>{resultadoDados.suma}</strong>
           </div>
+        )}
+        {esMiTurno() && partida?.estado === 'jugando' && (
+          <>
+            <div style={{ marginTop: '10px' }}>
+              <label htmlFor="tipoConstruccion">Elige tipo de construcción:</label>
+              <select
+                id="tipoConstruccion"
+                value={tipoConstruccion}
+                onChange={(e) => setTipoConstruccion(e.target.value)}
+                style={{ marginLeft: '10px' }}
+              >
+                <option value="">-- Seleccionar --</option>
+                <option value="departamento">Departamento</option>
+                <option value="muro">Muro</option>
+                <option value="facultad">Facultad</option>
+              </select>
+            </div>
+
+            <div style={{ marginTop: '10px' }}>
+              <div>Vértice seleccionado: {selectedVertexId ?? 'Ninguno'}</div>
+              <div>Arista seleccionada: {selectedEdgeId ?? 'Ninguna'}</div>
+              <button
+                className={`boton-fundar ${!tipoConstruccion ? 'disabled' : ''}`}
+                disabled={!tipoConstruccion}
+                onClick={handleConstruirClick}
+              >
+                Construir
+              </button>
+            </div>
+          </>
         )}
         {esMiTurno() && partida?.estado === 'fundando' && (
           <>

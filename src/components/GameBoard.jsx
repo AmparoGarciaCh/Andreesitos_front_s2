@@ -5,6 +5,7 @@ import Tile from './Tile';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import {useToast} from '../context/toast-context.jsx';
+import { useNavigate } from 'react-router-dom';
 
 const HEX_SIZE = 60;
 const CENTER_X = 520;
@@ -19,6 +20,7 @@ function axialToPixel(q, r, size) {
 const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId, onPasarTurno}) => {
   const token = localStorage.getItem('token');
   const usuario = JSON.parse(localStorage.getItem('usuario'));
+  const navigate = useNavigate();
 
   const [tablero, setTablero] = useState({ Terrenos: [], Vertices: [], Aristas: [] });
   const [jugadorEsperadoId, setJugadorEsperadoId] = useState(null);
@@ -286,7 +288,7 @@ const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId, onPasarTurn
 
   const handleConstruirClick = async () => {
     try {
-      await axios.post(`${import.meta.env.VITE_backendURL}/jugada/construir`, {
+      const response = await axios.post(`${import.meta.env.VITE_backendURL}/jugada/construir`, {
         tipo: tipoConstruccion,
         idVertice: selectedVertexId,
         idArista: selectedEdgeId,
@@ -305,6 +307,10 @@ const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId, onPasarTurn
       fetchInventario();
 
       showToast('✅ ¡Construcción realizada con éxito!', 'success');
+
+      if (response.data.finDelJuego) {
+        navigate('/victoria', { state: { ganador: response.data.ganador } });
+      }
 
     } catch (err) {
       console.error('Error completo:', err);

@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import GameBoard from '../components/GameBoard';
 import axios from 'axios';
@@ -8,6 +8,7 @@ import '../styles/Juego.css';
 const Game = () => {
   const { id } = useParams(); 
   const { state } = useLocation();
+  const navigate = useNavigate();
   const tableroIdFromState = state?.tableroId;
   const [jugadores, setJugadores] = useState([]);
   const { usuario } = useContext(AuthContext);
@@ -101,7 +102,28 @@ useEffect(() => {
   }
 }, [jugadorIdPropio, id]);
 
+useEffect(() => {
+  if (!id) return;
 
+  const interval = setInterval(async () => {
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_backendURL}/partidas/${id}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      });
+
+      const partidaActualizada = response.data.partida;
+      const ganadorNombre = response.data.ganadorNombre;
+
+      if (partidaActualizada.estado === 'finalizada') {
+        navigate('/victoria', { state: { ganador: ganadorNombre } });
+      }
+    } catch (err) {
+      console.error('Error al chequear estado de la partida:', err);
+    }
+  }, 3000);
+
+  return () => clearInterval(interval);
+}, [id, navigate]);
 
 useEffect(() => {
   if (estadoPartida !== 'fundando') return;

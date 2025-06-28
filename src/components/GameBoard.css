@@ -88,19 +88,126 @@
   margin: 0;
 }
 
+.boton-intercambio-banco {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background-color: #4CAF50;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  z-index: 999;
+  font-weight: bold;
+}
+
+.boton-intercambio-banco:hover {
+  background-color: #45a049;
+}
+
 .intercambio-banco {
+  background-color: #f3f3f3;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  padding: 12px;
   margin-top: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  width: 250px;
 }
 
 .intercambio-banco select {
+  width: 100%;
+  margin-bottom: 8px;
   padding: 4px;
-  font-size: 14px;
 }
 
-.intercambio-banco button {
-  margin-top: 6px;
-  padding: 6px 12px;
+.acciones-intercambio {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.acciones-intercambio button {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: none;
+  background-color: #1976d2;
+  color: white;
+  cursor: pointer;
+}
+
+.acciones-intercambio button:hover {
+  background-color: #115293;
+}
+.acciones-rapidas {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 10;
+}
+
+.modal-oferta {
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #f4f4f4;
+  padding: 20px;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.modal-oferta h3 {
+  margin-top: 0;
+}
+
+.modal-oferta label {
+  display: block;
+  margin-top: 8px;
+}
+
+.modal-oferta input,
+.modal-oferta select {
+  width: 100%;
+  padding: 6px;
+  margin-top: 4px;
+}
+
+.acciones-modal {
+  margin-top: 12px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.popup-oferta-recibida {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #fff9e6;
+  padding: 16px;
+  border: 2px solid #ffd24d;
+  border-radius: 8px;
+  z-index: 100;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+.popup-oferta-recibida button.rechazar {
+  margin-left: 8px;
+}
+.intercambio-banco {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: #fff;
+  border: 2px solid #999;
+  padding: 12px;
+  border-radius: 8px;
+  z-index: 10;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  width: 220px;
 }

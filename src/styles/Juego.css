@@ -1,6 +1,5 @@
-/* Fondo de madera y layout principal */
 .juego-container {
-  background-image: url('/fondo mesa.png'); /* usa tu fondo de madera */
+  background-image: url('/fondo mesa.png');
   background-size: cover;
   background-position: center;
   min-height: 100vh;
@@ -19,10 +18,9 @@
   text-shadow: 1px 1px 2px #000;
 }
 
-/* Zona del tablero */
 .tablero-hex-grid {
   display: grid;
-  grid-template-columns: repeat(7, 100px); /* puedes ajustar el tamaño */
+  grid-template-columns: repeat(7, 100px);
   grid-auto-rows: 86px;
   gap: 5px;
   margin: 2rem 0;
@@ -58,7 +56,6 @@
   color: #333;
 }
 
-/* Barra inferior con recursos o estado */
 .juego-info-bar {
   position: fixed;
   bottom: 0;
@@ -71,7 +68,6 @@
   font-size: 1.1rem;
 }
 
-/* Botón de lanzar dados u otras acciones */
 .juego-boton {
   background-color: #bb7744;
   color: white;
@@ -119,7 +115,6 @@
   font-size: 18px;
 }
 
-/* Colores por clase */
 .color-rojo { background-color: red; }
 .color-azul { background-color: blue; }
 .color-amarillo { background-color: yellow; }
@@ -151,9 +146,22 @@
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
-  /* Elimina estos si no los quieres */
   border: none;
   border-radius: 0;
   box-shadow: none;
   z-index: 1000;
+}
+
+.contador-puntos-empresa {
+  position: fixed; 
+  bottom: 20px;
+  right: 20px;
+  background: #fff;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  z-index: 1000; 
 }

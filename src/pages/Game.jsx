@@ -16,6 +16,7 @@ const Game = () => {
   const [idJugadorTurnoActual, setIdJugadorTurnoActual] = useState(null);
   const [tableroIdFinal, setTableroIdFinal] = useState(tableroIdFromState || null);
   const [estadoPartida, setEstadoPartida] = useState(null); 
+  const [puntosEmpresa, setPuntosEmpresa] = useState(0);
 
   useEffect(() => {
     const fetchTableroId = async () => {
@@ -77,7 +78,6 @@ const Game = () => {
     const interval = setInterval(fetchJugadoresDePartida, 3000);
     return () => clearInterval(interval);
   }, [id]);
-
 
 const fetchPartidaTurno = async () => {
   try {
@@ -143,6 +143,26 @@ useEffect(() => {
   return () => clearInterval(interval);
 }, [idJugadorTurnoActual, estadoPartida, id]);
 
+const fetchPuntosEmpresa = async () => {
+  if (!jugadorIdPropio) return;
+  try {
+    const response = await axios.get(`${import.meta.env.VITE_backendURL}/jugadores/${jugadorIdPropio}`);
+    if (response.data && response.data.puntosEmpresa !== undefined) {
+      setPuntosEmpresa(response.data.puntosEmpresa);
+    }
+  } catch (err) {
+    console.error('Error al obtener puntos de empresa:', err);
+  }
+};
+
+useEffect(() => {
+  if (estadoPartida !== 'jugando' || !jugadorIdPropio) return;
+
+  fetchPuntosEmpresa();
+  const interval = setInterval(fetchPuntosEmpresa, 3000);
+
+  return () => clearInterval(interval);
+}, [estadoPartida, jugadorIdPropio]);
 
 const handlePasarTurno = async () => {
   try {
@@ -189,6 +209,12 @@ const handlePasarTurno = async () => {
               ? '⌛ Esperando fundación'
               : '⌛ No es tu turno'}
         </p>
+      )}
+
+      {estadoPartida === 'jugando' && (
+        <div className="contador-puntos-empresa">
+          {puntosEmpresa} PE
+        </div>
       )}
 
       {tableroIdFinal ? (

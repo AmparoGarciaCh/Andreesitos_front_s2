@@ -30,41 +30,110 @@ const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId, onPasarTurn
   const [resultadoDados, setResultadoDados] = useState(null);
   const [tipoConstruccion, setTipoConstruccion] = useState('');
   const { showToast } = useToast();
-  //nuevo de prueba (juanpa)
+  const [mostrarModalOferta, setMostrarModalOferta] = useState(false);
   const [mostrarIntercambio, setMostrarIntercambio] = useState(false);
   const [tipoADar, setTipoADar] = useState('');
   const [tipoARecibir, setTipoARecibir] = useState('');
-
-
+  const [ofertaRecibida, setOfertaRecibida] = useState(null);
+  const [jugadorDestino, setJugadorDestino] = useState('');
+  const [jugadores, setJugadores] = useState([]);
+  const [recursoOfrecido, setRecursoOfrecido] = useState('');
+  const [recursoSolicitado, setRecursoSolicitado] = useState('');
+  const [cantidadOfrecida, setCantidadOfrecida] = useState(1);
+  const [cantidadSolicitada, setCantidadSolicitada] = useState(1);
   const vertexOk = selectedVertexId !== null && selectedVertexId !== undefined;
   const edgeOk = selectedEdgeId !== null && selectedEdgeId !== undefined;
   
-  const handleIntercambiarConBanco = async () => {
-  try {
-    console.log("jugadorId:", jugadorIdPropio);
-    console.log("tipoADar:", tipoADar);
-    console.log("tipoARecibir:", tipoARecibir);
-    const response = await axios.post(`${import.meta.env.VITE_backendURL}/comercio/banco`, {
-      jugadorId: jugadorIdPropio,
-      tipoADar,
-      tipoARecibir
-    }, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      }
-    });
 
-    showToast('✅ Intercambio realizado con éxito', 'success');
-    fetchInventario();
-    setMostrarIntercambio(false);
-    setTipoADar('');
-    setTipoARecibir('');
-  } catch (err) {
-    const mensaje = err.response?.data?.error || '❌ Error al intercambiar';
-    showToast(mensaje, 'error');
-  }
-};
+
+
+
+  const handleEnviarOferta = async () => {
+
+    if (!jugadorDestino || !recursoOfrecido || !recursoSolicitado || !cantidadOfrecida || !cantidadSolicitada) {
+      showToast("❌ Faltan campos para enviar la oferta", "error");
+      console.warn("⚠️ Validación fallida: campos incompletos", {
+        jugadorDestino,
+        recursoOfrecido,
+        recursoSolicitado,
+        cantidadOfrecida,
+        cantidadSolicitada
+      });
+      return;
+    }
+
+
+    console.log("📤 Enviando oferta con los siguientes datos:");
+
+    const payload = {
+        idJugador: jugadorIdPropio,
+        idJugadorDestino: jugadorDestino, 
+        recursoOfrecido,
+        recursoSolicitado,
+        cantidadOfrecida: Number(cantidadOfrecida),
+        cantidadSolicitada: Number(cantidadSolicitada)
+      };
+
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_backendURL}/comercio/oferta`, payload ,{
+
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        }
+      });
+
+      showToast("✅ Oferta enviada con éxito", "success");
+      setMostrarModalOferta(false);
+      setRecursoOfrecido('');
+      setRecursoSolicitado('');
+      setCantidadOfrecida(1);
+      setCantidadSolicitada(1);
+      setJugadorDestino('');
+    } catch (err) {
+        console.error("❌ Error al enviar oferta:", err);
+
+        
+        if (err.response) {
+          console.error("📄 Código de estado:", err.response.status);
+          console.error("📄 Headers:", err.response.headers);
+          console.error("📄 Data completa:", JSON.stringify(err.response.data, null, 2));
+        } else {
+          console.error("📄 Error sin respuesta del servidor:", err.message);
+        }
+
+        const mensaje = err.response?.data?.error || '❌ Error desconocido al enviar la oferta';
+        showToast(mensaje, 'error');
+      }
+  };
+
+
+    const handleIntercambiarConBanco = async () => {
+    try {
+      console.log("jugadorId:", jugadorIdPropio);
+      console.log("tipoADar:", tipoADar);
+      console.log("tipoARecibir:", tipoARecibir);
+      const response = await axios.post(`${import.meta.env.VITE_backendURL}/comercio/banco`, {
+        jugadorId: jugadorIdPropio,
+        tipoADar,
+        tipoARecibir
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        }
+      });
+
+      showToast('✅ Intercambio realizado con éxito', 'success');
+      fetchInventario();
+      setMostrarIntercambio(false);
+      setTipoADar('');
+      setTipoARecibir('');
+    } catch (err) {
+      const mensaje = err.response?.data?.error || '❌ Error al intercambiar';
+      showToast(mensaje, 'error');
+    }
+  };
 
 
   const fetchConstrucciones = async () => {
@@ -131,6 +200,7 @@ const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId, onPasarTurn
           mapping[j.id] = traduccionesCSS[j.color] || j.color;
         });
         setColoresJugadores(mapping);
+        setJugadores(jugadoresDePartida);
       } catch (error) {
         console.error('Error al obtener colores de jugadores:', error);
       }
@@ -275,12 +345,78 @@ const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId, onPasarTurn
     }
   };
 
+
   useEffect(() => {
     if (partida?.estado !== 'jugando') return;
     fetchInventario();
     const interval = setInterval(fetchInventario, 3000);
     return () => clearInterval(interval);
   }, [partida?.estado]);
+
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_backendURL}/comercio/pendientes/${jugadorIdPropio}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            }
+          }
+        );
+
+        const ofertas = response.data.ofertas;
+        if (ofertas && ofertas.length > 0) {
+          console.log("📨 Oferta recibida:", ofertas[0]);
+          setOfertaRecibida(ofertas[0]);  
+        } else {
+          setOfertaRecibida(null);
+        }
+
+      } catch (error) {
+        console.error("❌ Error al obtener ofertas pendientes:", error);
+      }
+    }, 5000); 
+    return () => clearInterval(interval);
+  }, [jugadorIdPropio]);
+
+
+const handleAceptarOferta = async () => {
+  try {
+    await axios.post(`${import.meta.env.VITE_backendURL}/comercio/aceptar`, {
+      ofertaId: ofertaRecibida.id
+    }, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    showToast("✅ Oferta aceptada", "success");
+    setOfertaRecibida(null);
+    fetchInventario(); 
+  } catch (err) {
+    console.error("Error al aceptar oferta:", err);
+    const mensaje = err.response?.data?.error || 'Error al aceptar la oferta';
+    showToast(mensaje, 'error');
+  }
+};
+
+const handleRechazarOferta = async () => {
+  try {
+    await axios.post(`${import.meta.env.VITE_backendURL}/comercio/rechazar`, {
+      ofertaId: ofertaRecibida.id
+    }, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    showToast("❌ Oferta rechazada", "info");
+    setOfertaRecibida(null);
+  } catch (err) {
+    console.error("Error al rechazar oferta:", err);
+    const mensaje = err.response?.data?.error || 'Error al rechazar la oferta';
+    showToast(mensaje, 'error');
+  }
+};
+
+
 
   useEffect(() => {
     if (partida?.estado !== 'jugando') return;
@@ -314,6 +450,64 @@ const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId, onPasarTurn
 
 return (
   <div className="tablero-centrado">
+    {ofertaRecibida && (
+      <div className="modal-oferta">
+        <p><strong>¡Has recibido una oferta!</strong></p>
+        <p>Te ofrecen {ofertaRecibida.cantidadOfrecida} {ofertaRecibida.recursoOfrecido}</p>
+        <p>A cambio de {ofertaRecibida.cantidadSolicitada} {ofertaRecibida.recursoSolicitado}</p>
+        <button onClick={handleAceptarOferta}>Aceptar</button>
+        <button onClick={handleRechazarOferta}>Rechazar</button>
+      </div>
+    )}
+
+    {mostrarModalOferta && (
+      <div className="modal-oferta">
+        <h3>Crear Oferta</h3>
+        <label>Jugador destinatario:</label>
+        <select value={jugadorDestino} onChange={(e) => setJugadorDestino(e.target.value)}>
+          <option value="">Selecciona jugador</option>
+          {jugadores
+            .filter((jug) => jug.id !== jugadorIdPropio)
+            .map((jug) => (
+              <option key={jug.id} value={jug.id}>
+                {jug.nombre || `Jugador ${jug.id}`}
+              </option>
+            ))}
+        </select>
+
+        <label>Recurso que ofreces:</label>
+        <select value={recursoOfrecido} onChange={(e) => setRecursoOfrecido(e.target.value)}>
+          <option value="">Selecciona</option>
+          <option value="ñoño">Ñoño</option>
+          <option value="zorrón">Zorrón</option>
+          <option value="abogado">Abogado</option>
+          <option value="suero">Suero</option>
+          <option value="agricultor">Agricultor</option>
+        </select>
+
+        <label>Cantidad ofrecida:</label>
+        <input type="number" min={1} value={cantidadOfrecida} onChange={(e) => setCantidadOfrecida(e.target.value)} />
+
+        <label>Recurso que pides:</label>
+        <select value={recursoSolicitado} onChange={(e) => setRecursoSolicitado(e.target.value)}>
+          <option value="">Selecciona</option>
+          <option value="ñoño">Ñoño</option>
+          <option value="zorrón">Zorrón</option>
+          <option value="abogado">Abogado</option>
+          <option value="suero">Suero</option>
+          <option value="agricultor">Agricultor</option>
+        </select>
+
+        <label>Cantidad solicitada:</label>
+        <input type="number" min={1} value={cantidadSolicitada} onChange={(e) => setCantidadSolicitada(e.target.value)} />
+
+        <button onClick={handleEnviarOferta} disabled={!jugadorDestino || !recursoOfrecido || !recursoSolicitado}>
+          Enviar oferta
+        </button>
+        <button onClick={() => setMostrarModalOferta(false)}>Cancelar</button>
+      </div>
+    )}
+
     <div className="estado-turno">
       {esMiTurno() ? '✅ Es tu turno' : '⌛ No es tu turno'}
       {coloresJugadores[jugadorIdPropio] && (
@@ -326,41 +520,36 @@ return (
         <>
           <button onClick={handleLanzarDados}>Lanzar dados</button>
           <button onClick={handleIntercambioBanco}>Intercambiar con el banco</button>
+          <button onClick={() => setMostrarModalOferta(true)}>🤝 Negociar con jugador</button>
 
           {mostrarIntercambio && (
             <div className="intercambio-banco">
-              <p style={{ margin: '8px 0' }}>Intercambia 4 de un tipo por 1 de otro</p>
-
+              <p>Intercambia 4 de un tipo por 1 de otro</p>
               <label>Dar:</label>
               <select value={tipoADar} onChange={(e) => setTipoADar(e.target.value)}>
-                <option value="">Selecciona tipo a entregar</option>
+                <option value="">Selecciona tipo</option>
                 <option value="ñoño">Ñoño</option>
                 <option value="zorrón">Zorrón</option>
                 <option value="abogado">Abogado</option>
                 <option value="suero">Suero</option>
                 <option value="agricultor">Agricultor</option>
               </select>
-
               <label>Recibir:</label>
               <select value={tipoARecibir} onChange={(e) => setTipoARecibir(e.target.value)}>
-                <option value="">Selecciona tipo a recibir</option>
+                <option value="">Selecciona tipo</option>
                 <option value="ñoño">Ñoño</option>
                 <option value="zorrón">Zorrón</option>
                 <option value="abogado">Abogado</option>
                 <option value="suero">Suero</option>
                 <option value="agricultor">Agricultor</option>
               </select>
-
               <button
                 onClick={handleIntercambiarConBanco}
                 disabled={!tipoADar || !tipoARecibir || tipoADar === tipoARecibir}
-                style={{ marginTop: '6px' }}
               >
                 Confirmar intercambio
               </button>
-              <button onClick={() => setMostrarIntercambio(false)} style={{ marginLeft: '6px' }}>
-                Cancelar
-              </button>
+              <button onClick={() => setMostrarIntercambio(false)}>Cancelar</button>
             </div>
           )}
 
@@ -400,24 +589,20 @@ return (
       )}
 
       {esMiTurno() && partida?.estado === 'fundando' && (
-        <>
-          <div style={{ marginTop: '10px' }}>
-            <div>Vértice seleccionado: {selectedVertexId ?? 'Ninguno'}</div>
-            <div>Arista seleccionada: {selectedEdgeId ?? 'Ninguna'}</div>
-            <button
-              className={`boton-fundar ${!(vertexOk && edgeOk) ? 'disabled' : ''}`}
-              disabled={!(vertexOk && edgeOk)}
-              onClick={handleFundarClick}
-            >
-              Fundar
-            </button>
-          </div>
-        </>
+        <div style={{ marginTop: '10px' }}>
+          <div>Vértice seleccionado: {selectedVertexId ?? 'Ninguno'}</div>
+          <div>Arista seleccionada: {selectedEdgeId ?? 'Ninguna'}</div>
+          <button
+            className={`boton-fundar ${!(vertexOk && edgeOk) ? 'disabled' : ''}`}
+            disabled={!(vertexOk && edgeOk)}
+            onClick={handleFundarClick}
+          >
+            Fundar
+          </button>
+        </div>
       )}
 
-      {esMiTurno() && (
-        <button onClick={onPasarTurno}>Pasar turno</button>
-      )}
+      {esMiTurno() && <button onClick={onPasarTurno}>Pasar turno</button>}
     </div>
 
     {inventario.length > 0 && (
@@ -436,11 +621,7 @@ return (
     )}
 
     <div className="tablero">
-      <img
-        src="/hexagono_mar.png"
-        alt="Fondo tablero hexagonal"
-        className="fondo-hexagonal"
-      />
+      <img src="/hexagono_mar.png" alt="Fondo tablero hexagonal" className="fondo-hexagonal" />
 
       {tablero.Terrenos.map((terreno) => {
         const { x, y } = axialToPixel(terreno.posicionX, terreno.posicionY, HEX_SIZE);
@@ -458,7 +639,6 @@ return (
 
       {tablero.Vertices.map((vertex) => {
         const construccionVertice = construcciones.vertices[Number(vertex.id)];
-
         return (
           <Vertex
             key={vertex.id}
@@ -472,7 +652,7 @@ return (
         );
       })}
 
-      <svg style={{ position: 'absolute', left: 0, top: 0, width: '100%', height: '100%', zIndex: 2, pointerEvents: 'auto' }}>
+      <svg style={{ position: 'absolute', left: 0, top: 0, width: '100%', height: '100%', zIndex: 2 }}>
         {tablero.Aristas.map((arista) => {
           const vInicio = tablero.Vertices.find(v => v.id === arista.idVerticeInicio);
           const vFin = tablero.Vertices.find(v => v.id === arista.idVerticeFin);

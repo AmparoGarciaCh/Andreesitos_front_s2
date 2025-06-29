@@ -115,7 +115,8 @@ useEffect(() => {
       const ganadorNombre = response.data.ganadorNombre;
 
       if (partidaActualizada.estado === 'finalizada') {
-        navigate('/victoria', { state: { ganador: ganadorNombre } });
+        console.log("Redirigiendo a victoria con id:", id);
+        navigate(`/victoria/${id}`);
       }
     } catch (err) {
       console.error('Error al chequear estado de la partida:', err);

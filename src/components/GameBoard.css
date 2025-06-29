@@ -426,3 +426,21 @@ svg {
   box-shadow: 0 0 6px rgba(210, 105, 30, 0.5);
   outline: none;
 }
+
+.dados-visual {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.imagen-dado {
+  width: 105px;
+  height: 105px;
+  object-fit: contain;
+}
+
+.dado-blanco {
+  width: 120px;
+  height: 120px;
+}

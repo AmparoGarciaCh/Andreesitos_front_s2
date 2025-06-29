@@ -21,9 +21,7 @@ const AppRouter= () => {
       <Route path="/Nosotros" element={<Nosotros />} />
       <Route path="/Jugar" element={<Jugar />} />
 
-      <Route path="/victoria" element={
-        <PrivateRoute><Victoria /></PrivateRoute>
-      } />
+      <Route path="/victoria/:partidaId" element={<Victoria />} />
 
       <Route path="/sala-espera/:id" element={
         <PrivateRoute><SalaEspera /></PrivateRoute>

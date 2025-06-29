@@ -36,15 +36,13 @@
   pointer-events: none;
 }
 .estado-turno {
-  position: fixed;
-  top: 160px;
-  left: 20px;
-  background-color: white;
-  padding: 12px;
-  border-radius: 10px;
-  z-index: 1000;
-  font-size: 16px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background: none;
+  padding: 0;
+  margin: 0;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.7); 
+  font-size: 24px;
+  font-weight: bold;
 }
 
 
@@ -199,15 +197,140 @@
 .popup-oferta-recibida button.rechazar {
   margin-left: 8px;
 }
-.intercambio-banco {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background: #fff;
-  border: 2px solid #999;
-  padding: 12px;
+
+.boton-juego {
+  background-color: #bb7744;
+  color: white;
+  padding: 10px 20px;
+  font-size: 18px;
+  border: none;
   border-radius: 8px;
+  cursor: pointer;
+  margin: 5px 0;
+  transition: background-color 0.3s;
+}
+
+.boton-juego:hover {
+  background-color: #a85d2e;
+}
+
+.boton-juego:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.panel-lateral {
+  position: absolute;
+  left: 50px;
+  top: 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
   z-index: 10;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-  width: 220px;
+  color: white;
+  font-size: 22px;
+}
+
+.inventario-grafico {
+  position: fixed;
+  bottom: 10px;
+  left: 45%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 16px;
+  padding: 8px 12px;
+  background-color: #b2935b;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  z-index: 20;
+}
+
+.especialista-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.imagen-especialista {
+  width: 40px;
+  height: auto;
+  object-fit: contain;
+}
+
+.cantidad-especialista {
+  font-size: 18px;
+  font-weight: bold;
+  color: #f5f5dc;
+}
+
+.modal-intercambio {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #b44405;
+  padding: 20px;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  text-align: center;
+}
+
+.opciones-especialista {
+  display: flex;
+  justify-content: space-around;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.especialista-opcion {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  min-width: 50px;
+  min-height: 50px;
+  pointer-events: auto;
+  z-index: 999;
+  border: 2px solid transparent; 
+  border-radius: 8px; 
+}
+
+.especialista-opcion img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.especialista-opcion.seleccionado {
+  border-color: gold;
+}
+
+.imagen-especialista-intercambio {
+  max-width: 110px;
+  max-height: 110px;
+  object-fit: contain;
+}
+
+.imagen-especialista-intercambio.ñoño {
+  max-height: 95px;
+}
+
+.imagen-especialista-intercambio.zorrón {
+  max-height: 95px;
+}
+
+.imagen-especialista-intercambio.abogado {
+  max-height: 93px;
+}
+
+.imagen-especialista-intercambio.suero {
+  max-height: 92px;
+}
+
+.imagen-especialista-intercambio.agricultor {
+  max-height: 107px;
+  margin-top: 0px;
 }

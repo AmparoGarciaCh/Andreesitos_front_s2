@@ -86,33 +86,40 @@
 
 .jugadores-lista {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
-  gap: 16px;
-  padding: 12px 24px;
-  background-color: rgba(255, 255, 255, 0.95);
-  border-bottom: 2px solid #ccc;
-  z-index: 10;
+  gap: 24px;
+  z-index: 20;
+  background: none;
+  padding: 0; 
+  border: none;
 }
 
 .jugador-item {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 8px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 1px 1px 2px #000;
+  background: rgba(0, 0, 0, 0.4); 
+  padding: 6px 12px;
+  border-radius: 10px;
 }
 
 .color-circulo {
-  width: 18px;
-  height: 18px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  border: 1px solid black;
+  border: 2px solid white;
+  margin-bottom: 4px;
 }
 
-.turno-indicador {
-  margin-left: 4px;
-  font-size: 18px;
+.jugador-item.jugador-turno {
+  border: 2px solid gold;
 }
 
 .color-rojo { background-color: red; }
@@ -123,18 +130,6 @@
 .color-blanco { background-color: #bfbfbf; }
 .color-gris { background-color: gray; }
 
-.estado-turno {
-  margin: 16px auto;
-  padding: 10px 18px;
-  border-radius: 10px;
-  font-weight: bold;
-  font-size: 18px;
-  background-color: rgba(255, 255, 255, 0.95);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  text-align: center;
-  max-width: 300px;
-  color: #333;
-}
 
 .tabla-costes {
   position: fixed;
@@ -155,13 +150,13 @@
 .contador-puntos-empresa {
   position: fixed; 
   bottom: 20px;
-  right: 20px;
-  background: #fff;
+  right: 500px;
+  background: #b2935b;
   padding: 10px 20px;
   border-radius: 8px;
   font-size: 20px;
   font-weight: bold;
-  color: #333;
+  color: #f5f5dc;
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
   z-index: 1000; 
 }

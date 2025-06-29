@@ -311,7 +311,7 @@ const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId, onPasarTurn
       showToast('✅ ¡Construcción realizada con éxito!', 'success');
 
       if (response.data.finDelJuego) {
-        navigate('/victoria', { state: { ganador: response.data.ganador } });
+        navigate(`/victoria/${partidaId}`);
       }
 
     } catch (err) {
@@ -607,8 +607,17 @@ return (
       )}
 
       {resultadoDados && (
-        <div>
-          Dados: 🎲 {resultadoDados.dado1} + {resultadoDados.dado2} = <strong>{resultadoDados.suma}</strong>
+        <div className="dados-visual">
+          <img
+            src={`/imagenes_dados/blanco_${resultadoDados.dado1}.png`}
+            alt={`Dado blanco ${resultadoDados.dado1}`}
+            className="imagen-dado dado-blanco"
+          />
+          <img
+            src={`/imagenes_dados/rojo_${resultadoDados.dado2}.png`}
+            alt={`Dado rojo ${resultadoDados.dado2}`}
+            className="imagen-dado dado-rojo"
+          />
         </div>
       )}
 

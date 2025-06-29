@@ -1,27 +1,69 @@
-import { useLocation, useNavigate } from 'react-router-dom';
-import '../styles/Victoria.css'; 
+import { useParams, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import '../styles/Victoria.css';
 
 const Victoria = () => {
-  const location = useLocation();
+  const { partidaId } = useParams(); 
   const navigate = useNavigate();
-  const ganador = location.state?.ganador || 'Jugador desconocido';
+  const [ranking, setRanking] = useState([]);
+
+  useEffect(() => {
+    const fetchRanking = async () => {
+      if (!partidaId) {
+        navigate('/'); 
+        return;
+      }
+
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_backendURL}/partidas/${partidaId}`);
+        if (response.data.ranking) {
+          setRanking(response.data.ranking);
+        }
+      } catch (err) {
+        console.error("Error al obtener ranking:", err);
+        navigate('/');
+      }
+    };
+
+    fetchRanking();
+  }, [partidaId, navigate]);
 
   const handleVolverInicio = () => {
     navigate('/');
   };
 
-  const handleJugarDeNuevo = () => {
-    navigate('/Jugar');
-  };
-
   return (
-    <div className="victoria-container">
-      <h1>🏆 ¡Fin del Juego!</h1>
-      <h2>🎉 ¡El ganador es: <span className="ganador-nombre">{ganador}</span>!</h2>
+    <div className="victoria-mockup-container">
+      <img src="/serpentina.png" alt="Serpentina izquierda" className="serpentina serpentina-izquierda" />
+      <img src="/serpentina.png" alt="Serpentina derecha" className="serpentina serpentina-derecha" />
 
-      <div className="victoria-botones">
-        <button onClick={handleVolverInicio}>Volver al Inicio</button>
-        <button onClick={handleJugarDeNuevo}>Jugar de Nuevo</button>
+      <div className="victoria-panel">
+        <div className="podio">
+          {ranking.slice(0,3).map((jug, idx) => (
+            <div key={idx} className={`puesto puesto-${idx+1}`}>
+              <div className="jugador-wrapper">
+                {idx === 0 && <img src="/corona.png" alt="Corona" className="corona" />}
+                <div className={`jugador-icon bg-${jug.color} ${idx === 0 ? 'ganador' : ''}`}></div>
+              </div>
+              <div className="numero-puesto">{idx + 1}</div>
+            </div>
+          ))}
+        </div>
+
+        <h2>🎉 FELICIDADES!</h2>
+
+        <div className="ranking">
+          {ranking.map((jug, idx) => (
+            <div className="fila-ranking" key={idx}>
+              <div className="posicion">{idx + 1}</div>
+              <div className={`nombre text-${jug.color}`}>{jug.nombre}</div>
+              <div className="pe">{jug.puntosEmpresa} PE</div>
+            </div>
+          ))}
+        </div>
+
+        <button className="boton-salir" onClick={handleVolverInicio}>Salir</button>
       </div>
     </div>
   );

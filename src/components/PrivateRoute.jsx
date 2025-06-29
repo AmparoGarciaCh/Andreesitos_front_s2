@@ -3,7 +3,7 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import './PrivateRoutes.css';
 
-const PrivateRoute = ({ children }) => {
+function PrivateRoute({ children }) {
   const { usuario } = useContext(AuthContext);
   const location = useLocation();
   const [showMessage, setShowMessage] = useState(false);
@@ -12,7 +12,7 @@ const PrivateRoute = ({ children }) => {
   useEffect(() => {
     if (!usuario) {
       setShowMessage(true);
-      console.log("⏳ Mostrando mensaje antes de redirigir...");
+      console.log('⏳ Mostrando mensaje antes de redirigir...');
       const timeout = setTimeout(() => {
         setRedirect(true);
       }, 2500);
@@ -36,6 +36,6 @@ const PrivateRoute = ({ children }) => {
   }
 
   return children;
-};
+}
 
 export default PrivateRoute;

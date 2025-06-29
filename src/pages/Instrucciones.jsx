@@ -16,14 +16,48 @@ function Instrucciones() {
         <section className="instrucciones-card">
           <div className="instrucciones-intro">
             <p>
-              <strong>Webtan</strong> es una experiencia estratégica ambientada en la vida universitaria UC, donde competirás por convertirte en la figura más influyente del campus. En esta sección encontrarás todo lo que necesitas saber para dominar el juego: desde cómo construir <strong>Departamentos</strong> y <strong>Facultades</strong>, hasta cómo comerciar especialistas, activar cartas de <strong>feeling con investigadores UC</strong> y mover al temido <strong>Ladrón de Cupos</strong>. Conoce aquí las reglas, acciones posibles y condiciones de victoria para convertirte en leyenda de la Universidad.
+              <strong>Webtan</strong>
+              {' '}
+              es una experiencia estratégica ambientada en la vida universitaria UC, donde competirás por convertirte en la figura más influyente del campus. En esta sección encontrarás todo lo que necesitas saber para dominar el juego: desde cómo construir
+              <strong>Departamentos</strong>
+              {' '}
+              y
+              <strong>Facultades</strong>
+              , hasta cómo comerciar especialistas, activar cartas de
+              <strong>feeling con investigadores UC</strong>
+              {' '}
+              y mover al temido
+              <strong>Ladrón de Cupos</strong>
+              . Conoce aquí las reglas, acciones posibles y condiciones de victoria para convertirte en leyenda de la Universidad.
             </p>
           </div>
 
           <div className="instrucciones-section">
             <h3>🎯 Objetivo del juego</h3>
             <p>
-            El objetivo de <strong>Webtán</strong> es ser el primer estudiante en alcanzar <strong>10 puntos de empresa</strong>, demostrando tu influencia y éxito dentro del ecosistema universitario UC. Puedes lograrlo construyendo <strong>Departamentos</strong> y <strong>Facultades</strong>, desarrollando <strong>muros de ingeniería</strong> que conecten tu presencia territorial, acumulando <strong>cartas de feeling</strong> con investigadores UC y cumpliendo condiciones especiales como tener el <strong>Muro más largo</strong> o ser parte del <strong>Grupo de Amigos más Carretero</strong>.
+              El objetivo de
+              {' '}
+              <strong>Webtán</strong>
+              {' '}
+              es ser el primer estudiante en alcanzar
+              <strong>10 puntos de empresa</strong>
+              , demostrando tu influencia y éxito dentro del ecosistema universitario UC. Puedes lograrlo construyendo
+              <strong>Departamentos</strong>
+              {' '}
+              y
+              <strong>Facultades</strong>
+              , desarrollando
+              <strong>muros de ingeniería</strong>
+              {' '}
+              que conecten tu presencia territorial, acumulando
+              <strong>cartas de feeling</strong>
+              {' '}
+              con investigadores UC y cumpliendo condiciones especiales como tener el
+              <strong>Muro más largo</strong>
+              {' '}
+              o ser parte del
+              <strong>Grupo de Amigos más Carretero</strong>
+              .
             </p>
           </div>
 
@@ -63,21 +97,25 @@ function Instrucciones() {
           <div className="instrucciones-section">
             <h3>🃏 Cartas de Feeling</h3>
             <p>
-            Las cartas de feeling representan alianzas y situaciones influyentes dentro del campus. Algunas otorgan puntos ocultos, otras permiten mover el Ladrón de Cupos, obtener recursos gratis o construir sin costo.
+              Las cartas de feeling representan alianzas y situaciones influyentes dentro del campus. Algunas otorgan puntos ocultos, otras permiten mover el Ladrón de Cupos, obtener recursos gratis o construir sin costo.
             </p>
           </div>
 
           <div className="instrucciones-section">
             <h3>👤 Ladrón de Cupos</h3>
             <p>
-            Si alguien lanza un 7, todos los jugadores con más de 7 especialistas deben descartar la mitad. Luego, el jugador mueve al <strong>Ladrón de Cupos</strong> a una casilla, bloqueando su producción, y roba un recurso de otro jugador con presencia en esa casilla.
+              Si alguien lanza un 7, todos los jugadores con más de 7 especialistas deben descartar la mitad. Luego, el jugador mueve al
+              {' '}
+              <strong>Ladrón de Cupos</strong>
+              {' '}
+              a una casilla, bloqueando su producción, y roba un recurso de otro jugador con presencia en esa casilla.
             </p>
           </div>
 
           <div className="instrucciones-section">
             <h3>🏆 Fin del Juego</h3>
             <p>
-            Cuando un jugador alcanza 10 puntos de empresa, el juego termina automáticamente. El servidor mostrará un resumen con estadísticas: cartas jugadas, recursos recolectados, turnos jugados y construcciones.
+              Cuando un jugador alcanza 10 puntos de empresa, el juego termina automáticamente. El servidor mostrará un resumen con estadísticas: cartas jugadas, recursos recolectados, turnos jugados y construcciones.
             </p>
           </div>
 

@@ -25,7 +25,11 @@ function Bienvenida() {
         <div className="columna-izquierda">
           <h1 className="titulo-webtan">WEBTAN</h1>
           <section className="descripcion">
-            <p><strong>Colonizar, pitutear y construir</strong> son las claves del éxito en la UC. Ubica estratégicamente tus departamentos, facultades y muros de ingeniería para dominar las mejores casillas, negocia con tus compañeros para conseguir a los especialistas que necesitas y utiliza con astucia al ladrón de cupos para bloquear terrenos rivales. Tal como en la vida universitaria, el pensamiento estratégico y la gestión de recursos son esenciales para destacar frente a los demás jugadores.</p>
+            <p>
+              <strong>Colonizar, pitutear y construir</strong>
+              {' '}
+              son las claves del éxito en la UC. Ubica estratégicamente tus departamentos, facultades y muros de ingeniería para dominar las mejores casillas, negocia con tus compañeros para conseguir a los especialistas que necesitas y utiliza con astucia al ladrón de cupos para bloquear terrenos rivales. Tal como en la vida universitaria, el pensamiento estratégico y la gestión de recursos son esenciales para destacar frente a los demás jugadores.
+            </p>
           </section>
           <div className="barra-sumergete">SUMÉRGETE EN EL MUNDO DE WEBTAN</div>
           <button className="jugar-btn" onClick={handleClick}>Ir a jugar</button>

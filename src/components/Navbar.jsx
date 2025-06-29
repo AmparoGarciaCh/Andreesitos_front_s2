@@ -43,7 +43,12 @@ function Navbar() {
             <li><Link to="/nosotros">Nosotros</Link></li>
             {usuario && (
               <>
-                <li><strong>👤 {usuario.nombre}</strong></li>
+                <li>
+                  <strong>
+                    👤
+                    {usuario.nombre}
+                  </strong>
+                </li>
                 <li onClick={handleLogout} style={{ cursor: 'pointer' }}>Cerrar sesión</li>
               </>
             )}

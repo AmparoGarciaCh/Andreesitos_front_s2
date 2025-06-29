@@ -8,9 +8,9 @@ import Instrucciones from '../pages/Instrucciones';
 import Nosotros from '../pages/Nosotros';
 import PrivateRoute from '../components/PrivateRoute';
 import Game from '../pages/Game';
-import Victoria from '../pages/Victoria'; 
+import Victoria from '../pages/Victoria';
 
-const AppRouter= () => {
+function AppRouter() {
   return (
     <Routes>
 
@@ -23,12 +23,18 @@ const AppRouter= () => {
 
       <Route path="/victoria/:partidaId" element={<Victoria />} />
 
-      <Route path="/sala-espera/:id" element={
-        <PrivateRoute><SalaEspera /></PrivateRoute>
-      } />
-      <Route path="/juego/:id" element={
-        <PrivateRoute><Game /></PrivateRoute>
-      } />
+      <Route
+        path="/sala-espera/:id"
+        element={
+          <PrivateRoute><SalaEspera /></PrivateRoute>
+      }
+      />
+      <Route
+        path="/juego/:id"
+        element={
+          <PrivateRoute><Game /></PrivateRoute>
+      }
+      />
 
     </Routes>
   );

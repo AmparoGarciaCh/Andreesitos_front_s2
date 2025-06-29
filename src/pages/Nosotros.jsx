@@ -14,7 +14,10 @@ function Nosotros() {
       <main className="nosotros-main">
         <h1 className="nosotros-title">Sobre el equipo</h1>
         <p className="nosotros-intro">
-          Somos estudiantes de Ingeniería UC desarrollando <strong>Webtan</strong>, una adaptación universitaria del clásico juego Catan. Nuestro equipo combina habilidades de diseño, lógica y desarrollo web para entregar una experiencia entretenida y académica.
+          Somos estudiantes de Ingeniería UC desarrollando
+          {' '}
+          <strong>Webtan</strong>
+          , una adaptación universitaria del clásico juego Catan. Nuestro equipo combina habilidades de diseño, lógica y desarrollo web para entregar una experiencia entretenida y académica.
         </p>
 
         <section className="nosotros-cards">

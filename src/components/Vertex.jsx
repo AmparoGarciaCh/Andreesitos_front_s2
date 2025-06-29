@@ -1,14 +1,14 @@
 import './Vertex.css';
 import { renderColorConstruccion } from '../utils/renderColor';
 
-const Vertex = ({ x, y, selected, onClick, construccion, coloresJugadores }) => {
+function Vertex({
+  x, y, selected, onClick, construccion, coloresJugadores,
+}) {
   let color = 'white';
 
   if (construccion) {
     const idJ = Number(construccion.jugadorId ?? construccion.idJugador);
     color = renderColorConstruccion(idJ, coloresJugadores);
-
-
   }
 
   return (
@@ -21,10 +21,10 @@ const Vertex = ({ x, y, selected, onClick, construccion, coloresJugadores }) => 
       style={{
         left: `${x}px`,
         top: `${y}px`,
-        backgroundColor: color
+        backgroundColor: color,
       }}
     />
   );
-};
+}
 
 export default Vertex;

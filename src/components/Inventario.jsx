@@ -1,8 +1,7 @@
-// components/Inventario.jsx
 import React, { useEffect, useState } from 'react';
 import './Inventario.css';
 
-const Inventario = ({ idPartida }) => {
+function Inventario({ idPartida }) {
   const [inventario, setInventario] = useState([]);
 
   const fetchInventario = async () => {
@@ -24,16 +23,25 @@ const Inventario = ({ idPartida }) => {
       <h3>📦 Inventario de jugadores</h3>
       {inventario.map((jugador) => (
         <div key={jugador.idJugador} className="inventario-jugador">
-          <strong>Jugador {jugador.nombre ?? jugador.idJugador}:</strong>
+          <strong>
+            Jugador
+            {jugador.nombre ?? jugador.idJugador}
+            :
+          </strong>
           <ul>
             {Object.entries(jugador.especialistas).map(([tipo, cantidad]) => (
-              <li key={tipo}>{tipo}: {cantidad}</li>
+              <li key={tipo}>
+                {tipo}
+                :
+                {' '}
+                {cantidad}
+              </li>
             ))}
           </ul>
         </div>
       ))}
     </div>
   );
-};
+}
 
 export default Inventario;

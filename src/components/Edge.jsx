@@ -1,7 +1,9 @@
 import './Edge.css';
 import { renderColorConstruccion } from '../utils/renderColor';
 
-const Edge = ({ x1, y1, x2, y2, selected, onClick, construccion, coloresJugadores }) => {
+function Edge({
+  x1, y1, x2, y2, selected, onClick, construccion, coloresJugadores,
+}) {
   let strokeColor = 'lightgray';
   let strokeWidth = 3;
 
@@ -29,6 +31,6 @@ const Edge = ({ x1, y1, x2, y2, selected, onClick, construccion, coloresJugadore
       }}
     />
   );
-};
+}
 
 export default Edge;

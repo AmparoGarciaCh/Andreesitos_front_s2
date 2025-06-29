@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import './ModalDescartarCartas.css';
 
-const ModalDescartarCartas = ({ visible, onClose, inventario, cantidadADescartar, onDescartar }) => {
+function ModalDescartarCartas({
+  visible, onClose, inventario, cantidadADescartar, onDescartar,
+}) {
   const [seleccionadas, setSeleccionadas] = useState({});
 
   const totalSeleccionadas = Object.values(seleccionadas)
-  .map(v => Number(v))
-  .reduce((sum, value) => sum + value, 0);
+    .map((v) => Number(v))
+    .reduce((sum, value) => sum + value, 0);
 
   const handleDescarte = (tipo, cantidad) => {
     setSeleccionadas((prev) => ({
@@ -15,8 +17,8 @@ const ModalDescartarCartas = ({ visible, onClose, inventario, cantidadADescartar
         0,
         Math.min(
           cantidad,
-          inventario.find((c) => c.tipoEspecialista === tipo)?.cantidad || 0
-        )
+          inventario.find((c) => c.tipoEspecialista === tipo)?.cantidad || 0,
+        ),
       ),
     }));
   };
@@ -35,19 +37,31 @@ const ModalDescartarCartas = ({ visible, onClose, inventario, cantidadADescartar
   return (
     <div className="modal-overlay">
       <div className="modal-contenido">
-        <h2>Debes descartar {cantidadADescartar} cartas</h2>
-        <p>Total seleccionadas: {totalSeleccionadas}</p>
+        <h2>
+          Debes descartar
+          {cantidadADescartar}
+          {' '}
+          cartas
+        </h2>
+        <p>
+          Total seleccionadas:
+          {totalSeleccionadas}
+        </p>
         {inventario.map((carta) => (
           <div key={carta.tipoEspecialista}>
-            <span>{carta.tipoEspecialista} ({carta.cantidad}):</span>
+            <span>
+              {carta.tipoEspecialista}
+              {' '}
+              (
+              {carta.cantidad}
+              ):
+            </span>
             <input
               type="number"
               min={0}
               max={carta.cantidad}
               value={seleccionadas[carta.tipoEspecialista] || []}
-              onChange={(e) =>
-                handleDescarte(carta.tipoEspecialista, parseInt(e.target.value, 10))
-              }
+              onChange={(e) => handleDescarte(carta.tipoEspecialista, parseInt(e.target.value, 10))}
             />
           </div>
         ))}
@@ -55,8 +69,6 @@ const ModalDescartarCartas = ({ visible, onClose, inventario, cantidadADescartar
       </div>
     </div>
   );
-};
+}
 
 export default ModalDescartarCartas;
-
-

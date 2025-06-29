@@ -1,10 +1,11 @@
 import React, { useState, useContext } from 'react';
-import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { AuthContext } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
 import '../styles/Login.css';
 import fondoLogin from '/fondo5.png';
-import axios from 'axios';
+
 
 function Login() {
   const [correo, setCorreo] = useState('');
@@ -20,12 +21,12 @@ function Login() {
     try {
       const response = await axios.post(`${import.meta.env.VITE_backendURL}/usuarios/login`, {
         correo,
-        password
+        password,
       }, {
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
       });
 
-      const data = response.data;
+      const { data } = response;
 
       localStorage.setItem('token', data.token);
       localStorage.setItem('usuario', JSON.stringify(data.usuario));
@@ -35,10 +36,9 @@ function Login() {
       setTimeout(() => navigate('/'), 1000);
     } catch (error) {
       const mensajeError = error.response?.data?.error || error.message;
-      setMensaje('❌ ' + mensajeError);
+      setMensaje(`❌ ${mensajeError}`);
     }
   };
-
 
   return (
     <div className="login-container" style={{ backgroundImage: `url(${fondoLogin})` }}>

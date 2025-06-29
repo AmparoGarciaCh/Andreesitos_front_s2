@@ -55,8 +55,8 @@
 }
 
 .login-form button {
-  margin-top: 1rem;          /* ✅ separa del input anterior */
-  margin-bottom: 0.5rem;     /* (opcional) si quieres espacio con mensaje o link */
+  margin-top: 1rem;          
+  margin-bottom: 0.5rem;     
   background-color: #5c2e00;
   color: white;
   font-weight: bold;
@@ -67,7 +67,7 @@
   cursor: pointer;
   width: 60%;
   display: block;
-  margin: 0 auto;         /* ✅ fuerza el centrado horizontal */
+  margin: 0 auto;        
 }
 
 .login-message {

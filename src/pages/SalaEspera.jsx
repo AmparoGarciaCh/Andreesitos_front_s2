@@ -19,7 +19,14 @@ function SalaEspera() {
   useEffect(() => {
     const fetchJugadores = async () => {
       try {
-        const resJugadores = await axios.get(`${import.meta.env.VITE_backendURL}/jugadores`);
+        const resJugadores = await axios.get(`${import.meta.env.VITE_backendURL}/jugadores`,
+          {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        },
+        );
         const todos = resJugadores.data;
         const enPartida = todos.filter((j) => j.idPartida === parseInt(id,10));
 
@@ -38,7 +45,14 @@ function SalaEspera() {
   useEffect(() => {
     const fetchPartida = async () => {
       try {
-        const resPartida = await axios.get(`${import.meta.env.VITE_backendURL}/partidas/${id}`);
+        const resPartida = await axios.get(`${import.meta.env.VITE_backendURL}/partidas/${id}`,
+          {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        },
+        );
 
         const dataPartida = resPartida.data;
 

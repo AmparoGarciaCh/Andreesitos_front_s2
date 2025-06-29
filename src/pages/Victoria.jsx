@@ -1,12 +1,16 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import '../styles/Victoria.css';
+import { AuthContext } from '../context/AuthContext';
 
 function Victoria() {
   const { partidaId } = useParams();
   const navigate = useNavigate();
   const [ranking, setRanking] = useState([]);
+  const { usuario } = useContext(AuthContext);
+  const token = localStorage.getItem('token');
+
 
   useEffect(() => {
     const fetchRanking = async () => {
@@ -16,7 +20,13 @@ function Victoria() {
       }
 
       try {
-        const response = await axios.get(`${import.meta.env.VITE_backendURL}/partidas/${partidaId}`);
+        const response = await axios.get(`${import.meta.env.VITE_backendURL}/partidas/${partidaId}`,
+          {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },}
+        );
         if (response.data.ranking) {
           setRanking(response.data.ranking);
         }

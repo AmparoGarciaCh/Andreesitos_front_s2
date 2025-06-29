@@ -10,8 +10,11 @@ function Game() {
   const { state } = useLocation();
   const navigate = useNavigate();
   const tableroIdFromState = state?.tableroId;
+
+  const { usuario, token: tokenDesdeContexto } = useContext(AuthContext);
+  const authToken = tokenDesdeContexto || localStorage.getItem('token');
+
   const [jugadores, setJugadores] = useState([]);
-  const { usuario } = useContext(AuthContext);
   const [partida, setPartida] = useState(null);
   const [jugadorIdPropio, setJugadorIdPropio] = useState(null);
   const [idJugadorTurnoActual, setIdJugadorTurnoActual] = useState(null);
@@ -23,9 +26,13 @@ function Game() {
     const fetchTableroId = async () => {
       if (!tableroIdFromState && id) {
         try {
-          const response = await axios.get(`${import.meta.env.VITE_backendURL}/tableros/partida/${id}`);
+          const response = await axios.get(`${import.meta.env.VITE_backendURL}/tableros/partida/${id}`, {
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+              'Content-Type': 'application/json',
+            },
+          });
           const { data } = response;
-
           if (data.id) {
             setTableroIdFinal(data.id);
           } else {
@@ -43,10 +50,17 @@ function Game() {
   useEffect(() => {
     const fetchJugadorPropio = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_backendURL}/jugadores`);
+        const response = await axios.get(`${import.meta.env.VITE_backendURL}/jugadores`, {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            'Content-Type': 'application/json',
+          },
+        });
         const jugadores = response.data;
 
-        const miJugador = jugadores.find((j) => j.usuarioId === usuario.id && j.idPartida === parseInt(id,10));
+        const miJugador = jugadores.find(
+          (j) => j.usuarioId === usuario.id && j.idPartida === parseInt(id, 10)
+        );
 
         if (miJugador) {
           setJugadorIdPropio(miJugador.id);
@@ -65,7 +79,12 @@ function Game() {
   useEffect(() => {
     const fetchJugadoresDePartida = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_backendURL}/jugadores/partida/${id}`);
+        const response = await axios.get(`${import.meta.env.VITE_backendURL}/jugadores/partida/${id}`, {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            'Content-Type': 'application/json',
+          },
+        });
         const { data } = response;
         setJugadores(data.jugadores || []);
       } catch (error) {
@@ -80,10 +99,15 @@ function Game() {
 
   const fetchPartidaTurno = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_backendURL}/partidas/${id}`);
+      const response = await axios.get(`${import.meta.env.VITE_backendURL}/partidas/${id}`, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
       const dataPartida = response.data;
-
       const partidaActual = dataPartida.partida;
+
       if (partidaActual) {
         setIdJugadorTurnoActual(partidaActual.idJugadorTurnoActual);
         setPartida(partidaActual);
@@ -106,7 +130,10 @@ function Game() {
     const interval = setInterval(async () => {
       try {
         const response = await axios.get(`${import.meta.env.VITE_backendURL}/partidas/${id}`, {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            'Content-Type': 'application/json',
+          },
         });
 
         const partidaActualizada = response.data.partida;
@@ -129,7 +156,12 @@ function Game() {
 
     const fetchFundador = async () => {
       try {
-        await axios.get(`${import.meta.env.VITE_backendURL}/partidas/${id}/siguiente-fundador`);
+        await axios.get(`${import.meta.env.VITE_backendURL}/partidas/${id}/siguiente-fundador`, {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            'Content-Type': 'application/json',
+          },
+        });
       } catch (error) {
         console.error('Error actualizando el siguiente fundador:', error);
       }
@@ -143,7 +175,12 @@ function Game() {
   useEffect(() => {
     const interval = setInterval(async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_backendURL}/partidas/${id}`);
+        const response = await axios.get(`${import.meta.env.VITE_backendURL}/partidas/${id}`, {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            'Content-Type': 'application/json',
+          },
+        });
         const nuevaPartida = response.data.partida;
 
         if (!nuevaPartida) return;
@@ -167,7 +204,12 @@ function Game() {
   const fetchPuntosEmpresa = async () => {
     if (!jugadorIdPropio) return;
     try {
-      const response = await axios.get(`${import.meta.env.VITE_backendURL}/jugadores/${jugadorIdPropio}`);
+      const response = await axios.get(`${import.meta.env.VITE_backendURL}/jugadores/${jugadorIdPropio}`, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
       if (response.data && response.data.puntosEmpresa !== undefined) {
         setPuntosEmpresa(response.data.puntosEmpresa);
       }
@@ -187,17 +229,15 @@ function Game() {
 
   const handlePasarTurno = async () => {
     try {
-      const token = localStorage.getItem('token');
-
       await axios.post(
         `${import.meta.env.VITE_backendURL}/partidas/${id}/pasar-turno`,
         {},
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${authToken}`,
             'Content-Type': 'application/json',
           },
-        },
+        }
       );
       await fetchPartidaTurno();
     } catch (err) {
@@ -218,9 +258,7 @@ function Game() {
 
       {estadoPartida === 'jugando' && (
         <div className="contador-puntos-empresa">
-          {puntosEmpresa}
-          {' '}
-          PE
+          {puntosEmpresa} PE
         </div>
       )}
 
@@ -230,7 +268,7 @@ function Game() {
           partida={partida}
           jugadorIdPropio={jugadorIdPropio}
           partidaId={id}
-          tableroId={parseInt(tableroIdFinal,10)}
+          tableroId={parseInt(tableroIdFinal, 10)}
           onPasarTurno={handlePasarTurno}
           estadoPartida={estadoPartida}
           idJugadorTurnoActual={idJugadorTurnoActual}

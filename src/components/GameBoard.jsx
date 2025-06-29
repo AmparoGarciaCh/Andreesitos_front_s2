@@ -176,7 +176,8 @@ function GameBoard({
       console.log('jugadorId:', jugadorIdPropio);
       console.log('tipoADar:', tipoADar);
       console.log('tipoARecibir:', tipoARecibir);
-      const response = await axios.post(`${import.meta.env.VITE_backendURL}/comercio/banco`, {
+      const response = await axios.post(`${import.meta.env.VITE_backendURL}/comercio/banco`, 
+        {
         jugadorId: jugadorIdPropio,
         tipoADar,
         tipoARecibir,
@@ -200,7 +201,13 @@ function GameBoard({
 
   const fetchConstrucciones = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_backendURL}/construcciones/juego/${partidaId}`);
+      const response = await axios.get(`${import.meta.env.VITE_backendURL}/construcciones/juego/${partidaId}`,
+        {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },}
+      );
       const { data } = response;
       const vertices = {};
       const aristas = {};
@@ -237,7 +244,13 @@ function GameBoard({
   useEffect(() => {
     const fetchJugadores = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_backendURL}/jugadores`);
+        const response = await axios.get(`${import.meta.env.VITE_backendURL}/jugadores`,
+          {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },}
+        );
         const jugadores = response.data;
         const jugadoresDePartida = jugadores.filter((j) => Number(j.idPartida) === Number(partidaId));
         const traduccionesCSS = {

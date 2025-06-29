@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'; // 👈 agrega useState
+import React, { useContext, useState } from 'react'; 
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import '../styles/Bienvenida.css';
@@ -7,7 +7,7 @@ import Navbar from '../components/Navbar';
 
 function Bienvenida() {
   const navigate = useNavigate();
-  const { usuario } = useContext(AuthContext);
+  const { usuario,  } = useContext(AuthContext);
   const [mensaje, setMensaje] = useState('');
 
   const handleClick = () => {

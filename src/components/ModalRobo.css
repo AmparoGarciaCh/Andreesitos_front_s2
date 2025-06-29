@@ -1,0 +1,50 @@
+.modal-fondo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.modal-contenido {
+  background-color: #fff;
+  padding: 24px;
+  border-radius: 10px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.jugador-lista {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0;
+}
+
+.jugador-item {
+  margin-bottom: 8px;
+}
+
+.botones-robo {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.boton-confirmar,
+.boton-cancelar {
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.boton-confirmar:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

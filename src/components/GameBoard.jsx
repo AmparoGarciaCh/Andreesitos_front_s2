@@ -459,60 +459,131 @@ const handleRechazarOferta = async () => {
 return (
   <div className="tablero-centrado">
     {ofertaRecibida && (
-      <div className="modal-oferta">
-        <p><strong>¡Has recibido una oferta!</strong></p>
-        <p>Te ofrecen {ofertaRecibida.cantidadOfrecida} {ofertaRecibida.recursoOfrecido}</p>
-        <p>A cambio de {ofertaRecibida.cantidadSolicitada} {ofertaRecibida.recursoSolicitado}</p>
-        <button onClick={handleAceptarOferta}>Aceptar</button>
-        <button onClick={handleRechazarOferta}>Rechazar</button>
+      <div className="modal-intercambio-jugador">
+        <h3>¡Has recibido una oferta!</h3>
+
+        <div className="seleccion-especialista">
+          <p>Te ofrecen:</p>
+          <div className="opciones-especialista">
+            <div className="especialista-opcion seleccionado">
+              <img
+                src={`/imagenes_especialistas_intercambio/${ofertaRecibida.recursoOfrecido}.png`}
+                alt={ofertaRecibida.recursoOfrecido}
+                className="imagen-especialista-intercambio"
+              />
+              <span>{ofertaRecibida.cantidadOfrecida}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="seleccion-especialista">
+          <p>A cambio de:</p>
+          <div className="opciones-especialista">
+            <div className="especialista-opcion seleccionado">
+              <img
+                src={`/imagenes_especialistas_intercambio/${ofertaRecibida.recursoSolicitado}.png`}
+                alt={ofertaRecibida.recursoSolicitado}
+                className="imagen-especialista-intercambio"
+              />
+              <span>{ofertaRecibida.cantidadSolicitada}</span>
+            </div>
+          </div>
+        </div>
+
+        <button className="boton-juego" onClick={handleAceptarOferta}>Aceptar</button>
+        <button className="boton-juego" onClick={handleRechazarOferta}>Rechazar</button>
       </div>
     )}
 
     {mostrarModalOferta && (
-      <div className="modal-oferta">
-        <h3>Crear Oferta</h3>
-        <label>Jugador destinatario:</label>
-        <select value={jugadorDestino} onChange={(e) => setJugadorDestino(e.target.value)}>
-          <option value="">Selecciona jugador</option>
-          {jugadores
-            .filter((jug) => jug.id !== jugadorIdPropio)
-            .map((jug) => (
-              <option key={jug.id} value={jug.id}>
-                {jug.nombre || `Jugador ${jug.id}`}
-              </option>
+      <div className="modal-intercambio-jugador">
+        <h3>Negociar con jugador</h3>
+
+        <div className="seleccion-especialista">
+          <p>Selecciona jugador destinatario:</p>
+          <div className="opciones-jugadores">
+            {jugadores.filter(j => j.id !== jugadorIdPropio).map(j => (
+              <div
+                key={j.id}
+                className={`jugador-opcion ${jugadorDestino == j.id ? 'seleccionado' : ''}`}
+                onClick={() => setJugadorDestino(j.id)}
+              >
+                <div
+                  style={{
+                    backgroundColor: coloresJugadores[j.id],
+                    width: '30px',
+                    height: '30px',
+                    borderRadius: '50%'
+                  }}
+                ></div>
+                <small>{j.nombre || `Jugador ${j.id}`}</small>
+              </div>
             ))}
-        </select>
+          </div>
+        </div>
 
-        <label>Recurso que ofreces:</label>
-        <select value={recursoOfrecido} onChange={(e) => setRecursoOfrecido(e.target.value)}>
-          <option value="">Selecciona</option>
-          <option value="ñoño">Ñoño</option>
-          <option value="zorrón">Zorrón</option>
-          <option value="abogado">Abogado</option>
-          <option value="suero">Suero</option>
-          <option value="agricultor">Agricultor</option>
-        </select>
+        <div className="seleccion-especialista">
+          <p>Das:</p>
+          <div className="opciones-especialista">
+            {["ñoño", "zorrón", "abogado", "suero", "agricultor"].map(tipo => (
+              <div
+                key={tipo}
+                className={`especialista-opcion ${recursoOfrecido === tipo ? 'seleccionado' : ''}`}
+                onClick={() => setRecursoOfrecido(tipo)}
+              >
+                <img
+                  src={`/imagenes_especialistas_intercambio/${tipo}.png`}
+                  alt={tipo}
+                  className="imagen-especialista-intercambio"
+                />
+              </div>
+            ))}
+          </div>
+          <input
+            type="number"
+            min={1}
+            value={cantidadOfrecida}
+            onChange={(e) => setCantidadOfrecida(e.target.value)}
+            placeholder="Cantidad ofrecida"
+            className="input-cantidad"
+          />
+        </div>
 
-        <label>Cantidad ofrecida:</label>
-        <input type="number" min={1} value={cantidadOfrecida} onChange={(e) => setCantidadOfrecida(e.target.value)} />
+        <div className="seleccion-especialista">
+          <p>Pides:</p>
+          <div className="opciones-especialista">
+            {["ñoño", "zorrón", "abogado", "suero", "agricultor"].map(tipo => (
+              <div
+                key={tipo}
+                className={`especialista-opcion ${recursoSolicitado === tipo ? 'seleccionado' : ''}`}
+                onClick={() => setRecursoSolicitado(tipo)}
+              >
+                <img
+                  src={`/imagenes_especialistas_intercambio/${tipo}.png`}
+                  alt={tipo}
+                  className="imagen-especialista-intercambio"
+                />
+              </div>
+            ))}
+          </div>
+          <input
+            type="number"
+            min={1}
+            value={cantidadSolicitada}
+            onChange={(e) => setCantidadSolicitada(e.target.value)}
+            placeholder="Cantidad solicitada"
+            className="input-cantidad"
+          />
+        </div>
 
-        <label>Recurso que pides:</label>
-        <select value={recursoSolicitado} onChange={(e) => setRecursoSolicitado(e.target.value)}>
-          <option value="">Selecciona</option>
-          <option value="ñoño">Ñoño</option>
-          <option value="zorrón">Zorrón</option>
-          <option value="abogado">Abogado</option>
-          <option value="suero">Suero</option>
-          <option value="agricultor">Agricultor</option>
-        </select>
-
-        <label>Cantidad solicitada:</label>
-        <input type="number" min={1} value={cantidadSolicitada} onChange={(e) => setCantidadSolicitada(e.target.value)} />
-
-        <button onClick={handleEnviarOferta} disabled={!jugadorDestino || !recursoOfrecido || !recursoSolicitado}>
+        <button
+          className="boton-juego"
+          onClick={handleEnviarOferta}
+          disabled={!jugadorDestino || !recursoOfrecido || !recursoSolicitado}
+        >
           Enviar oferta
         </button>
-        <button onClick={() => setMostrarModalOferta(false)}>Cancelar</button>
+        <button className="boton-juego" onClick={() => setMostrarModalOferta(false)}>Cancelar</button>
       </div>
     )}
 
@@ -608,6 +679,7 @@ return (
           <select
             value={tipoConstruccion}
             onChange={(e) => setTipoConstruccion(e.target.value)}
+            className="select-construccion"
           >
             <option value="">-- Seleccionar --</option>
             <option value="departamento">Departamento</option>

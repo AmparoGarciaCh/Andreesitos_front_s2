@@ -9,7 +9,6 @@ const Edge = ({ x1, y1, x2, y2, selected, onClick, construccion, coloresJugadore
     const jugadorId = Number(construccion.jugadorId);
     strokeColor = renderColorConstruccion(jugadorId, coloresJugadores);
     strokeWidth = 8;
-    console.log(`✅ Pintando arista construida del jugador ${jugadorId} con color ${strokeColor}`);
   } else if (selected) {
     strokeColor = 'orange';
     strokeWidth = 6;

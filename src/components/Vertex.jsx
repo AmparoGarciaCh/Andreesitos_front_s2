@@ -8,8 +8,7 @@ const Vertex = ({ x, y, selected, onClick, construccion, coloresJugadores }) => 
     const idJ = Number(construccion.jugadorId ?? construccion.idJugador);
     color = renderColorConstruccion(idJ, coloresJugadores);
 
-    console.log(`🟢 Vértice construido: tipo=${construccion.tipo} jugadorId=${idJ}`);
-    console.log(`🎨 Color asignado al vértice: ${color}`);
+
   }
 
   return (

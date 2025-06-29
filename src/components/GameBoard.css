@@ -20,8 +20,9 @@
   z-index: 1;
 }
 
-
-.tile img {
+svg {
+  z-index: 2;
+  position: absolute;
   pointer-events: none;
 }
 
@@ -36,15 +37,13 @@
   pointer-events: none;
 }
 .estado-turno {
-  position: fixed;
-  top: 160px;
-  left: 20px;
-  background-color: white;
-  padding: 12px;
-  border-radius: 10px;
-  z-index: 1000;
-  font-size: 16px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background: none;
+  padding: 0;
+  margin: 0;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.7); 
+  font-size: 24px;
+  font-weight: bold;
 }
 
 
@@ -69,7 +68,7 @@
 .inventario {
   position: fixed;
   bottom: 20px;
-  left: 20px;
+  right: 20px;
   background-color: white;
   padding: 12px;
   border-radius: 10px;
@@ -86,4 +85,362 @@
 .inventario ul {
   padding-left: 20px;
   margin: 0;
+}
+
+.boton-intercambio-banco {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background-color: #4CAF50;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  z-index: 999;
+  font-weight: bold;
+}
+
+.boton-intercambio-banco:hover {
+  background-color: #45a049;
+}
+
+.intercambio-banco {
+  background-color: #f3f3f3;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 10px;
+  width: 250px;
+}
+
+.intercambio-banco select {
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 4px;
+}
+
+.acciones-intercambio {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.acciones-intercambio button {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: none;
+  background-color: #1976d2;
+  color: white;
+  cursor: pointer;
+}
+
+.acciones-intercambio button:hover {
+  background-color: #115293;
+}
+.acciones-rapidas {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 10;
+}
+
+.modal-oferta {
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #f4f4f4;
+  padding: 20px;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.modal-oferta h3 {
+  margin-top: 0;
+}
+
+.modal-oferta label {
+  display: block;
+  margin-top: 8px;
+}
+
+.modal-oferta input,
+.modal-oferta select {
+  width: 100%;
+  padding: 6px;
+  margin-top: 4px;
+}
+
+.acciones-modal {
+  margin-top: 12px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.popup-oferta-recibida {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #fff9e6;
+  padding: 16px;
+  border: 2px solid #ffd24d;
+  border-radius: 8px;
+  z-index: 100;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+.popup-oferta-recibida button.rechazar {
+  margin-left: 8px;
+}
+
+.boton-juego {
+  background-color: #bb7744;
+  color: white;
+  padding: 10px 20px;
+  font-size: 18px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 5px 0;
+  transition: background-color 0.3s;
+}
+
+.boton-juego:hover {
+  background-color: #a85d2e;
+}
+
+.boton-juego:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.panel-lateral {
+  position: absolute;
+  left: 50px;
+  top: 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 10;
+  color: white;
+  font-size: 22px;
+}
+
+.inventario-grafico {
+  position: fixed;
+  bottom: 10px;
+  left: 45%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 16px;
+  padding: 8px 12px;
+  background-color: #b2935b;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  z-index: 20;
+}
+
+.especialista-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.imagen-especialista {
+  width: 40px;
+  height: auto;
+  object-fit: contain;
+}
+
+.cantidad-especialista {
+  font-size: 18px;
+  font-weight: bold;
+  color: #f5f5dc;
+}
+
+.modal-intercambio {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #b44405;
+  padding: 20px;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  text-align: center;
+}
+
+.opciones-especialista {
+  display: flex;
+  justify-content: space-around;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.especialista-opcion {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  min-width: 50px;
+  min-height: 50px;
+  pointer-events: auto;
+  z-index: 999;
+  border: 2px solid transparent; 
+  border-radius: 8px; 
+}
+
+.especialista-opcion img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.especialista-opcion.seleccionado {
+  border-color: gold;
+}
+
+.imagen-especialista-intercambio {
+  max-width: 110px;
+  max-height: 110px;
+  object-fit: contain;
+}
+
+.imagen-especialista-intercambio.ñoño {
+  max-height: 95px;
+}
+
+.imagen-especialista-intercambio.zorrón {
+  max-height: 95px;
+}
+
+.imagen-especialista-intercambio.abogado {
+  max-height: 93px;
+}
+
+.imagen-especialista-intercambio.suero {
+  max-height: 92px;
+}
+
+.imagen-especialista-intercambio.agricultor {
+  max-height: 107px;
+  margin-top: 0px;
+}
+
+.opciones-jugadores {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.jugador-opcion {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+}
+
+.jugador-opcion.seleccionado {
+  outline: 2px solid gold;
+  padding: 4px;
+}
+
+.modal-intercambio-jugador {
+  position: fixed;
+  color: #f5f5dc;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #b44405;
+  padding: 20px;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  z-index: 100;
+  text-align: center;
+  width: 450px;  
+  max-width: 90vw;
+}
+
+.modal-intercambio-jugador .imagen-especialista-intercambio {
+  max-width: 80px;
+  max-height: 80px;
+}
+
+.modal-intercambio-jugador .opciones-jugadores div {
+  width: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.modal-intercambio-jugador .boton-juego {
+  margin: 5px;
+  padding: 8px 16px;
+  font-size: 14px;
+}
+
+.input-cantidad {
+  width: 60px;
+  padding: 6px;
+  border: 2px solid #8b5a2b; 
+  border-radius: 6px;
+  background-color: #e1cda8; 
+  color: #4b3621; 
+  font-weight: bold;
+  text-align: center;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.input-cantidad:focus {
+  border-color: #d2691e; 
+  box-shadow: 0 0 6px rgba(210, 105, 30, 0.5);
+  outline: none;
+}
+
+.select-construccion {
+  background-color: #e1cda8;
+  border: 2px solid #8b5a2b;
+  border-radius: 6px;
+  padding: 6px 10px;
+  color: #4b3621;
+  font-weight: bold;
+  font-size: 16px;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.select-construccion:focus {
+  box-shadow: 0 0 6px rgba(210, 105, 30, 0.5);
+  outline: none;
+}
+
+.dados-visual {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.imagen-dado {
+  width: 105px;
+  height: 105px;
+  object-fit: contain;
+}
+
+.dado-blanco {
+  width: 120px;
+  height: 120px;
 }

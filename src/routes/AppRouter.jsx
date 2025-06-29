@@ -7,7 +7,8 @@ import SalaEspera from '../pages/SalaEspera';
 import Instrucciones from '../pages/Instrucciones';
 import Nosotros from '../pages/Nosotros';
 import PrivateRoute from '../components/PrivateRoute';
-import Game from '../pages/Game'; 
+import Game from '../pages/Game';
+import Victoria from '../pages/Victoria'; 
 
 const AppRouter= () => {
   return (
@@ -20,6 +21,7 @@ const AppRouter= () => {
       <Route path="/Nosotros" element={<Nosotros />} />
       <Route path="/Jugar" element={<Jugar />} />
 
+      <Route path="/victoria/:partidaId" element={<Victoria />} />
 
       <Route path="/sala-espera/:id" element={
         <PrivateRoute><SalaEspera /></PrivateRoute>

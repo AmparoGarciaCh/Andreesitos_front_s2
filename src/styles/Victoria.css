@@ -1,0 +1,180 @@
+.victoria-mockup-container {
+  background: url('/fondo_mesa.png') no-repeat center center fixed;
+  background-size: cover;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.victoria-panel {
+  background-color: #b44405;
+  padding: 30px;
+  border-radius: 20px;
+  border: 4px solid #cfa36a;
+  width: 600px;
+  max-width: 90vw;
+  color: #f5f5dc;
+  text-align: center;
+  position: relative;
+}
+
+.podio {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  margin-bottom: 20px;
+}
+
+.puesto {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 10px;
+}
+
+.puesto-1 .numero-puesto {
+  font-size: 24px;
+}
+
+.puesto-2 .numero-puesto,
+.puesto-3 .numero-puesto {
+  font-size: 20px;
+}
+
+.jugador-icon {
+  width: 60px;
+  height: 60px;
+  background-color: #fff;
+  border: 2px solid #ccc;
+  border-radius: 50%;
+}
+
+.ganador {
+  border-color: gold;
+}
+
+.numero-puesto {
+  background: #cfa36a;
+  padding: 4px 8px;
+  border-radius: 8px;
+  margin-top: 4px;
+}
+
+.ranking {
+  background: rgba(0,0,0,0.2);
+  border-radius: 10px;
+  margin: 20px 0;
+  padding: 10px;
+}
+
+.fila-ranking {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 12px;
+  border-bottom: 1px solid #e0c28c;
+}
+
+.fila-ranking:last-child {
+  border-bottom: none;
+}
+
+.boton-salir {
+  background-color: #a85d2e;
+  color: white;
+  padding: 10px 30px;
+  border: none;
+  border-radius: 12px;
+  font-size: 18px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.boton-salir:hover {
+  background-color: #8b4513;
+}
+
+.serpentina {
+  position: absolute;
+  top: 0;
+  width: 850px;
+  height: auto;
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.serpentina-izquierda {
+  left: -300px;
+  bottom: 0;
+}
+
+.serpentina-derecha {
+  right: -300px;
+  bottom: 0;
+  transform: scaleX(-1);
+}
+
+.bg-rojo {
+  background-color: red;
+}
+
+.bg-azul {
+  background-color: blue;
+}
+
+.bg-amarillo {
+  background-color: yellow;
+}
+
+.bg-blanco {
+  background-color: #bfbfbf;
+}
+
+.puesto-1 {
+  margin-bottom: 10px; /* más arriba */
+}
+
+.puesto-2 {
+  margin-bottom: 0;
+}
+
+.puesto-3 {
+  margin-bottom: 0;
+}
+
+.nombre {
+  background: none;
+  text-decoration: none;
+}
+
+.text-rojo {
+  color: red;
+}
+
+.text-azul {
+  color: #3399ff;
+}
+
+.text-amarillo {
+  color: #e6c200;
+}
+
+.text-blanco {
+  color: #bfbfbf;
+}
+
+.corona {
+  position: absolute;
+  top: -40px;  /* Ajusta según el tamaño que te guste */
+  width: 65px; /* Cambia el tamaño a algo proporcional */
+  height: auto;
+  pointer-events: none;
+}
+
+.jugador-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

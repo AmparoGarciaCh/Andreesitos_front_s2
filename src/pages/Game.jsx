@@ -213,25 +213,12 @@ const handlePasarTurno = async () => {
     <div className="juego-container">
       <div className="jugadores-lista">
         {jugadores.map((j) => (
-          <div key={j.id} className="jugador-item">
+          <div key={j.id} className={`jugador-item ${j.id === idJugadorTurnoActual ? 'jugador-turno' : ''}`}>
             <div className={`color-circulo color-${j.color || 'gris'}`} />
-            <span>{j.nombre}</span>
-            {j.id === idJugadorTurnoActual && <span className="turno-indicador">⏳</span>}
+            <div className="jugador-nombre">{j.nombre}</div>
           </div>
         ))}
       </div>
-
-      {jugadorIdPropio !== null && idJugadorTurnoActual !== null && (
-        <p className="estado-turno">
-          {jugadorIdPropio === idJugadorTurnoActual
-            ? estadoPartida === 'fundando'
-              ? '🏗️ Te toca fundar'
-              : '✅ Es tu turno'
-            : estadoPartida === 'fundando'
-              ? '⌛ Esperando fundación'
-              : '⌛ No es tu turno'}
-        </p>
-      )}
 
       {estadoPartida === 'jugando' && (
         <div className="contador-puntos-empresa">
@@ -247,6 +234,8 @@ const handlePasarTurno = async () => {
         partidaId={id}
         tableroId={parseInt(tableroIdFinal)}
         onPasarTurno={handlePasarTurno}
+        estadoPartida={estadoPartida}
+        idJugadorTurnoActual={idJugadorTurnoActual}
       />
       ) : (
         <p>No se recibió tableroId.</p>

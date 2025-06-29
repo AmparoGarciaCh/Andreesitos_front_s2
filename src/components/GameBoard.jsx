@@ -17,7 +17,7 @@ function axialToPixel(q, r, size) {
   return { x, y };
 }
 
-const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId, onPasarTurno}) => {
+const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId, onPasarTurno, estadoPartida, idJugadorTurnoActual }) => {
   const token = localStorage.getItem('token');
   const usuario = JSON.parse(localStorage.getItem('usuario'));
   const navigate = useNavigate();
@@ -237,9 +237,11 @@ const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId, onPasarTurn
   }, [partida?.estado, partidaId]);
 
   const esMiTurno = () => {
-    if (!partida || !jugadorIdPropio) return false;
-    if (partida.estado === 'fundando') return jugadorIdPropio === jugadorEsperadoId;
-    return partida.idJugadorTurnoActual === jugadorIdPropio;
+    if (!estadoPartida || !jugadorIdPropio) return false;
+    if (estadoPartida === 'fundando') {
+      return jugadorIdPropio === jugadorEsperadoId;
+    }
+    return jugadorIdPropio === idJugadorTurnoActual;
   };
 
   const enFaseFundando = () => partida?.estado === 'fundando';
@@ -514,71 +516,107 @@ return (
       </div>
     )}
 
-    <div className="estado-turno">
-      {esMiTurno() ? '✅ Es tu turno' : '⌛ No es tu turno'}
+    <div className="panel-lateral">
       {coloresJugadores[jugadorIdPropio] && (
-        <div style={{ marginTop: '6px' }}>
+        <div className="estado-turno">
           Eres el jugador: <strong style={{ color: coloresJugadores[jugadorIdPropio] }}>{coloresJugadores[jugadorIdPropio]}</strong>
+        </div>
+      )}
+
+      {jugadorIdPropio !== null && idJugadorTurnoActual !== null && (
+        <div className="estado-turno">
+          {esMiTurno()
+            ? (estadoPartida === 'fundando'
+                ? 'Te toca fundar!'
+                : 'Es tu turno!')
+            : (estadoPartida === 'fundando'
+                ? 'Esperando fundación...'
+                : 'No es tu turno')}
+        </div>
+      )}
+
+      {resultadoDados && (
+        <div>
+          Dados: 🎲 {resultadoDados.dado1} + {resultadoDados.dado2} = <strong>{resultadoDados.suma}</strong>
         </div>
       )}
 
       {esMiTurno() && partida?.estado === 'jugando' && (
         <>
-          <button onClick={handleLanzarDados}>Lanzar dados</button>
-          <button onClick={handleIntercambioBanco}>Intercambiar con el banco</button>
-          <button onClick={() => setMostrarModalOferta(true)}>🤝 Negociar con jugador</button>
+          <button className="boton-juego" onClick={handleLanzarDados}>Lanzar dados</button>
+          <button className="boton-juego" onClick={handleIntercambioBanco}>Intercambiar con el banco</button>
+          <button className="boton-juego" onClick={() => setMostrarModalOferta(true)}> Negociar con jugador</button>
 
           {mostrarIntercambio && (
-            <div className="intercambio-banco">
-              <p>Intercambia 4 de un tipo por 1 de otro</p>
-              <label>Dar:</label>
-              <select value={tipoADar} onChange={(e) => setTipoADar(e.target.value)}>
-                <option value="">Selecciona tipo</option>
-                <option value="ñoño">Ñoño</option>
-                <option value="zorrón">Zorrón</option>
-                <option value="abogado">Abogado</option>
-                <option value="suero">Suero</option>
-                <option value="agricultor">Agricultor</option>
-              </select>
-              <label>Recibir:</label>
-              <select value={tipoARecibir} onChange={(e) => setTipoARecibir(e.target.value)}>
-                <option value="">Selecciona tipo</option>
-                <option value="ñoño">Ñoño</option>
-                <option value="zorrón">Zorrón</option>
-                <option value="abogado">Abogado</option>
-                <option value="suero">Suero</option>
-                <option value="agricultor">Agricultor</option>
-              </select>
+            <div className="modal-intercambio">
+              <h3>Intercambio con el banco</h3>
+              <p>Selecciona el especialista que das (4) y el que recibes (1)</p>
+
+              <div className="seleccion-especialista">
+                <p>Dar:</p>
+                <div className="opciones-especialista">
+                  {["ñoño", "zorrón", "abogado", "suero", "agricultor"].map(tipo => (
+                    <div 
+                      key={tipo}
+                      className={`especialista-opcion ${tipoADar === tipo ? 'seleccionado' : ''}`}
+                      onClick={() => {
+                        console.log("Click en tipo:", tipo);
+                        setTipoADar(tipo);
+                      }}
+                    >
+                      <img 
+                        src={`/imagenes_especialistas_intercambio/${tipo}.png`} 
+                        alt={tipo}
+                        className={`imagen-especialista-intercambio ${tipo}`}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="seleccion-especialista">
+                <p>Recibir:</p>
+                <div className="opciones-especialista">
+                  {["ñoño", "zorrón", "abogado", "suero", "agricultor"].map(tipo => (
+                    <div 
+                      key={tipo}
+                      className={`especialista-opcion ${tipoARecibir === tipo ? 'seleccionado' : ''}`}
+                      onClick={() => setTipoARecibir(tipo)}
+                    >
+                      <img 
+                        src={`/imagenes_especialistas_intercambio/${tipo}.png`} 
+                        alt={tipo}
+                        className={`imagen-especialista-intercambio ${tipo}`}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
               <button
+                className="boton-juego"
                 onClick={handleIntercambiarConBanco}
                 disabled={!tipoADar || !tipoARecibir || tipoADar === tipoARecibir}
               >
                 Confirmar intercambio
               </button>
-              <button onClick={() => setMostrarIntercambio(false)}>Cancelar</button>
+              <button className="boton-juego" onClick={() => setMostrarIntercambio(false)}>Cancelar</button>
             </div>
           )}
 
-          <div style={{ marginTop: '10px' }}>
-            <label htmlFor="tipoConstruccion">Elige tipo de construcción:</label>
-            <select
-              id="tipoConstruccion"
-              value={tipoConstruccion}
-              onChange={(e) => setTipoConstruccion(e.target.value)}
-              style={{ marginLeft: '10px' }}
-            >
-              <option value="">-- Seleccionar --</option>
-              <option value="departamento">Departamento</option>
-              <option value="muro">Muro</option>
-              <option value="facultad">Facultad</option>
-            </select>
-          </div>
+          <label>Elige tipo de construcción:</label>
+          <select
+            value={tipoConstruccion}
+            onChange={(e) => setTipoConstruccion(e.target.value)}
+          >
+            <option value="">-- Seleccionar --</option>
+            <option value="departamento">Departamento</option>
+            <option value="muro">Muro</option>
+          </select>
 
-          <div style={{ marginTop: '10px' }}>
-            <div>Vértice seleccionado: {selectedVertexId ?? 'Ninguno'}</div>
-            <div>Arista seleccionada: {selectedEdgeId ?? 'Ninguna'}</div>
+          <div>
             <button
-              className={`boton-fundar ${!tipoConstruccion ? 'disabled' : ''}`}
+              className="boton-juego"
               disabled={!tipoConstruccion}
               onClick={handleConstruirClick}
             >
@@ -588,41 +626,35 @@ return (
         </>
       )}
 
-      {resultadoDados && (
-        <div style={{ marginTop: '10px' }}>
-          Dados: 🎲 {resultadoDados.dado1} + {resultadoDados.dado2} = <strong>{resultadoDados.suma}</strong>
-        </div>
-      )}
-
       {esMiTurno() && partida?.estado === 'fundando' && (
-        <div style={{ marginTop: '10px' }}>
-          <div>Vértice seleccionado: {selectedVertexId ?? 'Ninguno'}</div>
-          <div>Arista seleccionada: {selectedEdgeId ?? 'Ninguna'}</div>
+        <>
           <button
-            className={`boton-fundar ${!(vertexOk && edgeOk) ? 'disabled' : ''}`}
+            className="boton-juego"
             disabled={!(vertexOk && edgeOk)}
             onClick={handleFundarClick}
           >
             Fundar
           </button>
-        </div>
+        </>
       )}
 
-      {esMiTurno() && <button onClick={onPasarTurno}>Pasar turno</button>}
+      {esMiTurno() && <button className="boton-juego" onClick={onPasarTurno}>Pasar turno</button>}
     </div>
 
     {inventario.length > 0 && (
-      <div className="inventario">
-        <h4>📦 Tu inventario:</h4>
-        <ul>
-          {inventario[0].inventario
-            .filter(i => i.tipoEspecialista !== 'ninguno')
-            .map((item, idx) => (
-              <li key={idx}>
-                {item.tipoEspecialista}: {item.cantidad}
-              </li>
-            ))}
-        </ul>
+      <div className="inventario-grafico">
+        {inventario[0].inventario
+          .filter(i => i.tipoEspecialista !== 'ninguno')
+          .map((item, idx) => (
+            <div key={idx} className="especialista-item">
+              <img
+                src={`/imagenes_especialistas/${item.tipoEspecialista}.png`}
+                alt={item.tipoEspecialista}
+                className="imagen-especialista"
+              />
+              <span className="cantidad-especialista">{item.cantidad}</span>
+            </div>
+          ))}
       </div>
     )}
 

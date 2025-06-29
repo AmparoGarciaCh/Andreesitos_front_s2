@@ -46,7 +46,13 @@ const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId, onPasarTurn
   const [ultimaFechaActualizacion, setUltimaFechaActualizacion] = useState(null);
   const [mostrarModalRobo, setMostrarModalRobo] = useState(false);
   const [jugadoresAdyacentes, setJugadoresAdyacentes] = useState([]);
-
+  const [ofertaRecibida, setOfertaRecibida] = useState(null);
+  const [jugadorDestino, setJugadorDestino] = useState('');
+  const [jugadores, setJugadores] = useState([]);
+  const [recursoOfrecido, setRecursoOfrecido] = useState('');
+  const [recursoSolicitado, setRecursoSolicitado] = useState('');
+  const [cantidadOfrecida, setCantidadOfrecida] = useState(1);
+  const [cantidadSolicitada, setCantidadSolicitada] = useState(1);
 
   const vertexOk = selectedVertexId !== null && selectedVertexId !== undefined;
   const edgeOk = selectedEdgeId !== null && selectedEdgeId !== undefined;

@@ -1,9 +1,11 @@
 .tile {
   position: absolute;
   transform: translate(-50%, -50%);
-  pointer-events: none;
+  pointer-events: auto;
   width: 149px;
   height: 131px;
+  z-index: 1;
+  cursor: pointer;
 }
 
 .tile-img {
@@ -23,8 +25,19 @@
 
 .tile-ladron {
   position: absolute;
-  top: 12px;
-  left: 12px;
-  width: 32px;
-  height: 32px;
+  top: 35%;
+  left: 35%;
+  width: 48px;
+  height: 48px;
+}
+
+.tile.seleccionado {
+  outline: 3px solid red;
+  border-radius: 12px;
+}
+
+.tile-img,
+.tile-ficha,
+.tile-ladron {
+  pointer-events: auto;
 }

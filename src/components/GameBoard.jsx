@@ -6,6 +6,8 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import {useToast} from '../context/toast-context.jsx';
 import { useNavigate } from 'react-router-dom';
+import ModalDescartarCartas from './ModalDescartarCartas.jsx';
+import ModalRobarCarta from './ModalRobo.jsx';
 
 const HEX_SIZE = 60;
 const CENTER_X = 520;
@@ -36,15 +38,44 @@ const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId, onPasarTurn
   const [mostrarIntercambio, setMostrarIntercambio] = useState(false);
   const [tipoADar, setTipoADar] = useState('');
   const [tipoARecibir, setTipoARecibir] = useState('');
-  const [ofertaRecibida, setOfertaRecibida] = useState(null);
-  const [jugadorDestino, setJugadorDestino] = useState('');
-  const [jugadores, setJugadores] = useState([]);
-  const [recursoOfrecido, setRecursoOfrecido] = useState('');
-  const [recursoSolicitado, setRecursoSolicitado] = useState('');
-  const [cantidadOfrecida, setCantidadOfrecida] = useState(1);
-  const [cantidadSolicitada, setCantidadSolicitada] = useState(1);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [cantidadADescartar, setCantidadADescartar] = useState(0);
+  const [jugadorDebeDescartar, setJugadorDebeDescartar] = useState(false);
+  const [modoMoverLadron, setModoMoverLadron] = useState(false);
+  const [terrenoSeleccionadoId, setTerrenoSeleccionadoId] = useState(null);
+  const [ultimaFechaActualizacion, setUltimaFechaActualizacion] = useState(null);
+  const [mostrarModalRobo, setMostrarModalRobo] = useState(false);
+  const [jugadoresAdyacentes, setJugadoresAdyacentes] = useState([]);
+
+
   const vertexOk = selectedVertexId !== null && selectedVertexId !== undefined;
   const edgeOk = selectedEdgeId !== null && selectedEdgeId !== undefined;
+
+  useEffect(() => {
+    const intervalo = setInterval(async () => {
+      try {
+        const { data } = await axios.get(`${import.meta.env.VITE_backendURL}/partidas/${partidaId}/updated-at`,
+          {
+            headers: { Authorization: `Bearer ${token}` }
+          }
+        );
+        const ultimaFecha = data.updatedAt;
+        console.log("Última fecha de actualización del servidor:", ultimaFecha);
+        const nuevaFecha = new Date(data.updatedAt);
+
+
+        if (!ultimaFechaActualizacion || nuevaFecha > new Date(ultimaFechaActualizacion)) {
+          console.log("Detecto cambios en el servidor, actualizando tablero...");
+          setUltimaFechaActualizacion(nuevaFecha);
+          await fetchTablero(); 
+        }
+      } catch (error) {
+        console.error('Error en el polling de updatedAt:', error);
+      }
+    }, 3000);
+
+  return () => clearInterval(intervalo);
+}, [partidaId, ultimaFechaActualizacion]);
   
 
 
@@ -169,23 +200,27 @@ const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId, onPasarTurn
     }
   };
 
+  const fetchTablero = async () => {
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_backendURL}/tableros/${tableroId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      const data = response.data;
+      setTablero({
+        Terrenos: data.Terrenos || [],
+        Vertices: data.Vertices || [],
+        Aristas: data.Aristas || []
+      });
+    } catch (error) {
+      console.error("Error al encontrar tablero", error);
+    }
+  };
+
 
   useEffect(() => {
     if (!tableroId) return;
-    axios.get(`${import.meta.env.VITE_backendURL}/tableros/${tableroId}`,{
-      headers: { Authorization: `Bearer ${token}`}
-    })
-      .then(response => {
-        const data = response.data;
-        setTablero({
-          Terrenos: data.Terrenos || [],
-          Vertices: data.Vertices || [],
-          Aristas: data.Aristas || []
-        });
-      })
-      .catch(error => {
-        console.error("Error al encontrar tablero", error);
-      });
+    fetchTablero(); 
   }, [tableroId]);
 
   useEffect(() => {
@@ -335,10 +370,119 @@ const GameBoard = ({ partida, jugadorIdPropio, partidaId, tableroId, onPasarTurn
           }
         }
       );
-      setResultadoDados(response.data.resultado);
+
+      const resultado = response.data.resultado;
+      setResultadoDados(resultado);
       fetchInventario();
+
+      if (resultado.suma === 7) {
+        const jugadoresDescartar = response.data.jugadoresDescartar;
+        console.log("Jugadores que deben descartar:", jugadoresDescartar);
+        const yoDebo = jugadoresDescartar.find(j => Number(j.id) === Number(jugadorIdPropio));
+        console.log("¿Yo debo descartar?", yoDebo);
+
+        if (yoDebo) {
+          setCantidadADescartar(yoDebo.cantidadADescartar);
+          setJugadorDebeDescartar(true);
+          setModalVisible(true);
+        }
+      }
     } catch (error) {
-      console.error("Error al lanzar dados:", error);
+  console.error("Error al lanzar dados:", error);
+  console.log("Mensaje del backend:", error.response?.data);
+  showToast('❌ Error al lanzar dados', 'error');
+    }
+  };
+
+  const handleDescarte = async (cartas) => {
+      try {
+        await axios.post(`${import.meta.env.VITE_backendURL}/jugada`, {
+          tipo: 'descartar_cartas',
+          jugadorId: jugadorIdPropio,
+          idPartida: partidaId,
+          cantidad: cantidadADescartar,
+          cartas
+        }, {
+          headers: {
+            Authorization: `Bearer ${token}`, 
+            'Content-Type': 'application/json'
+          }
+        });
+        setModalVisible(false);
+        setJugadorDebeDescartar(false); 
+        fetchInventario();
+        showToast('✅ Cartas descartadas correctamente', 'success');
+      } catch (error) {
+        console.error("Error al descartar cartas:", error); 
+        showToast('❌ Error al descartar cartas', 'error');
+      }
+    };
+
+  const handleMoverLadron = async () => {
+    try {
+        console.log("Intentando mover ladrón con los siguientes datos:");
+        console.log("jugadorId:", jugadorIdPropio);
+        console.log("idPartida:", partidaId);
+        console.log("idTerrenoNuevo:", terrenoSeleccionadoId);
+
+      await axios.post(`${import.meta.env.VITE_backendURL}/jugada`, {
+        tipo: 'mover_ladron',
+        jugadorId: jugadorIdPropio,
+        idPartida: partidaId,
+        idTerrenoNuevo: terrenoSeleccionadoId,
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      showToast('✅ Ladrón movido exitosamente', 'success');
+      await fetchTablero();
+      setModoMoverLadron(false);
+      setTerrenoSeleccionadoId(null);
+
+      const { data } = await axios.get(
+        `${import.meta.env.VITE_backendURL}/partidas/${partidaId}/jugadores-adyacentes`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'jugador-id': jugadorIdPropio,
+          }
+        }
+      );
+      console.log("Jugadores adyacentes obtenidos:", data.jugadores);
+
+    if (data.jugadores.length > 0) {
+      setJugadoresAdyacentes(data.jugadores);        
+      setMostrarModalRobo(true);           
+    } else {
+      showToast('⚠️ No hay jugadores válidos para robar', 'info');
+    }
+ 
+    } catch (error) {
+      console.error('Error al mover el ladrón:', error);
+      showToast('❌ Error al mover el ladrón', 'error');
+    }
+  };
+
+  const handleRobarCarta = async (idJugadorObjetivo) => {
+    try {
+      await axios.post(`${import.meta.env.VITE_backendURL}/jugada`, {
+        tipo: 'robar',
+        jugadorId: jugadorIdPropio,
+        idPartida: partidaId,
+        idJugadorObjetivo
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      showToast('✅ Carta robada con éxito', 'success');
+      setMostrarModalRobo(false);
+      await fetchInventario()
+    } catch (error) {
+      console.error('Error al robar carta:', error);
+      showToast('❌ Error al robar carta', 'error');
     }
   };
 
@@ -447,16 +591,49 @@ const handleRechazarOferta = async () => {
       }
     };
 
+    
     fetchUltimoLanzamiento();
     const interval = setInterval(fetchUltimoLanzamiento, 3000);
     return () => clearInterval(interval);
   }, [partida?.estado]);
 
+  useEffect(() => {
+    if (partida?.estado !== 'jugando') return;
+
+    const verificarDescartesPendientes = async () => {
+      try {
+        const lanzamiento = await axios.get(`${import.meta.env.VITE_backendURL}/jugada/partida/${partidaId}/ultimo-lanzamiento`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const {suma} = lanzamiento.data;
+        if (suma === 7) {
+          const response = await axios.get(`${import.meta.env.VITE_backendURL}/partidas/${partidaId}/jugadores-a-descartar`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const jugadoresDescartar = response.data;
+          const yoDebo = jugadoresDescartar.find(j => Number(j.id) === Number(jugadorIdPropio));
+          if (yoDebo) {
+            setCantidadADescartar(yoDebo.cantidadADescartar);
+            setJugadorDebeDescartar(true);
+            setModalVisible(true);
+          }
+        }} catch (error) {
+          console.log("Error al verificar descartes pendientes:", error);
+        }
+      }
+      const interval = setInterval(verificarDescartesPendientes, 3000);
+      return () => clearInterval(interval);
+    },[partidaId, jugadorIdPropio, token]
+  );
+      
+
   const handleIntercambioBanco = () => {
   setMostrarIntercambio(true);
 };
 
+
 return (
+  <>
   <div className="tablero-centrado">
     {ofertaRecibida && (
       <div className="modal-intercambio-jugador">
@@ -698,6 +875,33 @@ return (
         </>
       )}
 
+
+      {esMiTurno() && resultadoDados?.suma === 7 && !jugadorDebeDescartar && (
+        <>
+          {!modoMoverLadron && (
+            <button onClick={() => setModoMoverLadron(true)} style={{ marginTop: '10px' }}>
+              Mover ladrón
+            </button>
+          )}
+          {modoMoverLadron && (
+            <div style={{ marginTop: '10px' }}>
+              <p>Selecciona un terreno para mover el ladrón</p>
+              {terrenoSeleccionadoId && (
+                <button onClick={handleMoverLadron}>
+                  Confirmar movimiento
+                </button>
+              )}
+              <button onClick={() => {
+                setModoMoverLadron(false);
+                setTerrenoSeleccionadoId(null);
+              }} style={{ marginLeft: '10px' }}>
+                Cancelar
+              </button>
+            </div>
+          )}
+        </>
+      )}
+
       {esMiTurno() && partida?.estado === 'fundando' && (
         <>
           <button
@@ -731,38 +935,13 @@ return (
     )}
 
     <div className="tablero">
-      <img src="/hexagono_mar.png" alt="Fondo tablero hexagonal" className="fondo-hexagonal" />
+      <img
+        src="/hexagono_mar.png"
+        alt="Fondo tablero hexagonal"
+        className="fondo-hexagonal"
+      />
 
-      {tablero.Terrenos.map((terreno) => {
-        const { x, y } = axialToPixel(terreno.posicionX, terreno.posicionY, HEX_SIZE);
-        return (
-          <Tile
-            key={terreno.id}
-            tipo={terreno.tipo}
-            numero={terreno.numeroFicha}
-            tieneLadron={terreno.tieneLadron}
-            left={x + CENTER_X}
-            top={y + CENTER_Y}
-          />
-        );
-      })}
-
-      {tablero.Vertices.map((vertex) => {
-        const construccionVertice = construcciones.vertices[Number(vertex.id)];
-        return (
-          <Vertex
-            key={vertex.id}
-            x={vertex.posicionX + CENTER_X}
-            y={vertex.posicionY + CENTER_Y}
-            onClick={() => handleVertexClick(vertex.id)}
-            selected={selectedVertexId === vertex.id}
-            construccion={construccionVertice}
-            coloresJugadores={coloresJugadores}
-          />
-        );
-      })}
-
-      <svg style={{ position: 'absolute', left: 0, top: 0, width: '100%', height: '100%', zIndex: 2 }}>
+      <svg style={{ position: 'absolute', left: 0, top: 0, width: '100%', height: '100%' }}>
         {tablero.Aristas.map((arista) => {
           const vInicio = tablero.Vertices.find(v => v.id === arista.idVerticeInicio);
           const vFin = tablero.Vertices.find(v => v.id === arista.idVerticeFin);
@@ -782,9 +961,63 @@ return (
           );
         })}
       </svg>
+
+      {tablero.Terrenos.map((terreno) => {
+        const { x, y } = axialToPixel(terreno.posicionX, terreno.posicionY, HEX_SIZE);
+        return (
+          <Tile
+            key={terreno.id}
+            tipo={terreno.tipo}
+            numero={terreno.numeroFicha}
+            tieneLadron={terreno.tieneLadron}
+            left={x + CENTER_X}
+            top={y + CENTER_Y}
+            onClick={() => {
+              if (modoMoverLadron && esMiTurno()) {
+                setTerrenoSeleccionadoId(terreno.id);
+              }
+            }}
+            seleccionado={terrenoSeleccionadoId === terreno.id}
+          />
+        );
+      })}
+
+      {tablero.Vertices.map((vertex) => {
+        const construccionVertice = construcciones.vertices[Number(vertex.id)];
+        return (
+          <Vertex
+            key={vertex.id}
+            x={vertex.posicionX + CENTER_X}
+            y={vertex.posicionY + CENTER_Y}
+            onClick={() => handleVertexClick(vertex.id)}
+            selected={selectedVertexId === vertex.id}
+            construccion={construccionVertice}
+            coloresJugadores={coloresJugadores}
+          />
+        );
+      })}
+
     </div>
   </div>
-);
-}
+  {jugadorDebeDescartar && modalVisible && (
+      <ModalDescartarCartas
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        inventario={inventario[0]?.inventario || []}
+        cantidadADescartar={cantidadADescartar}
+        onDescartar={handleDescarte}
+      />
+  )}
+  {mostrarModalRobo && (
+  <ModalRobarCarta
+    visible={mostrarModalRobo}
+    onClose={() => setMostrarModalRobo(false)}
+    jugadores={jugadoresAdyacentes}
+    onRobar={handleRobarCarta}
+  />
+)}
+    </>
+ );
+};
 
 export default GameBoard;

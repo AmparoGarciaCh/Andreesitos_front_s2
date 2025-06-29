@@ -1,14 +1,15 @@
 import './Tile.css';
 
-const Tile = ({ tipo, numero, tieneLadron, left, top }) => {
+const Tile = ({ tipo, numero, tieneLadron, onClick, left, top, seleccionado }) => {
   const imagen = `/bloque_${tipo}.png`;
   const ficha = numero ? `/${numero}_catan.png` : null;
-  const ladronImagen = `/ladron.png`;
+  const ladronImagen = `/ficha ladron de cupos.png`;
 
   return (
     <div
-      className="tile"
+      className={`tile ${seleccionado ? 'seleccionado' : ''}`}
       style={{ left: `${left}px`, top: `${top}px` }}
+      onClick={onClick} 
     >
       <img
         src={imagen}

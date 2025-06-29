@@ -20,8 +20,9 @@
   z-index: 1;
 }
 
-
-.tile img {
+svg {
+  z-index: 2;
+  position: absolute;
   pointer-events: none;
 }
 
@@ -67,7 +68,7 @@
 .inventario {
   position: fixed;
   bottom: 20px;
-  left: 20px;
+  right: 20px;
   background-color: white;
   padding: 12px;
   border-radius: 10px;

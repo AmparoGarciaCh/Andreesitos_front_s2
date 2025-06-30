@@ -1,4 +1,6 @@
-const Hexagon = ({ centerX, centerY, size, stroke = 'gray', fill = 'transparent' }) => {
+function Hexagon({
+  centerX, centerY, size, stroke = 'gray', fill = 'transparent',
+}) {
   const points = [];
 
   for (let i = 0; i < 6; i++) {
@@ -16,6 +18,6 @@ const Hexagon = ({ centerX, centerY, size, stroke = 'gray', fill = 'transparent'
       fill={fill}
     />
   );
-};
+}
 
 export default Hexagon;

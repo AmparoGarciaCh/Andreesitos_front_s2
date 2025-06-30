@@ -11,8 +11,8 @@
 .registro-main {
   display: flex;
   justify-content: space-around;
-  align-items: start;        /* ← antes: center */
-  padding: 2rem 4rem 4rem;   /* ← menos padding arriba */
+  align-items: start;       
+  padding: 2rem 4rem 4rem; 
   flex-wrap: wrap;
   min-height: 80vh;
 }

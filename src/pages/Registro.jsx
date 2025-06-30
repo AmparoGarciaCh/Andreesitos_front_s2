@@ -28,9 +28,9 @@ function Registro() {
       const response = await axios.post(`${import.meta.env.VITE_backendURL}/usuarios/registrar`, {
         nombre,
         correo,
-        password
+        password,
       }, {
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
       });
 
       setMensaje('✅ Usuario registrado con éxito');
@@ -39,7 +39,6 @@ function Registro() {
       setMensaje(`❌ Error: ${mensajeError}`);
     }
   };
-
 
   return (
     <div className="registro-container" style={{ backgroundImage: `url(${fondoRegistro})` }}>
@@ -57,13 +56,13 @@ function Registro() {
           <h1 className="titulo-registro">REGISTRARSE</h1>
           <label>¿CUÁL ES TU CORREO ELECTRÓNICO?</label>
           <input type="email" value={correo} onChange={(e) => setCorreo(e.target.value)} required />
-          
+
           <label>CREA UNA CONTRASEÑA</label>
           <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
 
           <label>CONFIRMA LA CONTRASEÑA</label>
           <input type="password" value={confirmacion} onChange={(e) => setConfirmacion(e.target.value)} required />
-          
+
           <label>NOMBRE</label>
           <input type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} required />
 

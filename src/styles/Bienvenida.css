@@ -17,10 +17,10 @@ html, body {
 .bienvenida-main {
   display: flex;
   justify-content: center;
-  align-items: flex-start; /* 👈 Ya no lo centres verticalmente */
-  padding: 0.1rem 5rem;       /* 👈 Reduce el padding top */
+  align-items: flex-start;
+  padding: 0.1rem 5rem;     
   gap: 4rem;
-  min-height: auto;         /* 👈 Libera la altura mínima */
+  min-height: auto;        
   width: 100%;
 }
 

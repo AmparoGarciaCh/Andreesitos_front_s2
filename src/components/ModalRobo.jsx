@@ -1,52 +1,58 @@
 import React, { useState } from 'react';
 import './ModalRobo.css';
 
-const ModalRobarCarta = ({ visible, jugadores, onClose, onRobar}) => {
+function ModalRobarCarta({
+  visible, jugadores, onClose, onRobar,
+}) {
   const [jugadorSeleccionado, setJugadorSeleccionado] = useState(null);
 
   if (!visible) return null;
 
-    return (
+  return (
     <div className="modal-fondo">
-        <div className="modal-contenido">
+      <div className="modal-contenido">
         <h3>Robar carta</h3>
 
         {!jugadores || jugadores.length === 0 ? (
-            <p>No hay jugadores adyacentes con cartas.</p>
+          <p>No hay jugadores adyacentes con cartas.</p>
         ) : (
-            <ul className="jugador-lista">
+          <ul className="jugador-lista">
             {jugadores.map((j) => (
-                <li key={j.id} className="jugador-item">
+              <li key={j.id} className="jugador-item">
                 <label>
-                    <input
+                  <input
                     type="radio"
                     name="jugador"
                     value={j.id}
                     onChange={() => setJugadorSeleccionado(j.id)}
-                    />
-                    {j.color} ({j.cantidadCartas} cartas)
+                  />
+                  {j.color}
+                  {' '}
+                  (
+                  {j.cantidadCartas}
+                  {' '}
+                  cartas)
                 </label>
-                </li>
+              </li>
             ))}
-            </ul>
+          </ul>
         )}
 
         <div className="botones-robo">
-            <button
+          <button
             className="boton-confirmar"
             onClick={() => onRobar(jugadorSeleccionado)}
             disabled={!jugadorSeleccionado}
-            >
+          >
             Confirmar robo
-            </button>
-            <button className="boton-cancelar" onClick={onClose}>
+          </button>
+          <button className="boton-cancelar" onClick={onClose}>
             Cancelar
-            </button>
+          </button>
         </div>
-        </div>
+      </div>
     </div>
-    );
-
-};
+  );
+}
 
 export default ModalRobarCarta;

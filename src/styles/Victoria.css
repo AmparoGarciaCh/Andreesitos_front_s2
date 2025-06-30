@@ -166,8 +166,8 @@
 
 .corona {
   position: absolute;
-  top: -40px;  /* Ajusta según el tamaño que te guste */
-  width: 65px; /* Cambia el tamaño a algo proporcional */
+  top: -40px;  
+  width: 65px;
   height: auto;
   pointer-events: none;
 }

@@ -1,4 +1,3 @@
-// src/utils/auth.js
 export function guardarToken(token) {
   localStorage.setItem('token', token);
 }

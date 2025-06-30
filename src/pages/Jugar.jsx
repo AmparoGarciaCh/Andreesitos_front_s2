@@ -1,11 +1,10 @@
 import React, { useContext, useState } from 'react';
-import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
 import '../styles/Login.css';
 import fondoLogin from '/fondo5.png';
 import backendURL from '../config';
-import axios from 'axios';
 
 
 function Jugar() {
@@ -17,12 +16,12 @@ function Jugar() {
 
   const handleCrearPartida = async () => {
     try {
-      const respuesta = await fetch(`${backendURL}/partidas`, { 
+      const respuesta = await fetch(`${backendURL}/partidas`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
       });
 
       const data = await respuesta.json();
@@ -32,8 +31,8 @@ function Jugar() {
       navigate(`/sala-espera/${data.partida.id}`, {
         state: {
           codigo: data.partida.codigoAcceso,
-          soyAdmin: true
-        }
+          soyAdmin: true,
+        },
       });
     } catch (error) {
       setMensaje(`❌ ${error.message}`);
@@ -43,13 +42,13 @@ function Jugar() {
   const handleUnirse = async (e) => {
     e.preventDefault();
     try {
-      const respuesta = await fetch(`${backendURL}/partidas/unirse`, { 
+      const respuesta = await fetch(`${backendURL}/partidas/unirse`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ codigoAcceso: codigo })
+        body: JSON.stringify({ codigoAcceso: codigo }),
       });
 
       const data = await respuesta.json();
@@ -59,8 +58,8 @@ function Jugar() {
       navigate(`/sala-espera/${data.partidaId}`, {
         state: {
           codigo,
-          soyAdmin: false
-        }
+          soyAdmin: false,
+        },
       });
     } catch (error) {
       setMensaje(`❌ ${error.message}`);
@@ -72,7 +71,11 @@ function Jugar() {
       <Navbar />
       <main className="login-main">
         <section className="login-card">
-          <h2 className="login-title">¡Hola {usuario?.nombre || 'jugador'}!</h2>
+          <h2 className="login-title">
+            ¡Hola
+            {usuario?.nombre || 'jugador'}
+            !
+          </h2>
           <p style={{ textAlign: 'center' }}>¿Quieres crear una nueva partida o unirte a una existente?</p>
 
           <button type="button" className="login-form-button" onClick={handleCrearPartida}>

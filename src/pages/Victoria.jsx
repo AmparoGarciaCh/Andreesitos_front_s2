@@ -1,27 +1,36 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import '../styles/Victoria.css';
+import { AuthContext } from '../context/AuthContext';
 
-const Victoria = () => {
-  const { partidaId } = useParams(); 
+function Victoria() {
+  const { partidaId } = useParams();
   const navigate = useNavigate();
   const [ranking, setRanking] = useState([]);
+  const { usuario } = useContext(AuthContext);
+  const token = localStorage.getItem('token');
+
 
   useEffect(() => {
     const fetchRanking = async () => {
       if (!partidaId) {
-        navigate('/'); 
+        navigate('/');
         return;
       }
 
       try {
-        const response = await axios.get(`${import.meta.env.VITE_backendURL}/partidas/${partidaId}`);
+        const response = await axios.get(`${import.meta.env.VITE_backendURL}/partidas/${partidaId}`,
+          {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },}
+        );
         if (response.data.ranking) {
           setRanking(response.data.ranking);
         }
       } catch (err) {
-        console.error("Error al obtener ranking:", err);
         navigate('/');
       }
     };
@@ -40,11 +49,11 @@ const Victoria = () => {
 
       <div className="victoria-panel">
         <div className="podio">
-          {ranking.slice(0,3).map((jug, idx) => (
-            <div key={idx} className={`puesto puesto-${idx+1}`}>
+          {ranking.slice(0, 3).map((jug, idx) => (
+            <div key={idx} className={`puesto puesto-${idx + 1}`}>
               <div className="jugador-wrapper">
                 {idx === 0 && <img src="/corona.png" alt="Corona" className="corona" />}
-                <div className={`jugador-icon bg-${jug.color} ${idx === 0 ? 'ganador' : ''}`}></div>
+                <div className={`jugador-icon bg-${jug.color} ${idx === 0 ? 'ganador' : ''}`} />
               </div>
               <div className="numero-puesto">{idx + 1}</div>
             </div>
@@ -58,7 +67,11 @@ const Victoria = () => {
             <div className="fila-ranking" key={idx}>
               <div className="posicion">{idx + 1}</div>
               <div className={`nombre text-${jug.color}`}>{jug.nombre}</div>
-              <div className="pe">{jug.puntosEmpresa} PE</div>
+              <div className="pe">
+                {jug.puntosEmpresa}
+                {' '}
+                PE
+              </div>
             </div>
           ))}
         </div>
@@ -67,6 +80,6 @@ const Victoria = () => {
       </div>
     </div>
   );
-};
+}
 
 export default Victoria;
